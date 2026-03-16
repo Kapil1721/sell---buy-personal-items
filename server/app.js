@@ -52,6 +52,9 @@ app.use(
       "https://sellpersonalitem.vercel.app",
       "http://localhost:5173",
       "http://localhost:5174",
+      "https://buy.sellpersonalitems.com",
+      "https://sell.sellpersonalitems.com",
+      "https://sellpersonalitems.com"
     ],
     credentials: true,
   })
