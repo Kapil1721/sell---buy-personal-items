@@ -22,7 +22,7 @@ function Banner() {
                     <source src={'/Video.mp4'} type='video/mp4' />
                 </video>
             </div>
-            <div className='relative z-20  flex flex-col justify-center items-center'>
+            <div className='relative z-20  flex flex-col justify-center items-center h-full w-full bg-black/50'>
                 <div className='text-center mb-4'>
                     <h1 className='text-2xl md:text-3xl lg:text-5xl xl:text-7xl font-bold text-white py-2'>
                         Give Your Items
