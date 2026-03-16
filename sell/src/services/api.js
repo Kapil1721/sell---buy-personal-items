@@ -3,8 +3,8 @@
 //     ? "https://sell-personal-items-server.vercel.app/api/v1"
 //     : "https://sell-personal-items-server.vercel.app/api/v1";
 
-// const isProd = "https://reviewsix.vercel.app/api/v1"
-const isProd = "http://localhost:3000/api/v1";
+const isProd = "https://sell-buy-personal-items.vercel.app/api/v1";
+// const isProd = "http://localhost:3000/api/v1";
 
 export const BASE_URL = isProd;
 
