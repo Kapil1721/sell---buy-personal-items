@@ -1,0 +1,413 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Monoton&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+@layer components {
+  .header_container {
+    @apply mx-auto flex justify-between items-center;
+  }
+}
+
+
+
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+a,
+span {
+  font-family: "Lexend Deca", sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+a,
+span:hover {
+  font-family: "Lexend Deca", sans-serif;
+}
+
+:root {
+  /* Colors */
+  --e-global-color-lprimary1: #4F76DF;
+  --e-global-color-lprimary2: #F49959;
+  --e-global-color-lcolor1: #283948;
+  --e-global-color-lcolor2: #556E82;
+  --e-global-color-lcolor3: #D5E3F0;
+  --e-global-color-lcolor4: #E6F0FA;
+  --e-global-color-lcolor5: #FDFDFE;
+  --e-global-color-lcolor5-op-1: rgba(253, 253, 254, 0.95);
+  --e-global-color-lcolor5-op-2: rgba(253, 253, 254, 0.15);
+  --e-global-color-lsectionbg: #F8FAFD;
+  /* Heading 1 */
+  --e-global-typography-lheading1-font-family: "Red Hat Display";
+  --e-global-typography-lheading1-font-size: 68px;
+  --e-global-typography-lheading1-font-weight: 800;
+  --e-global-typography-lheading1-line-height: 68px;
+  --e-global-typography-lheading1-letter-spacing: -2px;
+  --e-global-typography-lheading1-text-transform: none;
+  --e-global-typography-lheading1-font-style: normal;
+  --e-global-typography-lheading1-text-decoration: none;
+  /* Heading 2 */
+  --e-global-typography-lheading2-font-family: "Red Hat Display";
+  --e-global-typography-lheading2-font-size: 36px;
+  --e-global-typography-lheading2-font-weight: 800;
+  --e-global-typography-lheading2-line-height: 38px;
+  --e-global-typography-lheading2-letter-spacing: -1px;
+  --e-global-typography-lheading2-text-transform: none;
+  --e-global-typography-lheading2-font-style: normal;
+  --e-global-typography-lheading2-text-decoration: none;
+  /* Heading 3 */
+  --e-global-typography-lheading3-font-family: "Red Hat Display";
+  --e-global-typography-lheading3-font-size: 24px;
+  --e-global-typography-lheading3-font-weight: 800;
+  --e-global-typography-lheading3-line-height: 24px;
+  --e-global-typography-lheading3-letter-spacing: -1px;
+  --e-global-typography-lheading3-text-transform: none;
+  --e-global-typography-lheading3-font-style: normal;
+  --e-global-typography-lheading3-text-decoration: none;
+  /* Heading 4 */
+  --e-global-typography-lheading4-font-family: "Red Hat Display";
+  --e-global-typography-lheading4-font-size: 16px;
+  --e-global-typography-lheading4-font-weight: 800;
+  --e-global-typography-lheading4-line-height: 16px;
+  --e-global-typography-lheading4-letter-spacing: 0;
+  --e-global-typography-lheading4-text-transform: none;
+  --e-global-typography-lheading4-font-style: normal;
+  --e-global-typography-lheading4-text-decoration: none;
+  /* Label */
+  --e-global-typography-llabel-font-family: "Red Hat Display";
+  --e-global-typography-llabel-font-size: 16px;
+  --e-global-typography-llabel-font-weight: 600;
+  --e-global-typography-llabel-line-height: 16;
+  --e-global-typography-llabel-letter-spacing: 0;
+  --e-global-typography-llabel-text-transform: none;
+  --e-global-typography-llabel-font-style: normal;
+  --e-global-typography-llabel-text-decoration: none;
+  /* Text 1 */
+  --e-global-typography-ltext1-font-family: "Red Hat Display";
+  --e-global-typography-ltext1-font-size: 16px;
+  --e-global-typography-ltext1-font-weight: 400;
+  --e-global-typography-ltext1-line-height: 29px;
+  --e-global-typography-ltext1-letter-spacing: 0;
+  --e-global-typography-ltext1-text-transform: none;
+  --e-global-typography-ltext1-font-style: normal;
+  --e-global-typography-ltext1-text-decoration: none;
+  /* Text 1 Bold */
+  --e-global-typography-ltext1bold-font-family: "Red Hat Display";
+  --e-global-typography-ltext1bold-font-size: 16px;
+  --e-global-typography-ltext1bold-font-weight: 600;
+  --e-global-typography-ltext1bold-line-height: 29px;
+  --e-global-typography-ltext1bold-letter-spacing: 0;
+  --e-global-typography-ltext1bold-text-transform: none;
+  --e-global-typography-ltext1bold-font-style: normal;
+  --e-global-typography-ltext1bold-text-decoration: none;
+  /* Text 2 */
+  --e-global-typography-ltext2-font-family: "Red Hat Display";
+  --e-global-typography-ltext2-font-size: 14px;
+  --e-global-typography-ltext2-font-weight: 400;
+  --e-global-typography-ltext2-line-height: 24px;
+  --e-global-typography-ltext2-letter-spacing: 0;
+  --e-global-typography-ltext2-text-transform: none;
+  --e-global-typography-ltext2-font-style: normal;
+  --e-global-typography-ltext2-text-decoration: none;
+  /* Text 2 Bold */
+  --e-global-typography-ltext2bold-font-family: "Red Hat Display";
+  --e-global-typography-ltext2bold-font-size: 14px;
+  --e-global-typography-ltext2bold-font-weight: 700;
+  --e-global-typography-ltext2bold-line-height: 29px;
+  --e-global-typography-ltext2bold-letter-spacing: 0;
+  --e-global-typography-ltext2bold-text-transform: none;
+  --e-global-typography-ltext2bold-font-style: normal;
+  --e-global-typography-ltext2bold-text-decoration: none;
+  /* Sizes */
+  --e-global-size-1: 90px;
+  --e-global-size-2: 60px;
+  --e-global-size-3: 45px;
+  --e-global-size-4: 30px;
+  --e-global-size-5: 20px;
+  --e-global-size-6: 15px;
+  --e-global-size-7: 10px;
+  --e-global-lborder-radius: 5px;
+  --e-global-lborder-radius-large: 10px;
+  --e-global-shadow-transparent: 0 6px 20px transparent;
+  --e-global-shadow: 0 6px 20px rgba(42, 57, 70, 0.08);
+  --e-global-shadow-filter-transparent: drop-shadow(0 6px 20px transparent);
+  --e-global-shadow-filter: drop-shadow(0 6px 20px rgba(42, 57, 70, 0.08));
+  --e-global-grid-width: 1140px;
+  --e-global-desktop-padding: 30px;
+  --e-global-mobile-padding: 15px;
+  --e-global-transition-time: 0.3s;
+}
+
+:root {
+  --font-heading: "Comfortaa", cursive;
+  --font-text: "Inter", sans-serif;
+  --border-radius: 8px;
+}
+
+
+
+
+nav>ul>li {
+  font-style: "Lexend Deca";
+  position: relative;
+  text-decoration: none;
+  text-transform: none;
+}
+
+nav>ul>li::before {
+  content: "";
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  left: -16px;
+  top: 50%;
+  margin-top: -3px;
+  border-radius: 50%;
+  background-color: #537cd9;
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: 0.3s ease-in-out;
+}
+
+nav>ul>li:hover::before {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+nav>ul>li:hover {
+  color: #EDC678;
+}
+
+.post_product_button>a,
+button {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  flex-wrap: nowrap;
+  height: 50px;
+  /* background-color: var(--e-global-color-lcolor3); */
+  padding: 0 25px 0 var(--e-global-size-4);
+  color: var(--e-global-color-lcolor2);
+  justify-content: center;
+  align-items: center;
+  border-radius: var(--e-global-lborder-radius);
+  transition: 0.3s ease-in-out;
+  /* font-family: var(--e-global-typography-ltext1-font-family); */
+  font-size: var(--e-global-typography-ltext1-font-size);
+  font-weight: var(--e-global-typography-ltext1-font-weight);
+  line-height: var(--e-global-typography-ltext1-line-height);
+  letter-spacing: var(--e-global-typography-ltext1-letter-spacing);
+  text-transform: var(--e-global-typography-ltext1-text-transform);
+  font-style: var(--e-global-typography-ltext1-font-style);
+  -webkit-text-decoration: var(--e-global-typography-ltext1-text-decoration);
+  text-decoration: var(--e-global-typography-ltext1-text-decoration);
+}
+
+.post_product_button>a:before,
+.post_product_button>a:after {
+  content: "";
+  height: 120px;
+  width: 120px;
+  background-color: var(--e-global-color-lcolor5);
+  opacity: 0.15;
+  position: absolute;
+  right: -55px;
+  top: -10px;
+  transform: rotate(20deg);
+  transition: 0.3s ease-in-out;
+}
+
+.post_product_button>a::before {
+  transform: translateX(-220%) translateY(-50px) rotate(20deg);
+  opacity: 0;
+}
+
+.post_product_button>a:hover::before {
+  transform: translateX(0) translateY(0) rotate(20deg);
+  opacity: 0.15;
+}
+
+.banner {
+  background-image: url(./assets/banner.jpg);
+  width: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.accordian li:not(:last-child)::after {
+  content: '>';
+  position: absolute;
+  top: auto;
+  left: auto;
+  font-size: medium;
+  font-weight: 800;
+  color: #F49959;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.new-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+.new-image::after {
+  position: absolute;
+  content: " ";
+  top: 13px;
+  left: 20px;
+  width: 100%;
+  height: 1px;
+  color: #4F76DF;
+  border: 1px dashed;
+  /* background-color: #556E82; */
+}
+
+.new-image1::after {
+  position: absolute;
+  content: " ";
+  top: 8px;
+  left: 20px;
+  width: 0%;
+  height: 0px;
+  /* background-color: #556E82; */
+}
+
+.new-image svg {
+  fill: #ffffff;
+  width: 20px;
+  height: 20px;
+}
+
+
+
+
+
+
+
+
+
+.after-image {
+  position: relative;
+}
+
+.after-image span::after {
+  content: "";
+  position: absolute;
+  top: 25px;
+  left: 36px;
+  width: 180px;
+  border: 1px dashed #000000;
+  height: 1px;
+  /* z-index: -1; */
+}
+
+.after-image .do-nont::after {
+  content: "";
+  position: absolute;
+  top: 12px;
+  left: 36px;
+  width: 0px;
+  border: 0px dashed;
+  height: 0px;
+}
+
+.after-image span svg {
+  background: white;
+  width: 50px;
+  height: 50px;
+  border-radius: 30px;
+  border: 2px solid;
+}
+
+
+/* tinymce */
+.tox-statusbar__branding {
+  display: none !important;
+}
+
+
+/* Tabs */
+
+.tab-nav {
+  overflow-x: scroll;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  overflow-scrolling: touch;
+}
+
+.tab-list::-webkit-scrollbar {
+  display: none;
+}
+
+.tab-list {
+  width: fit-content;
+  min-width: 100%;
+  display: flex;
+  gap: .5em;
+  margin: 0;
+  padding: 0;
+  border-bottom: 2px solid #eee;
+  color: #888;
+}
+
+.tab-list li {
+  display: block;
+  margin-bottom: -2px;
+}
+
+.tab-btn {
+  font: inherit;
+  padding: 0.75em 1em;
+  background-color: transparent;
+  border: 2px solid;
+  border-width: 0 0 2px;
+  cursor: pointer;
+  color: inherit;
+  white-space: nowrap;
+}
+
+.tab-btn:not(.tab-btn--active):hover {
+  color: var(--site-text-color);
+}
+
+.tab-btn--active {
+  color: black;
+  border-color: blue;
+}
+
+.tab-panel {
+  margin-top: 1em;
+  padding: 1em;
+  background-color: var(--tab-panel-bg-color);
+  border-radius: .5em;
+}
+
+.ck .ck-powered-by {
+  display: none !important;
+}
+
+
+.react-international-phone-country-selector-dropdown{
+  left: -10 !important;
+}

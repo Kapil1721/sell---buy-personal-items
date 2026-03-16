@@ -1,0 +1,47 @@
+import React from "react"
+
+export const Home = React.lazy(() => import("../pages/home/Home"))
+export const About = React.lazy(() => import("../pages/about/About"))
+export const Products = React.lazy(() => import("../pages/products/Products"))
+export const Blog = React.lazy(() => import("../pages/Blog/Blog"))
+export const ContactUs = React.lazy(() => import("../pages/contactus/ContactUs"))
+export const Login_Signup = React.lazy(() => import("../pages/login_signup/Login_Signup"))
+export const AdminPanel = React.lazy(() => import("../pages/admin_panel/AdminPanel"))
+export const CreateProduct = React.lazy(() => import("../pages/admin_panel/sections/CreateProduct"))
+export const ModerateProducts = React.lazy(() => import("../pages/admin_panel/sections/ModerateProducts"))
+export const Orders = React.lazy(() => import("../pages/admin_panel/sections/Orders"))
+export const MyProducts = React.lazy(() => import("../pages/admin_panel/sections/MyProducts"))
+export const Favorites = React.lazy(() => import("../pages/admin_panel/sections/Favorites"))
+export const Messages = React.lazy(() => import("../pages/admin_panel/sections/Messages"))
+export const MyOrders = React.lazy(() => import("../pages/admin_panel/sections/MyOrders"))
+export const Settings = React.lazy(() => import("../pages/admin_panel/sections/Settings"))
+export const Membership = React.lazy(() => import("../pages/Mambership/Membership"))
+export const Donation = React.lazy(() => import("../pages/Donation/Donation"))
+export const Unauthorised = React.lazy(() => import("../components/Unauthorised"))
+export const ErrorUi = React.lazy(() => import("../components/ErrorUi"))
+export const ProductDetails = React.lazy(() => import("../pages/admin_panel/sections/ProductDetails"))
+export const ProductPage = React.lazy(() => import("../pages/admin_panel/sections/ProductPage"))
+export const Donations = React.lazy(() => import("../pages/admin_panel/sections/Donations"))
+export const MembershipPlans = React.lazy(() => import("../pages/Mambership/MembershipPlans"))
+export const MembershipPurchase = React.lazy(() => import("../pages/Mambership/MembershipPurchase"))
+export const PrivacyPolicy = React.lazy(() => import("../pages/PrivacyPolicy/PrivacyPolicy"))
+export const TermsAndConditions = React.lazy(() => import("../pages/TermsAndConditions/TermsAndConditions"))
+export const RefundPolicy = React.lazy(() => import("../pages/RefundPolicy/RefundPolicy"))
+export const Protected = React.lazy(() => import("../auth/Protected"))
+export const LoginSignupReview = React.lazy(() => import("../pages/login_signup/LoginSignupReview"))
+export const ProductDetail = React.lazy(() => import("../pages/products/ProductDetail"))
+export const QualifiedItemsList = React.lazy(() => import("../pages/QualifiedListItems/QualifiedItemsList"))
+export const AdminLogin = React.lazy(() => import("../pages/admin_panel/AdminLogin"))
+export const AdminLayout = React.lazy(() => import("../layouts/AdminLayout"))
+export const ForgetPassword = React.lazy(() => import("../pages/login_signup/ForgetPassword"))
+export const ForgetPasswordLayout = React.lazy(() => import("../pages/login_signup/ForgetPasswordLayout"))
+export const OtpVerification = React.lazy(() => import("../pages/login_signup/OtpVerification"))
+export const ChangePassword = React.lazy(() => import("../pages/login_signup/ChangePassword"))
+export const Layout = React.lazy(() => import("../layouts/Layout"))
+export const DonationForm = React.lazy(() => import("../pages/Donation/sections/DonationForm"))
+export const DonateMoney = React.lazy(() => import("../pages/Donation/sections/DonateMoney"));
+export const ExternalRedirect = () => {
+    window.location.href = "https://www.sellpersonalitems.com/memberships";
+    return null;
+};
+

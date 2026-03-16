@@ -1,0 +1,507 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+// datasource db {
+//   provider  = "mysql"
+//   url       = env("DB_URI")
+//   // directUrl = env("sellpersonal_URL_NON_POOLING")
+// }
+datasource db {
+  provider  = "postgresql"
+  url       = env("sellpersonal_PRISMA_URL")
+  directUrl = env("sellpersonal_URL_NON_POOLING")
+}
+
+model Users {
+  id                  Int                   @id @default(autoincrement())
+  username            String                @unique @db.VarChar(30)
+  email               String                @unique @db.VarChar(50)
+  name                String                @db.VarChar(50)
+  countryCode         String                @db.VarChar(10)
+  address             String?               @db.VarChar(500)
+  profileImage        String?
+  profileDescription  String?
+  contactNumber       String                @db.VarChar(50)
+  whatsApp            Boolean?              @default(false)
+  viber               Boolean?              @default(true)
+  password            String                @db.VarChar(250)
+  verification        String?               @db.VarChar(255)
+  verified            Boolean?              @default(false)
+  active              Boolean?              @default(true)
+  userType            UserType?             @default(Recipient)
+  role                Role                  @default(USER)
+  createdAt           DateTime?             @default(now())
+  updatedAt           DateTime?             @updatedAt
+  buyer               Boolean?              @default(true)
+  seller              Boolean?              @default(false)
+  donor               Boolean?              @default(false)
+  isSubscribed        Boolean?              @default(false)
+  membership          Memberships?
+  listedItem          ListedItem[]
+  donations           Donations[]
+  socailLinks         SocialLinks[]
+  online              Boolean               @default(false)
+  lastSeen            DateTime?
+  purchaseRequests    PurchaseRequest[]     @relation("BuyerPurchaseRequests")
+  sellerRequests      PurchaseRequest[]     @relation("SellerPurchaseRequests")
+  favoriteProductList favoriteProductList[]
+  RefreshToken        RefreshToken[]
+  PromotedProduct     PromotedProduct[]
+}
+
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  userId    Int
+  user      Users    @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Sellers {
+  id                 Int           @id @default(autoincrement())
+  userId             Int?
+  username           String        @unique @db.VarChar(30)
+  email              String        @unique @db.VarChar(50)
+  name               String        @db.VarChar(50)
+  countryCode        String        @db.VarChar(10)
+  address            String?       @db.VarChar(500)
+  profileImage       String?
+  profileDescription String?
+  contactNumber      String        @db.VarChar(50)
+  whatsApp           Boolean?      @default(false)
+  viber              Boolean?      @default(true)
+  password           String        @db.VarChar(250)
+  verification       String?       @db.VarChar(255)
+  verified           Boolean?      @default(false)
+  active             Boolean?      @default(true)
+  userType           String?       @default("Seller")
+  role               Role          @default(USER)
+  createdAt          DateTime?     @default(now())
+  updatedAt          DateTime?     @updatedAt
+  buyer              Boolean?      @default(false)
+  seller             Boolean?      @default(true)
+  donor              Boolean?      @default(false)
+  membership         Memberships?  @relation(fields: [membershipsId], references: [id])
+  listedItem         ListedItem[]
+  donations          Donations[]
+  socailLinks        SocialLinks[]
+  online             Boolean       @default(false)
+  lastSeen           DateTime?
+  // PurchaseRequest    PurchaseRequest[]
+  membershipsId      Int?
+}
+
+model Donors {
+  id                 Int           @id @default(autoincrement())
+  userId             Int?
+  username           String        @unique @db.VarChar(30)
+  email              String        @unique @db.VarChar(50)
+  name               String        @db.VarChar(50)
+  countryCode        String        @db.VarChar(10)
+  address            String?       @db.VarChar(500)
+  profileImage       String?
+  profileDescription String?
+  contactNumber      String        @db.VarChar(50)
+  whatsApp           Boolean?      @default(false)
+  viber              Boolean?      @default(true)
+  password           String        @db.VarChar(250)
+  verification       String?       @db.VarChar(255)
+  verified           Boolean?      @default(false)
+  active             Boolean?      @default(true)
+  userType           String?       @default("Donor")
+  role               Role          @default(USER)
+  createdAt          DateTime?     @default(now())
+  updatedAt          DateTime?     @updatedAt
+  buyer              Boolean?      @default(false)
+  seller             Boolean?      @default(true)
+  donor              Boolean?      @default(false)
+  membership         Memberships?  @relation(fields: [membershipsId], references: [id])
+  listedItem         ListedItem[]
+  donations          Donations[]
+  socailLinks        SocialLinks[]
+  online             Boolean       @default(false)
+  lastSeen           DateTime?
+  // PurchaseRequest    PurchaseRequest[]
+  membershipsId      Int?
+  usersId            Int?
+}
+
+model favoriteProductList {
+  id       Int        @id @default(autoincrement())
+  userId   Int
+  user     Users      @relation(fields: [userId], references: [id])
+  products ListedItem @relation(fields: [postId], references: [post_id])
+  postId   Int
+}
+
+model Memberships {
+  id                 Int                @id @default(autoincrement())
+  startDate          DateTime
+  endDate            DateTime?
+  status             SubscriptionStatus
+  userId             Int                @unique
+  user               Users              @relation(fields: [userId], references: [id])
+  subscriptionPlanId Int
+  subscriptionPlan   SubscriptionPlan   @relation(fields: [subscriptionPlanId], references: [id])
+  payments           Payment[]
+  refunds            Refund[]
+  active             Boolean?           @default(true)
+  createdAt          DateTime?          @default(now())
+  updatedAt          DateTime?          @updatedAt
+  Sellers            Sellers[]
+  Donors             Donors[]
+}
+
+model SubscriptionPlan {
+  id              Int               @id @default(autoincrement())
+  name            String
+  price           Float
+  priceRate       DurationTypes?    @default(MONTH)
+  duration        Int
+  durationType    DurationTypes?    @default(MONTH)
+  offerType       OfferType?
+  offerValue      Float?
+  active          Boolean?          @default(true)
+  createdAt       DateTime?         @default(now())
+  updatedAt       DateTime?         @updatedAt
+  oneTimePayment  Boolean?          @default(false)
+  subscriptions   Memberships[]
+  features        PlanFeature[]
+  PromotedProduct PromotedProduct[]
+}
+
+model Feature {
+  id          Int           @id @default(autoincrement())
+  name        String
+  description String?
+  plans       PlanFeature[]
+}
+
+model PlanFeature {
+  id                 Int              @id @default(autoincrement())
+  subscriptionPlan   SubscriptionPlan @relation(fields: [subscriptionPlanId], references: [id])
+  subscriptionPlanId Int
+  feature            Feature          @relation(fields: [featureId], references: [id])
+  featureId          Int
+}
+
+model Payment {
+  id              Int         @id @default(autoincrement())
+  amount          Float
+  currency        String
+  paymentDate     DateTime
+  subscriptionId  Int
+  subscription    Memberships @relation(fields: [subscriptionId], references: [id])
+  stripePaymentId String
+}
+
+model Refund {
+  id             Int         @id @default(autoincrement())
+  amount         Float
+  currency       String
+  refundDate     DateTime
+  subscriptionId Int
+  subscription   Memberships @relation(fields: [subscriptionId], references: [id])
+  stripeRefundId String
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  INACTIVE
+  EXPIRED
+  CANCELLED
+}
+
+enum DurationTypes {
+  DAY
+  MONTH
+  YEAR
+}
+
+enum OfferType {
+  FLAT
+  PERCENTAGE
+  PAYMENTBASIS
+  ONETIME
+}
+
+model SocialLinks {
+  id         Int       @id @default(autoincrement())
+  Users      Users?    @relation(fields: [usersId], references: [id])
+  usersId    Int?
+  linkName   String    @unique @default("") @db.VarChar(50)
+  socialLink String?   @unique @default("") @db.VarChar(500)
+  createdAt  DateTime? @default(now())
+  updatedAt  DateTime? @updatedAt
+  Sellers    Sellers?  @relation(fields: [sellersId], references: [id])
+  sellersId  Int?
+  Donors     Donors?   @relation(fields: [donorsId], references: [id])
+  donorsId   Int?
+}
+
+model Donations {
+  id          Int          @id @default(autoincrement())
+  usersId     Int?
+  name        String
+  email       String
+  countryCode String
+  phone       String
+  items       ListedItem[]
+  amount      Decimal?     @db.Decimal(10, 2)
+  createdAt   DateTime?    @default(now())
+  updatedAt   DateTime?    @updatedAt
+  Users       Users?       @relation(fields: [usersId], references: [id])
+  Sellers     Sellers?     @relation(fields: [sellersId], references: [id])
+  sellersId   Int?
+  Donors      Donors?      @relation(fields: [donorsId], references: [id])
+  donorsId    Int?
+}
+
+// model DonatedItems {
+//   post_id     Int                  @id @default(autoincrement())
+//   slug        String               @unique @db.VarChar(250)
+//   name        String               @db.VarChar(100)
+//   desription  String?
+//   categoryId  Int?                 @default(1)
+//   category    ItemCategories?      @relation(fields: [categoryId], references: [id])
+//   expires     DateTime?
+//   createdAt   DateTime             @default(now())
+//   updatedAt   DateTime             @updatedAt
+//   active      Boolean              @default(true)
+//   isApproved  Boolean              @default(false)
+//   status      ListedItem_Status?   @default(Draft)
+//   comments    Comment[]
+//   images      DonationItemImages[]
+//   likes       Likes[]
+//   reviews     Reviews[]
+//   views       Views[]
+//   Donations   Donations?           @relation(fields: [donationsId], references: [id])
+//   donationsId Int?
+// }
+
+// model DonationItemImages {
+//   id           Int           @id @default(autoincrement())
+//   fileName     String
+//   url          String
+//   donationId   Int
+//   DonatedItems DonatedItems? @relation(fields: [donationId], references: [post_id])
+// }
+
+// model Memberships {
+//   id            Int       @id @default(autoincrement())
+//   planId        Int
+//   startDate     DateTime  @default(now())
+//   endDate       DateTime?
+//   status        Boolean   @default(true)
+//   paymentMethod String
+//   paymentStatus String
+//   active        Boolean   @default(true)
+//   plan          Plan      @relation(fields: [planId], references: [id])
+//   user          Users[]
+// }
+
+// model Plan {
+//   id           Int           @id @default(autoincrement())
+//   name         String
+//   description  String?
+//   price        Decimal       @db.Decimal(10, 2)
+//   actualPrice  Decimal       @default(0) @db.Decimal(10, 2)
+//   discountType DiscountTypes @default(OneTimePayment)
+//   discount     Float         @default(0)
+//   duration     Int
+//   currency     String?       @default("$") @db.VarChar(30)
+//   active       Boolean?      @default(true)
+//   createdAt    DateTime?     @default(now())
+//   updatedAt    DateTime?     @updatedAt
+//   planFeatures Features[]
+//   Memberships  Memberships[]
+// }
+
+// model Features {
+//   id          Int     @id @default(autoincrement())
+//   name        String
+//   description String?
+//   active      Boolean @default(true)
+//   plans       Plan[]
+// }
+
+model ItemCategories {
+  id                 Int                  @id @default(autoincrement())
+  name               String
+  description        String?
+  active             Boolean              @default(true)
+  items              ListedItem[]
+  CategoryAttributes CategoryAttributes[]
+  // DonatedItems       DonatedItems[]
+}
+
+model CategoryAttributes {
+  id               Int            @id @default(autoincrement())
+  name             String
+  description      String?
+  active           Boolean        @default(true)
+  itemCategory     ItemCategories @relation(fields: [itemCategoriesId], references: [id])
+  itemCategoriesId Int
+}
+
+model ListedItem {
+  post_id             Int                   @id @default(autoincrement())
+  slug                String                @unique @db.VarChar(250)
+  name                String                @db.VarChar(100)
+  desription          String?
+  categoryId          Int?                  @default(1)
+  category            ItemCategories?       @relation(fields: [categoryId], references: [id])
+  expires             DateTime?
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  active              Boolean               @default(true)
+  isApproved          Boolean               @default(false)
+  status              ListedItem_Status?    @default(Draft)
+  userId              Int?
+  comments            Comment[]
+  images              Images[]
+  likes               Likes[]
+  reviews             Reviews[]
+  user                Users?                @relation(fields: [userId], references: [id])
+  views               Views[]
+  itemsType           ItemTypes?            @default(SALE)
+  Donations           Donations?            @relation(fields: [donationsId], references: [id], onDelete: Cascade)
+  donationsId         Int?
+  quantity            Int?                  @default(10)
+  PurchaseRequest     PurchaseRequest[]
+  Sellers             Sellers?              @relation(fields: [sellersId], references: [id])
+  sellersId           Int?
+  Donors              Donors?               @relation(fields: [donorsId], references: [id])
+  donorsId            Int?
+  favoriteProductList favoriteProductList[]
+  PromotedProduct     PromotedProduct[]
+}
+
+model Reviews {
+  id                  Int             @id @default(autoincrement())
+  rating              Int
+  comment             String
+  reviewImages        ReviewsImages[]
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  ListedItem          ListedItem?     @relation(fields: [listedItemPost_id], references: [post_id], onDelete: Cascade)
+  listedItemPost_id   Int?
+  // DonatedItems        DonatedItems?   @relation(fields: [donatedItemsPost_id], references: [post_id])
+  donatedItemsPost_id Int?
+}
+
+model ReviewsImages {
+  id        Int      @id @default(autoincrement())
+  image     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Reviews   Reviews? @relation(fields: [reviewsId], references: [id], onDelete: Cascade)
+  reviewsId Int?
+}
+
+model Views {
+  id         Int        @id @default(autoincrement())
+  userId     Int
+  postId     Int
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  listedItem ListedItem @relation(fields: [postId], references: [post_id], onDelete: Cascade)
+}
+
+model Likes {
+  id                Int        @id @default(autoincrement())
+  user_id           Int
+  like              Boolean    @default(false)
+  createdAt         DateTime   @default(now())
+  modifiedAt        DateTime   @updatedAt
+  listedItemPost_id Int
+  ListedItem        ListedItem @relation(fields: [listedItemPost_id], references: [post_id], onDelete: Cascade)
+}
+
+model Comment {
+  id                Int         @id @default(autoincrement())
+  content           String
+  listedItemPost_id Int?
+  ListedItem        ListedItem? @relation(fields: [listedItemPost_id], references: [post_id], onDelete: Cascade)
+}
+
+model Images {
+  id            Int         @id @default(autoincrement())
+  imagesType    ImageTypes? @default(GALLARY)
+  fileName      String      @default("")
+  image         String
+  listedItem_id Int?
+  ListedItem    ListedItem? @relation(fields: [listedItem_id], references: [post_id], onDelete: Cascade)
+}
+
+enum UserType {
+  Recipient
+  Donor
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum ListedItem_Status {
+  Active
+  Pending
+  Draft
+  Decline
+}
+
+enum ImageTypes {
+  GALLARY
+  ATTACHMENTS
+}
+
+enum ItemTypes {
+  DONATION
+  SALE
+}
+
+model newsletter {
+  id            Int       @id @default(autoincrement())
+  email         String    @unique
+  subscribed    Boolean   @default(false)
+  subscribed_at DateTime? @default(now())
+}
+
+model PurchaseRequest {
+  id              Int                   @id @default(autoincrement())
+  buyerId         Int
+  sellerId        Int
+  productId       Int
+  status          PurchaseRequestStatus @default(Pending)
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
+  statusUpdatedBy StatusUpdatedBy?
+  buyer           Users                 @relation("BuyerPurchaseRequests", fields: [buyerId], references: [id])
+  seller          Users                 @relation("SellerPurchaseRequests", fields: [sellerId], references: [id])
+  product         ListedItem            @relation(fields: [productId], references: [post_id])
+}
+
+enum StatusUpdatedBy {
+  Buyer
+  Seller
+}
+
+enum PurchaseRequestStatus {
+  Pending
+  Accepted
+  Cancelled
+  Fulfilled
+}
+
+model PromotedProduct {
+  id     Int              @id @default(autoincrement())
+  userId Int
+  user   Users            @relation(fields: [userId], references: [id])
+  postId Int
+  posts  ListedItem       @relation(fields: [postId], references: [post_id])
+  planId Int
+  plan   SubscriptionPlan @relation(fields: [planId], references: [id])
+}
