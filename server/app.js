@@ -45,11 +45,11 @@ const allowedOrigins = [
   "https://sellpersonalitem.vercel.app",
   "http://localhost:5173",
   "http://localhost:5174",
-  "https://buy.sellpersonalitems.com",
   "https://sell.sellpersonalitems.com",
+  "https://buy.sellpersonalitems.com",
   "https://sellpersonalitems.com",
-  "https://www.buy.sellpersonalitems.com",
   "https://www.sell.sellpersonalitems.com",
+  "https://www.buy.sellpersonalitems.com",
 ];
 
 // Middleware for serving static files
