@@ -20,7 +20,7 @@ dotenv.config();
 const app = express();
 
 // Enable trust proxy to ensure accurate client IP identification
-// app.set("trust proxy", true);
+app.set("trust proxy", true);
 
 // // Rate limiter middleware setup (example)
 // const limiter = rateLimit({
