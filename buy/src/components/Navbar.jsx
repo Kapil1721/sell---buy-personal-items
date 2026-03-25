@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import React, { useContext, useState } from 'react';
 import { AuthContext } from '../auth/AuthContext';
 import ClickOutside from './Clickoutside';
+import { appRedirectEndpoints } from '../services/api';
 
 
 // const cookies = new Cookies();
@@ -99,8 +100,8 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
                                         <li className='font-[lexend deca] text-primary font-medium text-base py-2 '><Link to={''}>Home</Link></li>
                                         {/*<li className='font-[lexend deca] text-primary font-medium text-base py-2  '><Link to={'/memberships'}>Memberships</Link></li>*/}
                                         <li className='font-[lexend deca] text-primary font-medium text-base py-2  '><Link to={'/qualified-items-list'}>Qualified Items</Link></li>
-                                        {/*<li className='font-[lexend deca] text-primary font-medium text-base py-2  '><Link to={user ? '/donate' : "/login-register?tab=login"} state={user ? { to: "/" } : { to: "/donate" }}>Donate Items</Link></li>*/}
-                                        {/*<li className='font-[lexend deca] text-primary font-medium text-base py-2  '><Link to={user ? '/donate/money' : "/login-register?tab=login"} state={user ? { to: "/" } : { to: "/donate/money" }}>Donate Money</Link></li>*/}
+                                        {/*<li className='font-[lexend deca] text-primary font-medium text-base py-2  '><Link to={user ? '/donate' : "/login"} state={user ? { to: "/" } : { to: "/donate" }}>Donate Items</Link></li>*/}
+                                        {/*<li className='font-[lexend deca] text-primary font-medium text-base py-2  '><Link to={user ? '/donate/money' : "/login"} state={user ? { to: "/" } : { to: "/donate/money" }}>Donate Money</Link></li>*/}
                                     </ul>
                                 </nav>
                                 {/* <!-- Sidebar Menu --> */}
@@ -115,15 +116,15 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
                             <li className='font-[lexend deca] text-primary font-medium text-base py-2 '><Link to={''}>Home</Link></li>
                             {/*<li className='font-[lexend deca] text-primary font-medium text-base py-2 ml-[45px] '><Link to={'/memberships'}>Memberships</Link></li>*/}
                             <li className='font-[lexend deca] text-primary font-medium text-base py-2 ml-[45px] '><Link to={'/qualified-items-list'}>Qualified Items</Link></li>
-                            {/*<li className='font-[lexend deca] text-primary font-medium text-base py-2 ml-[45px] '><Link to={user ? '/donate' : "/login-register?tab=login"} state={user ? { to: "/" } : { to: "/donate" }}>Donate Items</Link></li>*/}
-                            {/*<li className='font-[lexend deca] text-primary font-medium text-base py-2 ml-[45px] '><Link to={user ? '/donate/money' : "/login-register?tab=login"} state={user ? { to: "/" } : { to: "/donate/money" }}>Donate Money</Link></li>*/}
+                            {/*<li className='font-[lexend deca] text-primary font-medium text-base py-2 ml-[45px] '><Link to={user ? '/donate' : "/login"} state={user ? { to: "/" } : { to: "/donate" }}>Donate Items</Link></li>*/}
+                            {/*<li className='font-[lexend deca] text-primary font-medium text-base py-2 ml-[45px] '><Link to={user ? '/donate/money' : "/login"} state={user ? { to: "/" } : { to: "/donate/money" }}>Donate Money</Link></li>*/}
                         </ul>
                     </nav>
                 </div>
                 <div className='hidden lg:block'>
                     <div className="flex items-center justify-end gap-4 w-full">
                         <div className='account flex justify-center items-center gap-4 relative group'>
-                            {loggedIn && <Link to={loggedIn ? '/panel/my-products' : '/login-register'} className={`flex justify-center items-center relative overflow-hidden transition-all text-nowrap font-medium py-4 h-[50px] w-[50px] 
+                            {loggedIn && <Link to={loggedIn ? '/panel/my-products' : '/login'} className={`flex justify-center items-center relative overflow-hidden transition-all text-nowrap font-medium py-4 h-[50px] w-[50px] 
                             rounded-full 
                             border
                              border-primary
@@ -133,11 +134,11 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
 
                             {!loggedIn ?
                                 <>
-                                    <Link to={'/login-register?tab=login'} className='text-nowrap font-medium py-4 text-primary'>
+                                    <Link to={'/login'} className='text-nowrap font-medium py-4 text-primary'>
                                         Log In
                                     </Link>
                                     <hr className="w-8 h-[2px] mx-auto my-auto  border-0 rounded md:my-10 bg-primary rotate-90"></hr>
-                                    <Link to={'/login-register?tab=register'} className='py-4 font-medium text-primary'>Register</Link>
+                                    <a href={appRedirectEndpoints.SELL_REGISTER_URL} className='py-4 font-medium text-primary'>Register</a>
 
                                 </>
                                 :
@@ -166,12 +167,12 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
                         </div>
 
                         { <div className='post_product_button'>
-                            <Link to={user ? '/panel/create' : '/login-register?tab=login'} state={{ to: "/panel/create" }} className='bg-btn-primay px-4 py-3 rounded-md flex items-center justify-between w-full gap-4 button'>
+                            <Link to={user ? '/panel/create' : '/login'} state={{ to: "/panel/create" }} className='bg-btn-primay px-4 py-3 rounded-md flex items-center justify-between w-full gap-4 button'>
                                 <span className='text-nowrap text-primary'>Sell</span>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M5.00488 11.525V7.075H0.854883V5.125H5.00488V0.65H7.00488V5.125H11.1549V7.075H7.00488V11.525H5.00488Z" fill="#000"></path></svg>
                             </Link>
                         </div>}
-                        {/* {!user && <Link to={loggedIn ? '/panel/create' : '/login-register?tab=login'} state={{ to: "/panel/create", "for": "sell" }} className='bg-btn-primay px-4 py-3 rounded-md flex items-center justify-between w-full gap-4 button'>
+                        {/* {!user && <Link to={loggedIn ? '/panel/create' : '/login'} state={{ to: "/panel/create", "for": "sell" }} className='bg-btn-primay px-4 py-3 rounded-md flex items-center justify-between w-full gap-4 button'>
                             <span className='text-nowrap text-primary'>Sell</span>
                             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M5.00488 11.525V7.075H0.854883V5.125H5.00488V0.65H7.00488V5.125H11.1549V7.075H7.00488V11.525H5.00488Z" fill="#000"></path></svg>
                         </Link>} */}
@@ -179,7 +180,7 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
                 <div className='block lg:hidden'>
                     <div className='account flex justify-center items-center gap-4'>
-                        {!user ? <Link to={'/login-register?tab=login'} className='flex justify-center items-center relative overflow-hidden transition-all text-nowrap font-medium p-2 lg:py-4 lg:h-[50px] lg:w-[50px] rounded-full border border-black'>
+                        {!user ? <Link to={'/login'} className='flex justify-center items-center relative overflow-hidden transition-all text-nowrap font-medium p-2 lg:py-4 lg:h-[50px] lg:w-[50px] rounded-full border border-black'>
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="20" viewBox="0 0 18 20" fill="none">
                                 <path fillRule="evenodd" clipRule="evenodd" d="M9 0C5.53008 0 2.7 2.83008 2.7 6.3C2.7 8.46914 3.80742 10.3957 5.48438 11.5312C2.27461 12.9094 0 16.0945 0 19.8H1.8C1.8 17.1984 3.17461 14.9344 5.23125 13.6687C5.83594 15.1523 7.30898 16.2 9 16.2C10.691 16.2 12.1641 15.1523 12.7688 13.6687C14.8254 14.9344 16.2 17.1984 16.2 19.8H18C18 16.0945 15.7254 12.9094 12.5156 11.5312C14.1926 10.3957 15.3 8.46914 15.3 6.3C15.3 2.83008 12.4699 0 9 0ZM9 1.8C11.4961 1.8 13.5 3.80391 13.5 6.3C13.5 8.79609 11.4961 10.8 9 10.8C6.50391 10.8 4.5 8.79609 4.5 6.3C4.5 3.80391 6.50391 1.8 9 1.8ZM11.1094 12.9094C10.4414 12.7055 9.73828 12.6 9 12.6C8.26172 12.6 7.55859 12.7055 6.89062 12.9094C7.20352 13.7777 8.01914 14.4 9 14.4C9.98086 14.4 10.7965 13.7777 11.1094 12.9094Z" fill="#000">
                                 </path>
@@ -258,5 +259,4 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
 }
 
 export default React.memo(Navbar)
-
 

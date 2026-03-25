@@ -9,6 +9,7 @@ import { useGlobalState } from '../../store/AuthStore';
 import { AuthContext } from '../../auth/AuthContext';
 import { createValidator } from '../../hooks/Hooks';
 import PhoneNumber from '../../components/PhoneNumber';
+import { appRedirectEndpoints } from '../../services/api';
 
 
 
@@ -59,12 +60,8 @@ function Login_Signup() {
 
     const navigate = useNavigate();
     const location = useLocation();
-    const [URLSearchParams, SetURLSearchParams] = useSearchParams();
     const { login } = useContext(AuthContext);
-    const checkLoginActive = () => URLSearchParams.get("tab") === 'login'
-    // const loginActive = checkLoginActive();
 
-    const [loginActive, setLoginActive] = useState(checkLoginActive());
     const dropdownRef = useRef(null)
     const inputrefs = useRef([]);
     const signupinputrefs = useRef([]);
@@ -91,7 +88,6 @@ function Login_Signup() {
 
     // remember me feature
     useEffect(() => {
-        if (loginActive) {
             const savedEmail = localStorage.getItem('usernameoremail');
             const savedPassword = localStorage.getItem('password');
             if (savedEmail && savedPassword) {
@@ -99,7 +95,6 @@ function Login_Signup() {
                 inputrefs.current[1].value = savedPassword
                 setRememberMe(true)
             }
-        }
         // if (location.state?.for === 'sell') {
         //     setAccountType('SELLER')
         //     setDisableOptions({
@@ -148,23 +143,6 @@ function Login_Signup() {
         }
         return () => removeEventListener('click', handleCloseSortSelect)
     }, []);
-    useEffect(() => {
-        const _loginCheck = checkLoginActive();
-        if (_loginCheck) {
-            setLoginActive(true)
-        } else {
-            setLoginActive(false)
-        }
-    }, [URLSearchParams]);
-
-    const toggleForm = (id) => {
-        if (id === 'login') {
-            setLoginActive(true)
-        } else {
-            setLoginActive(false)
-        }
-    };
-
 
 
     const handleLogin = async (e) => {
@@ -220,7 +198,6 @@ function Login_Signup() {
             // console.log(res);
             if (res?.status === 'success') {
                 localStorage.setItem("_sell_Token", res.token)
-                SetURLSearchParams({ tab: 'login' })
                 toast.success("Signup successful.");
             }
         }
@@ -241,11 +218,6 @@ function Login_Signup() {
         <div className='w-full relative bg-[#697885]'>
             <div className='flex justify-center items-center relative'>
                 <div className='max-w-[500px] w-full flex flex-col    my-14'>
-                    <div className='flex justify-between items-end overflow-hidden gap-2'>
-                        <button onClick={() => toggleForm('login')} className={` text-base text-[#374B66] font-medium w-full py-3 relative rounded-t rounded-b-none transition ease-in-out transform ${loginActive ? 'translate-y-0 bg-white' : 'translate-y-2  bg-[#F9FAFB]'}`}>Login</button>
-                        <button onClick={() => toggleForm('signup')} className={` text-base text-[#374B66] font-medium w-full py-3 relative rounded-t rounded-b-none transition ease-in-out transform ${!loginActive ? 'translate-y-0 bg-white' : 'translate-y-2  bg-[#F9FAFB]'}`}>Sign Up</button>
-                    </div>
-                    {loginActive ?
                         <form autoComplete="off" className='w-full relative bg-white flex justify-center items-start rounded-b p-4 lg:p-12'>
                             <div className='flex justify-center items-center relative overflow-hidden'>
                                 <div className={`${sendNext ? "hidden" : "absolute bg-white z-20 h-full w-full flex flex-col justify-between"}`}>
@@ -345,6 +317,9 @@ function Login_Signup() {
                                         <div><Link className='text-[#ffb300] font-semibold' to={'/forget-password'}>Forget Password?</Link></div>
                                     </div>
                                     <button onClick={handleLogin} className='rounded w-full px-8 py-4 bg-[#537CD9] text-white font-bold'>{loading ? "Loading..." : "Login"}</button>
+                                    <p className='text-center text-sm text-[#374b5c]'>
+                                        Do not have an account? <a href={appRedirectEndpoints.SELL_REGISTER_URL} className='font-semibold text-[#ffb300]'>Sign Up</a>
+                                    </p>
                                     {/* <button
                                         onClick={(e) => {
                                             e.preventDefault();
@@ -353,98 +328,7 @@ function Login_Signup() {
                                         className='rounded w-full text-red-500 underline font-bold'>Go Back</button> */}
                                 </div>
                             </div>
-                        </form> :
-                        <form className='w-full relative bg-white flex justify-center items-start rounded-b p-4 lg:p-12' >
-                            <div className='flex w-full flex-col gap-6'>
-                                <div className='relative'>
-                                    <input ref={ref => signupinputrefs.current[0] = ref} name='username' className='py-4 w-full px-16 border border-[#D5E3EE] rounded focus:outline-none placeholder:text-[#374b5c] text-base font-medium' type="text" placeholder="Username *" />
-                                    <span className='absolute top-[13px] left-3 w-8 h-8 rounded-md bg-[#d5e3ee] flex justify-center items-center'>
-                                        <UserNameIcon color={"#475B6B"} />
-                                    </span>
-                                </div>
-                                <div className='relative'>
-                                    <input ref={ref => signupinputrefs.current[1] = ref} name='name' className='py-4 w-full px-16 border border-[#D5E3EE] rounded focus:outline-none placeholder:text-[#374b5c] text-base font-medium' type="text" placeholder="Name *" />
-                                    <span className='absolute top-[13px] left-3 w-8 h-8 rounded-md bg-[#d5e3ee] flex justify-center items-center'>
-                                        <AdminIcon color={"#475B6B"} />
-                                    </span>
-                                </div>
-                                <div className='relative'>
-                                    <input ref={ref => signupinputrefs.current[2] = ref} name='email' className='py-4 w-full px-16 border border-[#D5E3EE] rounded focus:outline-none placeholder:text-[#374b5c] text-base font-medium' type="email" placeholder="E-mail *" />
-                                    <span className='absolute top-[13px] left-3 w-8 h-8 rounded-md bg-[#d5e3ee] flex justify-center items-center'>
-                                        <EmailIcon color={"#475B6B"} />
-                                    </span>
-                                </div>
-                                <div className='relative flex'>
-                                    <PhoneNumber value={contactNumber.contactNumber} onchange={(value) => setContactNumber((pre) => ({ ...pre, countryCode: value.split('-')[0], contactNumber: value.split('-')[1] }))} />
-                                </div>
-                                <div className='relative'>
-                                    <input ref={ref => signupinputrefs.current[4] = ref} name='password' className='py-4 w-full px-16 border border-[#D5E3EE] rounded focus:outline-none placeholder:text-[#374b5c] text-base font-medium' type="password" placeholder="Password" />
-                                    <span className='absolute top-[13px] left-3 w-8 h-8 rounded-md bg-[#d5e3ee] flex justify-center items-center'>
-                                        <LockIcon color={"#475B6B"} />
-                                    </span>
-                                </div>
-
-                                <div className='relative'>
-                                    <p htmlFor="" className='text-primary font-medium'>Choose Your Role *</p>
-                                    <div className='grid grid-cols-1 md:grid-cols-3 mt-2'>
-                                        <div className="flex items-center">
-                                            <input id="Buyer" type="checkbox" value={'BUYER'} name='buyer' onChange={handleRoleChange} className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 ring-offset-gray-800 focus:ring-offset-gray-800 focus:ring-2 " />
-                                            <label htmlFor="Buyer" className="text-primary font-medium ml-3 select-none" >Buyer</label>
-                                        </div>
-                                        <div className='flex justify-start items-center'>
-                                            <input type='checkbox' name='seller' onChange={handleRoleChange} id='Seller' value={'SELLER'} className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 ring-offset-gray-800 focus:ring-offset-gray-800 focus:ring-2 " />
-                                            <label htmlFor="Seller" className='text-primary font-medium ml-3 select-none'>Seller</label>
-                                        </div>
-                                        <div className='flex justify-start items-center'>
-                                            <input type='checkbox' name='donor' onChange={handleRoleChange} id='Donor' value={'DONOR'} className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 ring-offset-gray-800 focus:ring-offset-gray-800 focus:ring-2 " />
-                                            <label htmlFor="Donor" className='text-primary font-medium ml-3 select-none'>Donor</label>
-                                        </div>
-                                    </div>
-
-                                </div>
-                                {/* <div className='relative'>
-                                    <div className='py-4 w-full pl-16 border border-[#D5E3EE] rounded focus:outline-none placeholder:text-[#374b5c] text-base font-medium' ref={dropdownRef} onClick={handleToggle}>
-                                        <div className='w-full justify-between items-center flex pr-4'>
-                                            <div className='min-w-48 text-base font-medium text-[#3F5263]'>{sortValue}</div>
-                                            <div>
-                                                <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    width={7}
-                                                    height={5}
-                                                    viewBox="0 0 7 5"
-                                                    fill="none"
-                                                >
-                                                    <path
-                                                        d="M3.5 2.56768L5.87477 0.192917C6.13207 -0.0643854 6.54972 -0.0643854 6.80702 0.192917C7.06433 0.45022 7.06433 0.86787 6.80702 1.12517L3.9394 3.99279C3.6964 4.2358 3.30298 4.2358 3.0606 3.99279L0.192977 1.12517C-0.0643257 0.86787 -0.0643257 0.45022 0.192977 0.192917C0.45028 -0.0643854 0.86793 -0.0643854 1.12523 0.192917L3.5 2.56768Z"
-                                                        fill="#2A3946"
-                                                    />
-                                                </svg>
-                                            </div>
-                                        </div>
-                                        <div className='hidden w-1/2 dropdownlist shadow-xl px-5 py-3 absolute z-10 bg-white rounded-md left-0 top-16'>
-                                            <ul>
-                                                <li className={`text-base font-medium ${sortValue === 'Most Relevant' ? 'text-[#537CD9]' : 'text-[#3F5263] hover:text-[#FFB300]'} py-1 transition ease-in-out`} onClick={() => handleChange('Buyer')}>Buyer</li>
-                                                <li className={`text-base font-medium ${sortValue === 'Most Relevant' ? 'text-[#537CD9]' : 'text-[#3F5263] hover:text-[#FFB300]'} py-1 transition ease-in-out`} onClick={() => handleChange('Seller')}>Seller</li>
-                                                <li className={`text-base font-medium ${sortValue === 'Date Listed: Newest' ? 'text-[#537CD9]' : 'text-[#3F5263] hover:text-[#FFB300]'} py-1 transition ease-in-out`} onClick={() => handleChange('Donor')}>Donor</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <span className='absolute top-[13px] left-3 w-8 h-8 rounded-md bg-[#d5e3ee] flex justify-center items-center'>
-                                        <i className="far fa-address-card text-[#475B6B]" />
-                                    </span>
-                                </div> */}
-                                <div className='relative flex justify-between w-full items-center'>
-                                    <div className='flex justify-between items-center font-medium'>
-                                        <input name='' className='border transition ease-in-out size-4 border-[#D5E3EE] outline-[#D5E3EE] rounded hover:outline-none focus:outline-none placeholder:text-[#374b5c] text-base font-medium' type="checkbox" placeholder="Email or Username" />
-                                        <span className='ml-2 text-[#374b5c]'>I accept the{" "}
-                                            <Link className='text-[#ffb300] font-medium' to={'/privacy-policy'}>Privacy Policy</Link>
-                                        </span>
-                                    </div>
-
-                                </div>
-                                <button onClick={handleSignup} className={`w-full rounded px-8 py-4 bg-[#537CD9] text-white font-bold`}>{loading ? "Loading" : "Regitser"}</button>
-                            </div>
-                        </form>}
+                        </form>
                 </div>
             </div>
 

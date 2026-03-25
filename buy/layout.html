@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Buy Personal Items — Second-Hand Marketplace</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #E8F7F5;
+    --warm-white: #F2FAFA;
+    --bark: #0D3D38;
+    --rust: #2E9E6B;
+    --sand: #80CFC4;
+    --moss: #1A7A5E;
+    --gold: #3AAFA9;
+    --smoke: #4A7A74;
+    --tag-bg: #D6F0EC;
+  }
+  html { scroll-behavior: smooth; }
+  body { background: var(--warm-white); color: var(--bark); font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
+
+  /* HEADER */
+  header {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--bark); padding: 0 48px; height: 68px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 2px solid var(--rust);
+  }
+  .logo img { height: 42px; filter: brightness(0) invert(1); }
+  nav { display: flex; gap: 32px; align-items: center; }
+  nav a { font-family: 'Space Mono', monospace; font-size: 0.72rem; color: var(--sand); text-decoration: none; letter-spacing: 0.08em; text-transform: uppercase; transition: color 0.2s; }
+  nav a:hover { color: #fff; }
+  .nav-cta { background: var(--rust); color: #fff !important; padding: 9px 22px; border-radius: 2px; }
+  .nav-cta:hover { background: var(--moss) !important; }
+
+  /* HERO */
+  .hero { min-height: 90vh; display: grid; grid-template-columns: 1fr 1fr; overflow: hidden; }
+  .hero-left { background: var(--cream); padding: 80px 64px 80px 80px; display: flex; flex-direction: column; justify-content: center; }
+  .hero-eyebrow { font-family: 'Space Mono', monospace; font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--rust); margin-bottom: 24px; display: flex; align-items: center; gap: 12px; }
+  .hero-eyebrow::before { content: ''; display: block; width: 32px; height: 1px; background: var(--rust); }
+  .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(3rem,5.5vw,5rem); font-weight: 900; line-height: 1.0; color: var(--bark); margin-bottom: 28px; }
+  .hero-title em { font-style: italic; color: var(--rust); }
+  .hero-sub { font-size: 1rem; color: var(--smoke); line-height: 1.7; max-width: 380px; margin-bottom: 48px; font-weight: 300; }
+  .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; }
+  .btn-primary { background: var(--bark); color: var(--cream); border: none; padding: 16px 36px; font-family: 'Space Mono', monospace; font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; transition: background 0.2s, transform 0.15s; text-decoration: none; display: inline-block; }
+  .btn-primary:hover { background: var(--rust); transform: translateY(-2px); }
+  .btn-outline { background: transparent; color: var(--bark); border: 1.5px solid var(--bark); padding: 16px 36px; font-family: 'Space Mono', monospace; font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; text-decoration: none; display: inline-block; }
+  .btn-outline:hover { background: var(--bark); color: var(--cream); }
+  .hero-stats { margin-top: 56px; display: flex; gap: 40px; padding-top: 32px; border-top: 1px solid var(--sand); }
+  .stat-num { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: var(--bark); }
+  .stat-label { font-size: 0.78rem; color: var(--smoke); margin-top: 2px; font-weight: 300; }
+
+  /* HERO RIGHT COLLAGE */
+  .hero-right { background: #0D3D38; position: relative; overflow: hidden; }
+  .collage { position: absolute; inset: 0; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; gap: 4px; padding: 4px; }
+  .collage-item { position: relative; overflow: hidden; cursor: pointer; transition: filter 0.3s; }
+  .collage-item:hover { filter: brightness(1.1); }
+  .collage-item img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+  .collage-item:hover img { transform: scale(1.06); }
+  .collage-item:nth-child(1) { grid-column: 1; grid-row: 1 / 3; }
+  .collage-item:nth-child(4) { grid-column: 2; grid-row: 2 / 4; }
+  .collage-label { position: absolute; bottom: 12px; left: 12px; background: var(--bark); color: var(--cream); font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 10px; z-index: 2; }
+  .collage-price { position: absolute; top: 12px; right: 12px; background: #52C234; color: white; font-family: 'Space Mono', monospace; font-size: 0.7rem; font-weight: 700; padding: 4px 10px; z-index: 2; }
+
+  /* SEARCH */
+  .search-section { background: var(--rust); padding: 28px 80px; display: flex; align-items: center; gap: 0; }
+  .search-label { font-family: 'Space Mono', monospace; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.8); white-space: nowrap; padding-right: 24px; border-right: 1px solid rgba(255,255,255,0.3); margin-right: 24px; }
+  .search-bar { flex: 1; display: flex; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25); }
+  .search-bar input { flex: 1; background: transparent; border: none; padding: 14px 20px; color: white; font-family: 'DM Sans', sans-serif; font-size: 0.95rem; outline: none; }
+  .search-bar input::placeholder { color: rgba(255,255,255,0.5); }
+  .search-bar select { background: rgba(255,255,255,0.15); border: none; border-left: 1px solid rgba(255,255,255,0.2); color: white; padding: 0 20px; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; cursor: pointer; outline: none; -webkit-appearance: none; }
+  .search-bar select option { color: var(--bark); background: white; }
+  .search-btn { background: var(--bark); color: var(--cream); border: none; padding: 14px 32px; font-family: 'Space Mono', monospace; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; cursor: pointer; transition: background 0.2s; }
+  .search-btn:hover { background: #052520; }
+
+  /* TICKER */
+  .ticker-bar { background: var(--moss); padding: 12px 0; overflow: hidden; white-space: nowrap; position: relative; }
+  .ticker-track { display: inline-flex; gap: 48px; animation: ticker 30s linear infinite; }
+  .ticker-item { font-family: 'Space Mono', monospace; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.85); display: flex; align-items: center; gap: 10px; }
+  .ticker-dot { width: 4px; height: 4px; border-radius: 50%; background: rgba(255,255,255,0.4); flex-shrink: 0; }
+  @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+  /* CATEGORIES */
+  .categories { padding: 64px 80px 48px; background: var(--warm-white); }
+  .section-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 40px; }
+  .section-title { font-family: 'Playfair Display', serif; font-size: 2.4rem; font-weight: 700; color: var(--bark); }
+  .section-title em { font-style: italic; color: var(--rust); }
+  .see-all { font-family: 'Space Mono', monospace; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--rust); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .see-all::after { content: '→'; }
+  .cat-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
+  .cat-card { background: var(--tag-bg); border: 1px solid var(--sand); padding: 24px 16px; text-align: center; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
+  .cat-card::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 3px; background: var(--rust); transition: width 0.3s; }
+  .cat-card:hover { background: var(--cream); transform: translateY(-4px); box-shadow: 0 8px 24px rgba(13,61,56,0.1); }
+  .cat-card:hover::after { width: 100%; }
+  .cat-img-wrap { width: 72px; height: 72px; border-radius: 50%; overflow: hidden; margin: 0 auto 12px; border: 3px solid var(--sand); }
+  .cat-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .cat-name { font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 500; color: var(--bark); margin-bottom: 4px; }
+  .cat-count { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--smoke); }
+
+  /* FEATURED LISTINGS */
+  .featured { padding: 48px 80px 64px; background: var(--cream); }
+  .listings-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 40px; }
+  .listing-card { background: var(--warm-white); border: 1px solid var(--sand); cursor: pointer; transition: all 0.25s; position: relative; overflow: hidden; }
+  .listing-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(13,61,56,0.14); border-color: var(--bark); }
+  .listing-img { height: 220px; position: relative; overflow: hidden; }
+  .listing-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; display: block; }
+  .listing-card:hover .listing-img img { transform: scale(1.06); }
+  .listing-img-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(13,61,56,0.4) 0%, transparent 60%); z-index: 1; }
+  .listing-badge { position: absolute; top: 14px; left: 14px; font-family: 'Space Mono', monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.08em; padding: 4px 10px; z-index: 2; }
+  .badge-new { background: #1A7A5E; color: white; }
+  .badge-hot { background: #2B7BB9; color: white; }
+  .badge-deal { background: #52C234; color: #0D3D38; }
+  .listing-fav { position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; cursor: pointer; transition: transform 0.2s; z-index: 2; }
+  .listing-fav:hover { transform: scale(1.2); }
+  .listing-body { padding: 20px; }
+  .listing-meta { font-family: 'Space Mono', monospace; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--smoke); margin-bottom: 8px; display: flex; justify-content: space-between; }
+  .listing-title { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 700; color: var(--bark); margin-bottom: 10px; line-height: 1.3; }
+  .listing-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 14px; border-top: 1px solid var(--tag-bg); margin-top: 14px; }
+  .listing-price { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; color: var(--rust); }
+  .listing-orig { font-size: 0.75rem; color: var(--smoke); text-decoration: line-through; margin-left: 6px; font-weight: 300; }
+  .listing-seller { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; color: var(--smoke); }
+  .listing-seller img { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; border: 2px solid var(--sand); display: block; }
+
+  /* SELL BANNER */
+  .sell-banner {
+    margin: 0 80px 64px;
+    position: relative; overflow: hidden;
+    padding: 64px 80px;
+    display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 48px;
+  }
+  .sell-banner-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+  .sell-banner-overlay { position: absolute; inset: 0; background: linear-gradient(to right, rgba(13,61,56,0.97) 40%, rgba(13,61,56,0.82) 100%); z-index: 1; }
+  .sell-banner > *:not(.sell-banner-bg):not(.sell-banner-overlay) { position: relative; z-index: 2; }
+  .sell-title { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem,3vw,2.8rem); font-weight: 900; color: var(--cream); line-height: 1.15; }
+  .sell-title em { font-style: italic; color: #52C234; }
+  .sell-right { display: flex; flex-direction: column; gap: 24px; }
+  .sell-step { display: flex; gap: 20px; align-items: flex-start; }
+  .step-num { font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 900; color: var(--rust); line-height: 1; flex-shrink: 0; width: 40px; }
+  .step-title { font-family: 'DM Sans', sans-serif; font-weight: 500; color: var(--cream); margin-bottom: 4px; font-size: 0.95rem; }
+  .step-desc { font-size: 0.82rem; color: var(--sand); font-weight: 300; line-height: 1.5; }
+  .sell-cta { display: inline-block; background: var(--rust); color: var(--cream); padding: 18px 44px; font-family: 'Space Mono', monospace; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; margin-top: 24px; transition: background 0.2s, transform 0.15s; align-self: flex-start; }
+  .sell-cta:hover { background: var(--moss); transform: translateY(-2px); }
+
+  /* TRUST */
+  .trust { padding: 64px 80px; background: var(--warm-white); display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; }
+  .trust-card { text-align: center; padding: 32px 24px; border: 1px solid var(--sand); background: var(--tag-bg); transition: transform 0.2s; }
+  .trust-card:hover { transform: translateY(-4px); }
+  .trust-icon { font-size: 2.2rem; margin-bottom: 16px; }
+  .trust-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: var(--bark); margin-bottom: 10px; }
+  .trust-desc { font-size: 0.82rem; color: var(--smoke); line-height: 1.6; font-weight: 300; }
+
+  /* FOOTER */
+  footer { background: var(--bark); padding: 64px 80px 32px; color: var(--sand); }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; padding-bottom: 48px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .footer-brand p { font-size: 0.85rem; line-height: 1.7; color: var(--smoke); font-weight: 300; max-width: 280px; margin-top: 16px; }
+  .footer-col h4 { font-family: 'Space Mono', monospace; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--cream); margin-bottom: 20px; }
+  .footer-col a { display: block; color: var(--smoke); text-decoration: none; font-size: 0.85rem; margin-bottom: 10px; transition: color 0.2s; font-weight: 300; }
+  .footer-col a:hover { color: var(--cream); }
+  .footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 28px; }
+  .footer-copy { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--smoke); letter-spacing: 0.06em; }
+  .footer-links { display: flex; gap: 24px; }
+  .footer-links a { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--smoke); text-decoration: none; letter-spacing: 0.06em; text-transform: uppercase; }
+  .footer-links a:hover { color: var(--cream); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+  .hero-left > * { opacity: 0; animation: fadeUp 0.6s ease forwards; }
+  .hero-eyebrow { animation-delay: 0.1s; }
+  .hero-title   { animation-delay: 0.25s; }
+  .hero-sub     { animation-delay: 0.4s; }
+  .hero-actions { animation-delay: 0.55s; }
+  .hero-stats   { animation-delay: 0.7s; }
+
+  @media (max-width: 1024px) {
+    header { padding: 0 24px; }
+    .hero { grid-template-columns: 1fr; min-height: auto; }
+    .hero-left { padding: 48px 32px; }
+    .hero-right { height: 340px; }
+    .categories, .featured { padding-left: 32px; padding-right: 32px; }
+    .sell-banner { margin: 0 32px 48px; grid-template-columns: 1fr; padding: 48px 40px; }
+    .trust { padding: 48px 32px; grid-template-columns: repeat(2, 1fr); }
+    .cat-grid { grid-template-columns: repeat(3, 1fr); }
+    .listings-grid { grid-template-columns: repeat(2, 1fr); }
+    footer { padding: 48px 32px 24px; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <img src="/mnt/user-data/uploads/Logo-6-CeFPmlZU.png" alt="Buy Personal Items"/>
+  </div>
+  <nav>
+    <a href="#">Browse</a>
+    <a href="#">Categories</a>
+    <a href="#">Sellers</a>
+    <a href="#">How It Works</a>
+    <a href="#" class="nav-cta">+ List Item</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <p class="hero-eyebrow">India's Pre-loved Marketplace</p>
+    <h1 class="hero-title">One person's<br><em>old</em> is another's<br>treasure.</h1>
+    <p class="hero-sub">Buy and sell second-hand goods with zero hassle. Furniture, electronics, clothing, collectibles — find incredible deals or declutter your space today.</p>
+    <div class="hero-actions">
+      <a href="#" class="btn-primary">Shop Now</a>
+      <a href="#" class="btn-outline">Sell an Item</a>
+    </div>
+    <div class="hero-stats">
+      <div><div class="stat-num">48K+</div><div class="stat-label">Active Listings</div></div>
+      <div><div class="stat-num">12K+</div><div class="stat-label">Happy Buyers</div></div>
+      <div><div class="stat-num">4.8★</div><div class="stat-label">Avg. Rating</div></div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="collage">
+      <!-- Sofa / Furniture -->
+      <div class="collage-item">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='600'%3E%3Crect fill='%231A6B60' width='400' height='600'/%3E%3Crect x='60' y='280' width='280' height='140' rx='18' fill='%2380CFC4' opacity='.7'/%3E%3Crect x='40' y='310' width='60' height='110' rx='12' fill='%2380CFC4' opacity='.7'/%3E%3Crect x='300' y='310' width='60' height='110' rx='12' fill='%2380CFC4' opacity='.7'/%3E%3Crect x='80' y='400' width='240' height='30' rx='6' fill='%230D3D38' opacity='.5'/%3E%3Ccircle cx='200' cy='220' r='50' fill='%2352C234' opacity='.15'/%3E%3Ctext x='200' y='235' font-size='52' text-anchor='middle' fill='white' opacity='.9'%3E🛋️%3C/text%3E%3Ctext x='200' y='520' font-size='18' text-anchor='middle' fill='white' opacity='.6' font-family='sans-serif'%3EFurniture%3C/text%3E%3C/svg%3E" alt="Furniture"/>
+        <span class="collage-label">Furniture</span>
+        <span class="collage-price">₹4,200</span>
+      </div>
+      <!-- Camera / Electronics -->
+      <div class="collage-item">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%2322857A' width='400' height='300'/%3E%3Crect x='110' y='80' width='180' height='130' rx='14' fill='%230D3D38' opacity='.7'/%3E%3Ccircle cx='200' cy='145' r='44' fill='%23D6F0EC' opacity='.3'/%3E%3Ccircle cx='200' cy='145' r='28' fill='%23D6F0EC' opacity='.4'/%3E%3Crect x='145' y='70' width='55' height='18' rx='6' fill='%230D3D38' opacity='.7'/%3E%3Ctext x='200' y='160' font-size='38' text-anchor='middle' fill='white' opacity='.9'%3E📷%3C/text%3E%3Ctext x='200' y='250' font-size='16' text-anchor='middle' fill='white' opacity='.6' font-family='sans-serif'%3EElectronics%3C/text%3E%3C/svg%3E" alt="Electronics"/>
+        <span class="collage-label">Electronics</span>
+        <span class="collage-price">₹8,500</span>
+      </div>
+      <!-- Fashion -->
+      <div class="collage-item">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%232E9E6B' width='400' height='300'/%3E%3Cellipse cx='200' cy='120' rx='55' ry='65' fill='%23E8F7F5' opacity='.25'/%3E%3Ctext x='200' y='145' font-size='70' text-anchor='middle' fill='white' opacity='.9'%3E👗%3C/text%3E%3Ctext x='200' y='250' font-size='16' text-anchor='middle' fill='white' opacity='.6' font-family='sans-serif'%3EFashion%3C/text%3E%3C/svg%3E" alt="Fashion"/>
+        <span class="collage-label">Fashion</span>
+        <span class="collage-price">₹1,800</span>
+      </div>
+      <!-- Books -->
+      <div class="collage-item">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='600'%3E%3Crect fill='%231D7A70' width='400' height='600'/%3E%3Crect x='100' y='160' width='50' height='200' rx='4' fill='%2352C234' opacity='.7'/%3E%3Crect x='160' y='180' width='50' height='200' rx='4' fill='%2380CFC4' opacity='.7'/%3E%3Crect x='220' y='150' width='50' height='200' rx='4' fill='%23E8F7F5' opacity='.5'/%3E%3Crect x='280' y='170' width='50' height='200' rx='4' fill='%233AAFA9' opacity='.7'/%3E%3Ctext x='200' y='440' font-size='52' text-anchor='middle' fill='white' opacity='.9'%3E📚%3C/text%3E%3Ctext x='200' y='530' font-size='18' text-anchor='middle' fill='white' opacity='.6' font-family='sans-serif'%3EBooks%3C/text%3E%3C/svg%3E" alt="Books"/>
+        <span class="collage-label">Books</span>
+        <span class="collage-price">₹350</span>
+      </div>
+      <!-- Sports / Bicycle -->
+      <div class="collage-item">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%233AAFA9' width='400' height='300'/%3E%3Ccircle cx='135' cy='170' r='70' fill='none' stroke='%23E8F7F5' stroke-width='12' opacity='.7'/%3E%3Ccircle cx='265' cy='170' r='70' fill='none' stroke='%23E8F7F5' stroke-width='12' opacity='.7'/%3E%3Cpolygon points='200,100 135,170 265,170' fill='none' stroke='%23E8F7F5' stroke-width='8' opacity='.7'/%3E%3Ccircle cx='200' cy='100' r='10' fill='%2352C234' opacity='.9'/%3E%3Ctext x='200' y='260' font-size='16' text-anchor='middle' fill='white' opacity='.7' font-family='sans-serif'%3ESports%3C/text%3E%3C/svg%3E" alt="Sports"/>
+        <span class="collage-label">Sports</span>
+        <span class="collage-price">₹6,000</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SEARCH -->
+<div class="search-section">
+  <span class="search-label">Quick Search</span>
+  <div class="search-bar">
+    <input type="text" placeholder="What are you looking for today?"/>
+    <select>
+      <option>All Categories</option>
+      <option>Electronics</option>
+      <option>Furniture</option>
+      <option>Fashion</option>
+      <option>Books</option>
+      <option>Sports</option>
+      <option>Vehicles</option>
+    </select>
+    <button class="search-btn">Search →</button>
+  </div>
+</div>
+
+<!-- TICKER -->
+<div class="ticker-bar">
+  <div class="ticker-track">
+    <span class="ticker-item"><span class="ticker-dot"></span>Sony Camera — ₹12,000 — Just Listed</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Wooden Dining Table — ₹7,500 — Bengaluru</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>iPhone 13 Pro — ₹42,000 — Mumbai</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Vintage Books Set — ₹800 — Delhi</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Trek Mountain Bike — ₹15,000 — Pune</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Leather Sofa — ₹22,000 — Hyderabad</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Canon DSLR — ₹18,500 — Chennai</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Sony Camera — ₹12,000 — Just Listed</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Wooden Dining Table — ₹7,500 — Bengaluru</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>iPhone 13 Pro — ₹42,000 — Mumbai</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Trek Mountain Bike — ₹15,000 — Pune</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Leather Sofa — ₹22,000 — Hyderabad</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Canon DSLR — ₹18,500 — Chennai</span>
+  </div>
+</div>
+
+<!-- CATEGORIES -->
+<section class="categories">
+  <div class="section-header">
+    <h2 class="section-title">Browse by <em>Category</em></h2>
+    <a href="#" class="see-all">All Categories</a>
+  </div>
+  <div class="cat-grid">
+    <div class="cat-card">
+      <div class="cat-img-wrap">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Crect fill='%233AAFA9' width='120' height='120'/%3E%3Ctext x='60' y='75' font-size='52' text-anchor='middle'%3E📱%3C/text%3E%3C/svg%3E" alt="Electronics"/>
+      </div>
+      <div class="cat-name">Electronics</div>
+      <div class="cat-count">9,240 items</div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-img-wrap">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Crect fill='%231A7A5E' width='120' height='120'/%3E%3Ctext x='60' y='75' font-size='52' text-anchor='middle'%3E🛋️%3C/text%3E%3C/svg%3E" alt="Furniture"/>
+      </div>
+      <div class="cat-name">Furniture</div>
+      <div class="cat-count">4,810 items</div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-img-wrap">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Crect fill='%232E9E6B' width='120' height='120'/%3E%3Ctext x='60' y='75' font-size='52' text-anchor='middle'%3E👗%3C/text%3E%3C/svg%3E" alt="Fashion"/>
+      </div>
+      <div class="cat-name">Fashion</div>
+      <div class="cat-count">12,500 items</div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-img-wrap">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Crect fill='%230D3D38' width='120' height='120'/%3E%3Ctext x='60' y='75' font-size='52' text-anchor='middle'%3E📚%3C/text%3E%3C/svg%3E" alt="Books"/>
+      </div>
+      <div class="cat-name">Books</div>
+      <div class="cat-count">6,330 items</div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-img-wrap">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Crect fill='%2352C234' width='120' height='120'/%3E%3Ctext x='60' y='75' font-size='52' text-anchor='middle'%3E🚲%3C/text%3E%3C/svg%3E" alt="Sports"/>
+      </div>
+      <div class="cat-name">Sports</div>
+      <div class="cat-count">3,170 items</div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-img-wrap">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Crect fill='%2380CFC4' width='120' height='120'/%3E%3Ctext x='60' y='75' font-size='52' text-anchor='middle'%3E🏺%3C/text%3E%3C/svg%3E" alt="Collectibles"/>
+      </div>
+      <div class="cat-name">Collectibles</div>
+      <div class="cat-count">2,050 items</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED LISTINGS -->
+<section class="featured">
+  <div class="section-header">
+    <h2 class="section-title">Featured <em>Finds</em></h2>
+    <a href="#" class="see-all">View All</a>
+  </div>
+  <div class="listings-grid">
+
+    <!-- Guitar -->
+    <div class="listing-card">
+      <div class="listing-img">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='280'%3E%3Cdefs%3E%3ClinearGradient id='g1' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%231A6B60'/%3E%3Cstop offset='1' stop-color='%2352C234'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23g1)' width='400' height='280'/%3E%3Ccircle cx='200' cy='130' r='80' fill='%230D3D38' opacity='.25'/%3E%3Ctext x='200' y='155' font-size='90' text-anchor='middle' fill='white' opacity='.92'%3E🎸%3C/text%3E%3Ctext x='200' y='230' font-size='15' text-anchor='middle' fill='white' opacity='.55' font-family='sans-serif'%3EYamaha Acoustic Guitar%3C/text%3E%3C/svg%3E" alt="Guitar"/>
+        <div class="listing-img-overlay"></div>
+        <span class="listing-badge badge-hot">Hot Deal</span>
+        <span class="listing-fav">🤍</span>
+      </div>
+      <div class="listing-body">
+        <div class="listing-meta"><span>Music</span><span>Delhi NCR</span></div>
+        <div class="listing-title">Yamaha Acoustic Guitar — Good Condition</div>
+        <div class="listing-footer">
+          <div><span class="listing-price">₹3,500</span><span class="listing-orig">₹9,000</span></div>
+          <div class="listing-seller">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%232E9E6B'/%3E%3Ccircle cx='20' cy='16' r='8' fill='white' opacity='.85'/%3E%3Cellipse cx='20' cy='34' rx='13' ry='9' fill='white' opacity='.85'/%3E%3C/svg%3E" alt="Rajan"/>
+            Rajan K.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MacBook -->
+    <div class="listing-card">
+      <div class="listing-img">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='280'%3E%3Cdefs%3E%3ClinearGradient id='g2' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%230D3D38'/%3E%3Cstop offset='1' stop-color='%233AAFA9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23g2)' width='400' height='280'/%3E%3Crect x='90' y='70' width='220' height='140' rx='10' fill='%23E8F7F5' opacity='.2'/%3E%3Crect x='100' y='80' width='200' height='120' rx='6' fill='%230D3D38' opacity='.5'/%3E%3Crect x='70' y='210' width='260' height='16' rx='4' fill='%23E8F7F5' opacity='.18'/%3E%3Ctext x='200' y='155' font-size='80' text-anchor='middle' fill='white' opacity='.9'%3E💻%3C/text%3E%3Ctext x='200' y='248' font-size='14' text-anchor='middle' fill='white' opacity='.5' font-family='sans-serif'%3EMacBook Air M1%3C/text%3E%3C/svg%3E" alt="MacBook"/>
+        <div class="listing-img-overlay"></div>
+        <span class="listing-badge badge-new">New</span>
+        <span class="listing-fav">🤍</span>
+      </div>
+      <div class="listing-body">
+        <div class="listing-meta"><span>Electronics</span><span>Bengaluru</span></div>
+        <div class="listing-title">MacBook Air M1, 8GB RAM, 256GB</div>
+        <div class="listing-footer">
+          <div><span class="listing-price">₹62,000</span><span class="listing-orig">₹92,900</span></div>
+          <div class="listing-seller">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%233AAFA9'/%3E%3Ccircle cx='20' cy='16' r='8' fill='white' opacity='.85'/%3E%3Cellipse cx='20' cy='34' rx='13' ry='9' fill='white' opacity='.85'/%3E%3C/svg%3E" alt="Priya"/>
+            Priya S.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chair -->
+    <div class="listing-card">
+      <div class="listing-img">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='280'%3E%3Cdefs%3E%3ClinearGradient id='g3' x1='0' y1='1' x2='1' y2='0'%3E%3Cstop offset='0' stop-color='%231A7A5E'/%3E%3Cstop offset='1' stop-color='%2380CFC4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23g3)' width='400' height='280'/%3E%3Crect x='130' y='80' width='140' height='90' rx='12' fill='%23E8F7F5' opacity='.2'/%3E%3Crect x='120' y='160' width='160' height='16' rx='6' fill='%230D3D38' opacity='.4'/%3E%3Crect x='140' y='176' width='20' height='55' rx='4' fill='%230D3D38' opacity='.35'/%3E%3Crect x='240' y='176' width='20' height='55' rx='4' fill='%230D3D38' opacity='.35'/%3E%3Ctext x='200' y='150' font-size='80' text-anchor='middle' fill='white' opacity='.9'%3E🪑%3C/text%3E%3Ctext x='200' y='248' font-size='14' text-anchor='middle' fill='white' opacity='.5' font-family='sans-serif'%3ETeak Wood Chair%3C/text%3E%3C/svg%3E" alt="Chair"/>
+        <div class="listing-img-overlay"></div>
+        <span class="listing-badge badge-deal">Great Deal</span>
+        <span class="listing-fav">🤍</span>
+      </div>
+      <div class="listing-body">
+        <div class="listing-meta"><span>Furniture</span><span>Mumbai</span></div>
+        <div class="listing-title">Teak Wood Study Chair — Ergonomic</div>
+        <div class="listing-footer">
+          <div><span class="listing-price">₹5,200</span><span class="listing-orig">₹14,000</span></div>
+          <div class="listing-seller">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%2352C234'/%3E%3Ccircle cx='20' cy='16' r='8' fill='white' opacity='.85'/%3E%3Cellipse cx='20' cy='34' rx='13' ry='9' fill='white' opacity='.85'/%3E%3C/svg%3E" alt="Arjun"/>
+            Arjun M.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Camera -->
+    <div class="listing-card">
+      <div class="listing-img">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='280'%3E%3Cdefs%3E%3ClinearGradient id='g4' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23052520'/%3E%3Cstop offset='1' stop-color='%232E9E6B'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23g4)' width='400' height='280'/%3E%3Crect x='100' y='90' width='200' height='130' rx='16' fill='%23333' opacity='.6'/%3E%3Ccircle cx='200' cy='155' r='46' fill='%231A6B60' opacity='.5'/%3E%3Ccircle cx='200' cy='155' r='28' fill='%23D6F0EC' opacity='.25'/%3E%3Crect x='140' y='80' width='60' height='18' rx='6' fill='%23333' opacity='.6'/%3E%3Ctext x='200' y='175' font-size='80' text-anchor='middle' fill='white' opacity='.9'%3E📷%3C/text%3E%3Ctext x='200' y='248' font-size='14' text-anchor='middle' fill='white' opacity='.5' font-family='sans-serif'%3ECanon EOS 1500D%3C/text%3E%3C/svg%3E" alt="Canon Camera"/>
+        <div class="listing-img-overlay"></div>
+        <span class="listing-fav">🤍</span>
+      </div>
+      <div class="listing-body">
+        <div class="listing-meta"><span>Photography</span><span>Pune</span></div>
+        <div class="listing-title">Canon EOS 1500D with 18–55mm Lens Kit</div>
+        <div class="listing-footer">
+          <div><span class="listing-price">₹24,500</span><span class="listing-orig">₹38,000</span></div>
+          <div class="listing-seller">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%231A7A5E'/%3E%3Ccircle cx='20' cy='16' r='8' fill='white' opacity='.85'/%3E%3Cellipse cx='20' cy='34' rx='13' ry='9' fill='white' opacity='.85'/%3E%3C/svg%3E" alt="Neha"/>
+            Neha V.
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SELL BANNER -->
+<div class="sell-banner">
+  <img class="sell-banner-bg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='500'%3E%3Cdefs%3E%3ClinearGradient id='bg' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%230D3D38'/%3E%3Cstop offset='0.5' stop-color='%231A7A5E'/%3E%3Cstop offset='1' stop-color='%2352C234'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23bg)' width='1200' height='500'/%3E%3Ccircle cx='900' cy='100' r='200' fill='%2352C234' opacity='.08'/%3E%3Ccircle cx='1100' cy='400' r='160' fill='%233AAFA9' opacity='.07'/%3E%3Ccircle cx='700' cy='350' r='120' fill='%2352C234' opacity='.05'/%3E%3Ctext x='680' y='310' font-size='340' fill='white' opacity='.04' font-family='sans-serif' font-weight='900'%3E₹%3C/text%3E%3C/svg%3E" alt=""/>
+  <div class="sell-banner-overlay"></div>
+  <div>
+    <h2 class="sell-title">Have something<br>to sell? <em>Make<br>money today.</em></h2>
+    <a href="#" class="sell-cta">Start Selling Free →</a>
+  </div>
+  <div class="sell-right">
+    <div class="sell-step">
+      <span class="step-num">1</span>
+      <div class="step-body">
+        <div class="step-title">Take a photo & list it</div>
+        <div class="step-desc">Snap a few pictures, write a quick description, set your price — takes under 2 minutes.</div>
+      </div>
+    </div>
+    <div class="sell-step">
+      <span class="step-num">2</span>
+      <div class="step-body">
+        <div class="step-title">Connect with buyers</div>
+        <div class="step-desc">Interested buyers reach out directly. Chat safely within the platform.</div>
+      </div>
+    </div>
+    <div class="sell-step">
+      <span class="step-num">3</span>
+      <div class="step-body">
+        <div class="step-title">Get paid & hand over</div>
+        <div class="step-desc">Agree on payment method, meet locally or ship — your choice.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TRUST -->
+<section class="trust">
+  <div class="trust-card"><div class="trust-icon">🔒</div><div class="trust-title">Verified Sellers</div><div class="trust-desc">Every seller goes through phone & ID verification so you know who you're dealing with.</div></div>
+  <div class="trust-card"><div class="trust-icon">💬</div><div class="trust-title">In-App Chat</div><div class="trust-desc">Negotiate and communicate safely without ever sharing personal contact details.</div></div>
+  <div class="trust-card"><div class="trust-icon">⭐</div><div class="trust-title">Ratings & Reviews</div><div class="trust-desc">Buyer and seller ratings after every transaction keep the community trustworthy.</div></div>
+  <div class="trust-card"><div class="trust-icon">🛡️</div><div class="trust-title">Buyer Protection</div><div class="trust-desc">Dispute resolution and buyer protection program on eligible transactions.</div></div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo"><img src="/mnt/user-data/uploads/Logo-6-CeFPmlZU.png" alt="Buy Personal Items"/></div>
+      <p>India's most trusted second-hand marketplace. Buy smart. Sell easy. Live sustainably.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Buying</h4>
+      <a href="#">Browse Listings</a><a href="#">Categories</a><a href="#">Buyer Protection</a><a href="#">How to Buy</a>
+    </div>
+    <div class="footer-col">
+      <h4>Selling</h4>
+      <a href="#">Create Listing</a><a href="#">Seller Guide</a><a href="#">Pricing & Fees</a><a href="#">Seller Dashboard</a>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <a href="#">Help Centre</a><a href="#">Safety Tips</a><a href="#">Contact Us</a><a href="#">Report an Item</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2026 Buy Personal Items — All rights reserved</span>
+    <div class="footer-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Cookies</a></div>
+  </div>
+</footer>
+
+</body>
+</html>

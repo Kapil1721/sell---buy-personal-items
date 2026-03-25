@@ -22,7 +22,7 @@ axiosInstance.interceptors.response.use(
     }
     if (error.response && error.response.status === 401) {
       localStorage.removeItem("token");
-      window.location.href = "/login-register?tab=login"; // redirect to login page
+      window.location.href = "/login"; // redirect to login page
     }
     return Promise.reject(error);
   }

@@ -1,12 +1,6 @@
-// const isProd =
-//   import.meta.env.MODE === "development"
-//     ? "https://sell-personal-items-server.vercel.app/api/v1"
-//     : "https://sell-personal-items-server.vercel.app/api/v1";
+import { API_URL, getBuyRoute, getSellRoute } from "../config/appConfig";
 
-const isProd = "https://sell-buy-personal-items.vercel.app/api/v1";
-// const isProd = "http://localhost:3000/api/v1";
-
-export const BASE_URL = isProd;
+export const BASE_URL = API_URL;
 
 // AUTH ENDPOINTS
 export const endpoints = {
@@ -75,4 +69,9 @@ export const purchaseRequestEndpoints = {
   getRequest: BASE_URL + "/purchase-requests",
   statusUpdate: BASE_URL + "/purchase-requests",
   getSingleRequest: BASE_URL + "/purchase-requests",
+};
+
+export const appRedirectEndpoints = {
+  SELL_MEMBERSHIPS_URL: getSellRoute("/memberships"),
+  BUY_QUALIFIED_ITEMS_URL: getBuyRoute("/qualified-items-list"),
 };

@@ -13,7 +13,7 @@ function Aboutus() {
                     <h1 className="text-3xl font-bold text-[#374B5C]">Join Us- Explore Only The Best</h1>
                     <p className="text-[#73818C] leading-8">DCCCapital Group LLC is a secure, password-protected platform for selling and buying used products. We help people buy and sell clothes, find shoes, accessories, jewelry, books, sports apparel, and much more. With our focus on convenience, reliability, and customer satisfaction, we're dedicated to providing an exceptional shopping experience for our customers.</p>
                     <div className='post_product_button mt-5'>
-                        <Link to={'/login-register'} className='bg-btn-primay px-3 py-2 rounded-md flex items-center justify-between w-full gap-4 button'>
+                        <Link to={'/login'} className='bg-btn-primay px-3 py-2 rounded-md flex items-center justify-between w-full gap-4 button'>
                             <span className='text-nowrap text-[#374B5C] mr-6'>Explore products</span>
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"

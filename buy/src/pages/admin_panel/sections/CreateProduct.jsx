@@ -11,6 +11,7 @@ import { AuthContext } from '../../../auth/AuthContext'
 
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, RadioGroup, Radio, Tabs, Tab, Card, CardBody } from "@nextui-org/react";
 import { CREATEMEMBERSHIP, GETPLANS } from '../../../services/operations/membershipApi'
+import { appRedirectEndpoints } from '../../../services/api';
 
 
 
@@ -143,7 +144,7 @@ function CreateProduct() {
       }
     } else {
       // handleOpen()
-      window.location.href = "/memberships";
+      window.location.href = appRedirectEndpoints.SELL_MEMBERSHIPS_URL;
     }
   }
 
@@ -490,3 +491,4 @@ export const CheckoutPage = ({ plans, PaymentType, handleToggle, setPaymentType 
     </div>
   )
 }
+

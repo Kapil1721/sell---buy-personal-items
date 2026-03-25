@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
 import logo from '../assets/Logo-6.png'
-import { AddIcon, AdminIcon, LikeIcon, LoginIcon, MessageIcon, ModerateIcon, OrdersIcon, SettingIcon } from './Icons'
+import { AdminIcon, LoginIcon, SettingIcon } from './Icons'
 import { LOGOUTUSER } from '../services/operations/authApi';
 import { toast } from 'sonner';
 import React, { useContext, useState } from 'react';
@@ -35,7 +35,7 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
         { icons: <SettingIcon />, name: 'Settings', link: '/panel/settings' },
     ]*/
 
-    let UserNavLinkList;
+    let UserNavLinkList = [];
     if (user) {
         UserNavLinkList = [
             // { icons: <AddIcon />, name: 'Add New', link: '/panel/create' },
@@ -46,6 +46,8 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
             { icons: <SettingIcon />, name: 'Settings', link: '/panel/settings' },
         ]
     }
+
+    const accountNavLinks = user?.role === 'USER' ? UserNavLinkList : [];
 
     return (
         <header className="bg-white py-4 flex items-center box-border w-full mx-auto sticky top-0 z-30 md:px-4 shadow-xl">
@@ -143,7 +145,7 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
                                     <p className='text-nowrap font-medium py-4 text-primary'>{user?.username}</p>
                                     <div className='hidden group-hover:block bg-transparent transition ease-in-out  absolute top-12 cursor-pointer z-10  py-3'>
                                         <ul className='py-2 mt-4  bg-white shadow-lg min-w-60 flex flex-col justify-between items-start'>
-                                            {[user?.role === 'USER' && [...UserNavLinkList]][0].map((list, i) => <li key={i} className='py-2 w-full hover:bg-[#f8fafd] text-nowrap flex justify-between items-start '>
+                                            {accountNavLinks.map((list, i) => <li key={i} className='py-2 w-full hover:bg-[#f8fafd] text-nowrap flex justify-between items-start '>
                                                 <Link to={list.link} className='px-10 w-full flex items-start gap-2'>
                                                     {list.icons}
                                                     <span className='text-sm font-medium text-primary'>{list.name}</span>
@@ -229,7 +231,7 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
                                     {/* <!-- Sidebar Menu --> */}
                                     <nav className="  ">
                                         <ul className='py-2   bg-white shadow-lg min-w-60 flex flex-col justify-between items-start'>
-                                            {[user?.role === 'USER' && [...UserNavLinkList]][0].map((list, i) => <li key={i} className='py-2 w-full hover:bg-[#f8fafd] text-nowrap flex justify-between items-start '>
+                                            {accountNavLinks.map((list, i) => <li key={i} className='py-2 w-full hover:bg-[#f8fafd] text-nowrap flex justify-between items-start '>
                                                 <Link to={list.link} className='px-10 w-full flex items-start gap-2'>
                                                     {list.icons}
                                                     <span className='text-sm font-medium text-primary'>{list.name}</span>
@@ -256,5 +258,4 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
 }
 
 export default React.memo(Navbar)
-
 

@@ -153,7 +153,7 @@ function Banner() {
                             <p className='lg:text-3xl lg:leading-10 text-white font-medium '>Join our group of buyers and sellers of some of the highest-quality merchandise, many of which have never been used. You will surely find great deals for yourself, your family, and your friends.</p>
                         </div>
                         <div className='max-w-3xl mx-auto text-center mt-12 lg:mt-20 px-10 lg:px-0 '>
-                            {!user && <Link to={'/login-register?tab=login'} className='bg-secondary px-8 rounded text-white font-bold py-5 ring-2 ring-secondary hover:ring-white'>Login</Link>}
+                            {!user && <Link to={'/login'} className='bg-secondary px-8 rounded text-white font-bold py-5 ring-2 ring-secondary hover:ring-white'>Login</Link>}
                             <a href='#subcribe' className='px-8 rounded font-bold py-5 ring-2 ring-secondary text-secondary ml-4'>Subscribe</a>
                         </div>
                     </div>

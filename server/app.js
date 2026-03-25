@@ -54,7 +54,9 @@ app.use(
       "http://localhost:5174",
       "https://buy.sellpersonalitems.com",
       "https://sell.sellpersonalitems.com",
-      "https://sellpersonalitems.com"
+      "https://sellpersonalitems.com",
+      "https://www.buy.sellpersonalitems.com",
+      "https://www.sell.sellpersonalitems.com",
     ],
     credentials: true,
   })

@@ -1,4 +1,5 @@
 import React from "react"
+import { appRedirectEndpoints } from "../services/api";
 
 export const Home = React.lazy(() => import("../pages/home/Home"))
 export const About = React.lazy(() => import("../pages/about/About"))
@@ -41,7 +42,7 @@ export const Layout = React.lazy(() => import("../layouts/Layout"))
 export const DonationForm = React.lazy(() => import("../pages/Donation/sections/DonationForm"))
 export const DonateMoney = React.lazy(() => import("../pages/Donation/sections/DonateMoney"));
 export const ExternalRedirect = () => {
-    window.location.href = "https://www.sellpersonalitems.com/memberships";
+    window.location.href = appRedirectEndpoints.BUY_QUALIFIED_ITEMS_URL;
     return null;
 };
 

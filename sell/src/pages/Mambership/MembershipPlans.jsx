@@ -3,7 +3,6 @@ import { GETMEMBERSHIP, GETPLANS } from '../../services/operations/membershipApi
 import ErrorUi from '../../components/ErrorUi';
 import { Link } from 'react-router-dom';
 import { CheckIcon } from '../../components/Icons';
-
 function MembershipPlans() {
     const { isPending, error, data } = useQuery({
         queryKey: ['getplans'],
@@ -20,7 +19,7 @@ function MembershipPlans() {
         return <LoadingUI />
     }
 
-    if (error || errorMembership) {
+    if (error) {
         return <ErrorUi />
     }
 

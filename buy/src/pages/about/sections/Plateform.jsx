@@ -11,7 +11,7 @@ function Plateform() {
                     <h1 className="text-3xl font-bold text-[#374B5C]">A Little More About Our Platform</h1>
                     <p className="text-[#73818C] leading-8">DCCCapital Group LLC connects you to people and closets filled with unique styles, hard-to-find pieces, and endless items to discover. Get started today and join our vibrant & diverse community, who make shopping and selling simple, social, and accessible!</p>
                     <div className='post_product_button mt-5'>
-                        <Link to={'/login-register'} className='bg-btn-primay px-3 py-2 rounded-md flex items-center justify-between w-full gap-4 button'>
+                        <Link to={'/login'} className='bg-btn-primay px-3 py-2 rounded-md flex items-center justify-between w-full gap-4 button'>
                             <span className='text-nowrap text-[#374B5C] mr-6'>Explore products</span>
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"

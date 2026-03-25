@@ -172,10 +172,12 @@ export const userLogin = CatchAsync(async (req, res, next) => {
   // If user not found, return error
   if (!user) {
     res.clearCookie("token");
+    console.log("User not found");
     return res.status(403).json({ message: "Invalid credentials" });
   }
   if (user.role === "ADMIN") {
     res.clearCookie("token");
+    console.log("User not found 2");
     return res.status(403).json({ message: "Invalid credentials" });
   }
 
@@ -183,6 +185,7 @@ export const userLogin = CatchAsync(async (req, res, next) => {
   const passwordMatch = await bcrypt.compare(password, user.password);
   if (!passwordMatch) {
     res.clearCookie("token");
+    console.log("Password does not match");
     return res.status(403).json({ message: "Invalid credentials" });
   }
 

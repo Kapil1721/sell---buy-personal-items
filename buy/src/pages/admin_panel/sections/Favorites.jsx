@@ -78,7 +78,7 @@ function Favorites() {
 
   const OpenEmailModal = (product) => {
     if (!user) {
-      return navigate('/login-register?tab=login', { state: { to: location.pathname, for: "buyer" } });
+      return navigate('/login', { state: { to: location.pathname, for: "buyer" } });
     }
     console.log(user.id, product.userId);
     if (user.id === product.userId) {

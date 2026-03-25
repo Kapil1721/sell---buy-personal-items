@@ -15,10 +15,16 @@ export const getProductCategories = CatchAsync(async (req, res) => {
 
 export const getAllProducts = CatchAsync(async (req, res) => {
   // const { id } = req.user;
-  const { page, limit, sort, type, category } = req.query;
+  const { page, limit, sort, order, type, category } = req.query;
   const { userId } = req.params;
   console.log(type, userId);
-  const order = sort ? (sort === "Oldest" ? "asc" : "desc") : "desc";
+
+  const pageNumber = Number.parseInt(page, 10) || 1;
+  const pageSize = Number.parseInt(limit, 10) || undefined;
+
+  const normalizedSort = (sort || "").toString().trim().toLowerCase();
+  const normalizedOrder =
+    (order || "").toString().trim().toLowerCase() === "asc" ? "asc" : "desc";
 
   // const pageNum = parseInt(page) || 1;
   // const size = parseInt(pageSize) || 10;
@@ -65,6 +71,28 @@ export const getAllProducts = CatchAsync(async (req, res) => {
     };
   }
 
+  let orderBy = { createdAt: "desc" };
+
+  if (normalizedSort === "views") {
+    orderBy = {
+      views: {
+        _count: normalizedOrder,
+      },
+    };
+  } else if (
+    normalizedSort === "oldest" ||
+    normalizedSort === "date listed: oldest"
+  ) {
+    orderBy = { createdAt: "asc" };
+  } else if (
+    normalizedSort === "newest" ||
+    normalizedSort === "date listed: newest" ||
+    normalizedSort === "most relevant" ||
+    !normalizedSort
+  ) {
+    orderBy = { createdAt: normalizedOrder };
+  }
+
   const products = await prisma.listedItem.findMany({
     where: whereClause,
     include: {
@@ -83,9 +111,13 @@ export const getAllProducts = CatchAsync(async (req, res) => {
       likes: likesWhereClause,
       category: true,
     },
-    orderBy: {
-      createdAt: order,
-    },
+    orderBy,
+    ...(pageSize
+      ? {
+          take: pageSize,
+          skip: (pageNumber - 1) * pageSize,
+        }
+      : {}),
   });
 
   if (!products) {

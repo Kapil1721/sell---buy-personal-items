@@ -1,4 +1,5 @@
 import { endpoints } from "../api";
+import { API_URL } from "../../config/appConfig";
 import responseHanlder from "../apiUtils";
 // authService.js
 import axios from "axios";
@@ -42,11 +43,6 @@ export const VALIDATE_OTP = async (bodyData) => {
 export const CHANGE_PASSWORD = async (bodyData) => {
   return await responseHanlder("POST", change_password, bodyData, true, null);
 };
-
-const API_URL =
-  import.meta.env.MODE === "development"
-    ? "http://localhost:8000/api/v1"
-    : "https://sell-personal-items-server.vercel.app/api/v1";
 
 const register = async (email, password) => {
   const response = await axios.post(`${API_URL}/register`, { email, password });

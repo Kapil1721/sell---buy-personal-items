@@ -30,7 +30,7 @@ const ChangePassword = () => {
         let res = await CHANGE_PASSWORD({ ...passwordData, email: location.state.email });
         if (res?.status) {
             toast.success(res.message)
-            navigate('/login-register?tab=login')
+            navigate('/login')
         }
     };
 

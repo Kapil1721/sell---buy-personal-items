@@ -40,7 +40,4 @@ export const ChangePassword = React.lazy(() => import("../pages/login_signup/Cha
 export const Layout = React.lazy(() => import("../layouts/Layout"))
 export const DonationForm = React.lazy(() => import("../pages/Donation/sections/DonationForm"))
 export const DonateMoney = React.lazy(() => import("../pages/Donation/sections/DonateMoney"));
-export const ExternalRedirect = () => {
-    window.location.href = "http://localhost:5173/memberships";
-    return null;
-};
+

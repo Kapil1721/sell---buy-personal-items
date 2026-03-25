@@ -27,5 +27,13 @@ export const CREATEMEMBERSHIP = async (bodyData) => {
 };
 
 export const GETMEMBERSHIP = async (bodyData) => {
-  return await responseHanlder("GET", GET_MEMBERSHIP_API, bodyData, false, null);
+  return await responseHanlder(
+    "GET",
+    GET_MEMBERSHIP_API,
+    bodyData,
+    false,
+    null,
+    null,
+    { suppressUnauthorizedToast: true }
+  );
 };

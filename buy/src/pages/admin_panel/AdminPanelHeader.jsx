@@ -67,8 +67,6 @@ function AdminPanelHeader() {
     if (user.seller && user.seller && user.seller) {
         UserNavLinkList = [
             { name: 'Add New', link: '/panel/create' },
-            { name: 'Moderation', link: '/panel/moderation' },
-            { name: 'Orders', link: '/panel/orders' },
             { name: 'My Products', link: '/panel/my-products' },
             { name: 'Favorites', link: '/panel/favorites' },
             { name: 'Messages', link: '/panel/messages' },

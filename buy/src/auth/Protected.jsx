@@ -11,7 +11,7 @@ const Protected = ({ children }) => {
     // });
 
 
-    return user ? children : <Navigate to="/login-register?tab=login" state={{ from: location }} />;
+    return user ? children : <Navigate to="/login" state={{ from: location }} />;
 };
 
 export default Protected;

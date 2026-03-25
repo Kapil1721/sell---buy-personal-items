@@ -31,6 +31,7 @@ function Products() {
     }, [URLSearchParams]);
 
 
+    console.log(searchParams, "searchParams")
     const { isPending, error, data } = useQuery({
         queryKey: ['GET_PRODUCTS', searchParams],
         queryFn: async () => {

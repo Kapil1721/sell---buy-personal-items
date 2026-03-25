@@ -7,8 +7,10 @@ const responseHanlder = async (
   body,
   loading = false,
   params,
-  header
+  header,
+  options = {}
 ) => {
+  const { suppressUnauthorizedToast = false } = options;
   // let processing;
   if (loading) {
     toast.loading("loading...");
@@ -25,16 +27,17 @@ const responseHanlder = async (
     return response.data;
   } catch (error) {
     if (error.response) {
+      const isAuthError =
+        error.response.status === 401 || error.response.status === 403;
+
       if (error.response.data.message) {
-        if (error.response.status === 401) {
-          if (error.response.data.message) {
+        if (isAuthError) {
+          if (!suppressUnauthorizedToast) {
             toast.error(error.response.data.message);
           }
           localStorage.removeItem("_sell_Token");
         } else {
-          if (error.response.data.message) {
-            toast.error(error.response.data.message);
-          }
+          toast.error(error.response.data.message);
         }
       }
     } else {

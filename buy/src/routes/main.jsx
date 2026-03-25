@@ -1,3 +1,4 @@
+import { appRedirectEndpoints } from "../services/api";
 import {
     Home,
     About,
@@ -38,11 +39,13 @@ import {
     ChangePassword,
     Layout,
     DonationForm,
-    DonateMoney,
-    ExternalRedirect
+    DonateMoney
 } from "./AllComponents";
 
-
+const MembershipRedirect = () => {
+    window.location.href = appRedirectEndpoints.SELL_MEMBERSHIPS_URL;
+    return null;
+};
 
 const routes = [
     {
@@ -124,12 +127,12 @@ const routes = [
                 element: <RefundPolicy />,
             },
             {
-                path: "login-register",
+                path: "login",
                 element: <Login_Signup />,
             },
             {
                 path: "memberships",
-                element: <ExternalRedirect />,
+                element: <MembershipRedirect />,
                 // element: <Membership />,
                 /*children: [
                     {

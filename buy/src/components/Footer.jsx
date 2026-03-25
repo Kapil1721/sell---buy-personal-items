@@ -10,7 +10,7 @@ function Footer() {
                     <div className='flex flex-col lg:w-[40%] gap-2 mx-auto'>
                         <div className='flex flex-col justify-start items-start gap-2 lg:px-4'>
                             <Link className='relative'>
-                                <img src={logoImage} alt="" />
+                                <img src={logoImage} alt="" className='w-40' />
                             </Link>
                         </div>
                         <div className='flex flex-col justify-start items-start lg:px-6 gap-4 mt-4'>
