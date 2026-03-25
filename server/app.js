@@ -39,6 +39,19 @@ const cookieSecret = process.env.COOKIE_SECRET || "default_secret";
 const isDevelopment = process.env.DEV === "Yes";
 const __dirname = path.resolve();
 
+const allowedOrigins = [
+  "https://thepreview.pro",
+  "https://sellpersonalitems.thepreview.pro",
+  "https://sellpersonalitem.vercel.app",
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "https://buy.sellpersonalitems.com",
+  "https://sell.sellpersonalitems.com",
+  "https://sellpersonalitems.com",
+  "https://www.buy.sellpersonalitems.com",
+  "https://www.sell.sellpersonalitems.com",
+];
+
 // Middleware for serving static files
 app.use(express.static(`${__dirname}`));
 
@@ -46,18 +59,16 @@ app.use(express.static(`${__dirname}`));
 app.use(helmet());
 app.use(
   cors({
-    origin: [
-      "https://thepreview.pro",
-      "https://sellpersonalitems.thepreview.pro",
-      "https://sellpersonalitem.vercel.app",
-      "http://localhost:5173",
-      "http://localhost:5174",
-      "https://buy.sellpersonalitems.com",
-      "https://sell.sellpersonalitems.com",
-      "https://sellpersonalitems.com",
-      "https://www.buy.sellpersonalitems.com",
-      "https://www.sell.sellpersonalitems.com",
-    ],
+    origin: function (origin, callback) {
+      // allow requests with no origin (like Postman)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        callback(null, origin); // ✅ reflect correct origin
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
