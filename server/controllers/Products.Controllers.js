@@ -15,7 +15,7 @@ export const getProductCategories = CatchAsync(async (req, res) => {
 
 export const getAllProducts = CatchAsync(async (req, res) => {
   // const { id } = req.user;
-  const { page, limit, sort, order, type, category } = req.query;
+  const { page, limit, sort, order, type, category, searchQuery } = req.query;
   const { userId } = req.params;
   console.log(type, userId);
 
@@ -58,6 +58,16 @@ export const getAllProducts = CatchAsync(async (req, res) => {
 
   if (category && category.toLowerCase() !== "any") {
     whereClause = { ...whereClause, categoryId: parseInt(category) };
+  }
+
+  if (searchQuery?.trim()) {
+    whereClause = {
+      ...whereClause,
+      name: {
+        contains: searchQuery.trim(),
+        mode: "insensitive",
+      },
+    };
   }
   let likesWhereClause = true;
   if (userId) {

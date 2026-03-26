@@ -3,12 +3,7 @@ import HomeAndGarden from "../../../assets/Home-And-Garden.png"
 import { useQuery } from '@tanstack/react-query'
 import { GET_PRODUCT_CATEGORY } from '../../../services/operations/productsApi'
 
-const Categories = () => {
-
-    const { isPending, error, data } = useQuery({
-        queryKey: ['GET_PRODUCT_CATEGORY',],
-        queryFn: async () => await GET_PRODUCT_CATEGORY()
-    });
+const Categories = ({ isPending, data }) => {
 
     return (
         <div className='w-full banner relative flex flex-col justify-center items-center '>
@@ -18,7 +13,7 @@ const Categories = () => {
                 <div className='bg-transparent grid grid-cols-2 p-4 gap-2 md:grid-cols-4 lg:grid-cols-6'>
                     {isPending ? [...Array(12)].map((list, i) =>
                         <div key={i} className='font-semibold py-1 cursor-pointer min-h-24 min-w-36 animate-pulse bg-loader ring-2 ring-primary'></div>) :
-                    data.productCategories?.map((list, i) =>
+                    data?.map((list, i) =>
                         <Link key={i} to={'/products?type=sale&category=' + list.id} className='border-2 transition ease-in-out relative hover:bg-btn-primay group border-white rounded-md flex items-center justify-center flex-col text-white py-2 px-4 gap-2'>
                             <div>
                                 <img className='' height={45} width={45} src={HomeAndGarden} alt='helper' />
