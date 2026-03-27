@@ -22,57 +22,22 @@ function AdminPanelHeader() {
     ];
     let UserNavLinkList;
 
-    if (user.seller) {
+    if (user) {
         UserNavLinkList = [
             { name: 'Add New', link: '/panel/create' },
             { name: 'My Products', link: '/panel/my-products' },
             { name: 'Favorites', link: '/panel/favorites' },
             { name: 'Messages', link: '/panel/messages' },
-            { name: 'My Orders', link: '/panel/my-orders' },
-            { name: 'Settings', link: '/panel/settings' },
-        ]
-    }
-    if (user.donor) {
-        UserNavLinkList = [
-            { name: 'Add New', link: '/panel/create' },
-            { name: 'My Products', link: '/panel/my-products' },
-            { name: 'Favorites', link: '/panel/favorites' },
-            { name: 'Messages', link: '/panel/messages' },
-            { name: 'My Orders', link: '/panel/my-orders' },
-            { name: 'Settings', link: '/panel/settings' },
-        ]
-    }
-    if (user.buyer) {
-        UserNavLinkList = [
-            { name: 'Add New', link: '/panel/create' },
-            { name: 'My Products', link: '/panel/my-products' },
-            { name: 'Favorites', link: '/panel/favorites' },
-            { name: 'Messages', link: '/panel/messages' },
-            { name: 'My Orders', link: '/panel/my-orders' },
-            { name: 'Settings', link: '/panel/settings' },
-        ]
-    }
-    if (user.buyer && user.donor) {
-        UserNavLinkList = [
-            { name: 'Add New', link: '/panel/create' },
-            { name: 'My Products', link: '/panel/my-products' },
-            { name: 'Favorites', link: '/panel/favorites' },
-            { name: 'Messages', link: '/panel/messages' },
-            { name: 'My Orders', link: '/panel/my-orders' },
-            { name: 'Settings', link: '/panel/settings' },
-        ]
-    }
-
-
-    if (user.seller && user.seller && user.seller) {
-        UserNavLinkList = [
-            { name: 'Add New', link: '/panel/create' },
-            { name: 'My Products', link: '/panel/my-products' },
-            { name: 'Favorites', link: '/panel/favorites' },
-            { name: 'Messages', link: '/panel/messages' },
-            { name: 'My Orders', link: '/panel/my-orders' },
             { name: 'Settings', link: '/panel/settings' },
         ];
+
+        if (user.seller || user.donor) {
+            UserNavLinkList.splice(3, 0, { name: 'Orders', link: '/panel/orders' });
+        }
+
+        if (user.buyer) {
+            UserNavLinkList.splice(UserNavLinkList.length - 1, 0, { name: 'My Orders', link: '/panel/my-orders' });
+        }
     }
 
 

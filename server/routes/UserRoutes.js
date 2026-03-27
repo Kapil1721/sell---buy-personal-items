@@ -50,6 +50,7 @@ import {
   getFavoriteProducts,
   getProductCategories,
   getSingleProduct,
+  postReview,
   postLike,
   promoteProduct,
   RemoveFromFavorite,
@@ -159,6 +160,7 @@ router
 
 router.route("/products/:userId?").get(getAllProducts);
 router.route("/like").post(authMiddleware, postLike);
+router.route("/product/:id/review").post(postReview);
 router.route("/promote").post(authMiddleware, promoteProduct);
 router.route("/promote").get(authMiddleware, promoteProduct);
 router

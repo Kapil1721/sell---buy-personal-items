@@ -3,7 +3,7 @@ import logo from '../assets/Logo-6.png'
 import { AddIcon, AdminIcon, LikeIcon, LoginIcon, MessageIcon, ModerateIcon, OrdersIcon, SettingIcon } from './Icons'
 import { LOGOUTUSER } from '../services/operations/authApi';
 import { toast } from 'sonner';
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { AuthContext } from '../auth/AuthContext';
 import ClickOutside from './Clickoutside';
 import { appRedirectEndpoints } from '../services/api';
@@ -17,6 +17,7 @@ import heroAccentImage from '../assets/Love-At-First-Sale.jpg'
 const DesktopSearchBar = ({ user }) => {
     const [searchQuery, setSearchQuery] = useState('')
     const [searchCategory, setSearchCategory] = useState('any')
+    const [isSearchCardVisible, setIsSearchCardVisible] = useState(false)
     const debouncedSearchQuery = useDebounce(searchQuery.trim(), 300)
     const isSearchActive = debouncedSearchQuery.length > 0 || searchCategory !== 'any'
 
@@ -59,6 +60,10 @@ const DesktopSearchBar = ({ user }) => {
 
     const liveProducts = liveSearchData?.products || []
 
+    useEffect(() => {
+        setIsSearchCardVisible(isSearchActive)
+    }, [isSearchActive, debouncedSearchQuery, searchCategory])
+
     return (
         <div className="relative hidden xl:block flex-1 max-w-4xl mr-3">
             <div className="overflow-hidden rounded-2xl border border-[#a8c8e7] transition focus-within:border-[#1e62a4]">
@@ -78,10 +83,12 @@ const DesktopSearchBar = ({ user }) => {
                             <button
                                 type="button"
                                 onClick={() => setSearchQuery('')}
-                                className="mr-3 inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#c9dced] bg-white text-[#5f7890] transition hover:border-[#1e62a4] hover:text-[#1e62a4]"
+                                className="mr-3 inline-flex h-6 px-1 items-center justify-center rounded-full border border-[#c9dced] bg-white text-[#5f7890] transition hover:border-[#1e62a4] hover:text-[#1e62a4]"
                                 aria-label="Clear search"
                             >
-                                ×
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" className="shrink-0 text-[#1e62a4]">
+                                    <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                </svg>
                             </button>
                         )}
                     </div>
@@ -103,7 +110,7 @@ const DesktopSearchBar = ({ user }) => {
                 </div>
             </div>
 
-            {isSearchActive && (
+            {isSearchActive && isSearchCardVisible && (
                 <div className="absolute left-0 right-0 top-[calc(100%+14px)] overflow-hidden rounded-2xl border border-[#d8e6f2] bg-white shadow-[0_24px_60px_rgba(24,48,73,0.18)]">
                     <div className="flex items-center justify-between border-b border-[#e6edf5] bg-[#f7fbff] px-5 py-3">
                         <div>
@@ -112,11 +119,23 @@ const DesktopSearchBar = ({ user }) => {
                                 {searchQuery.trim() ? `Showing matches for "${searchQuery.trim()}"` : 'Browse matching products by category'}
                             </p>
                         </div>
-                        {!isSearchPending && (
-                            <span className="rounded-full bg-[#eaf4ff] px-3 py-1 text-xs font-medium text-[#1e62a4]">
-                                {liveProducts.length} items
-                            </span>
-                        )}
+                        <div className="flex items-center gap-2">
+                            {!isSearchPending && (
+                                <span className="rounded-full bg-[#eaf4ff] px-3 py-1 text-xs font-medium text-[#1e62a4]">
+                                    {liveProducts.length} items
+                                </span>
+                            )}
+                            <button
+                                type="button"
+                                onClick={() => setIsSearchCardVisible(false)}
+                                className="inline-flex h-6 px-1 items-center justify-center rounded-full border border-[#d8e6f2] bg-white text-[#5f7890] transition hover:border-[#1e62a4] hover:text-[#1e62a4]"
+                                aria-label="Close search results"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" className="shrink-0 text-[#1e62a4]">
+                                    <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                     {isSearchPending ? (
                         <div className="px-5 py-5 text-sm text-[#556e82]">Searching products...</div>
@@ -126,6 +145,7 @@ const DesktopSearchBar = ({ user }) => {
                                 <Link
                                     key={product.post_id}
                                     to={`/products/${product.slug}`}
+                                    onClick={() => setIsSearchCardVisible(false)}
                                     className="flex items-center gap-4 px-4 py-3 transition hover:bg-[#f4f8fc]"
                                 >
                                     <img
@@ -147,6 +167,7 @@ const DesktopSearchBar = ({ user }) => {
                                 <p className="text-xs text-[#6d8396]">Need a broader search?</p>
                                 <Link
                                     to={searchHref}
+                                    onClick={() => setIsSearchCardVisible(false)}
                                     className="text-xs font-semibold uppercase tracking-[0.12em] text-[#1e62a4] transition hover:text-[#174d80]"
                                 >
                                     View all →
@@ -199,9 +220,17 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
             { icons: <OrdersIcon />, name: 'My Products', link: '/panel/my-products' },
             { icons: <LikeIcon />, name: 'Favorites', link: '/panel/favorites' },
             { icons: <MessageIcon />, name: 'Messages', link: '/panel/messages' },
-            { icons: <OrdersIcon />, name: 'My Orders', link: '/panel/my-orders' },
             { icons: <SettingIcon />, name: 'Settings', link: '/panel/settings' },
         ]
+        console.log('user', user);
+
+        if (user.seller || user.donor) {
+            UserNavLinkList.splice(3, 0, { icons: <OrdersIcon />, name: 'Orders', link: '/panel/orders' })
+        }
+
+        if (user.buyer) {
+            UserNavLinkList.splice(UserNavLinkList.length - 1, 0, { icons: <OrdersIcon />, name: 'My Orders', link: '/panel/my-orders' })
+        }
     }
 
     return (

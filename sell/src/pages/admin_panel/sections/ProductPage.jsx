@@ -250,7 +250,7 @@ function ProductPage() {
                                         <div className=''>
                                             <p className='text-primary font-semibold'>{product.user.username}</p>
                                             <p className='text-primary font-medium text-sm'>{"Member since: 3 weeks"}</p>
-                                            <p to={`/user/${product.user.username}`} className='text-light font-medium text-sm flex items-center justify-start gap-2 '> <span className=' size-3 p-1 rounded-full bg-light'></span>User is offline</p>
+                                            {/* <p to={`/user/${product.user.username}`} className='text-light font-medium text-sm flex items-center justify-start gap-2 '> <span className=' size-3 p-1 rounded-full bg-light'></span>User is offline</p> */}
                                             <Link
                                                 // to={`/user/${product.user.username}`} 
                                                 className='text-helper mt-3 font-medium text-lg flex items-center justify-start gap-2 underline underline-offset-2'>See all ads</Link>

@@ -20,14 +20,45 @@ export const signToken = (user) => {
   });
 };
 
+const getCookieOptions = () => {
+  const isProduction = process.env.NODE_ENV === "production";
+
+  return {
+    httpOnly: true,
+    sameSite: isProduction ? "none" : "lax",
+    maxAge: 24 * 3600000,
+    secure: isProduction,
+  };
+};
+
+const getOtpCookieOptions = () => {
+  const isProduction = process.env.NODE_ENV === "production";
+
+  return {
+    httpOnly: true,
+    sameSite: isProduction ? "none" : "lax",
+    maxAge: 300000,
+    secure: isProduction,
+  };
+};
+
+const getTokenFromRequest = (req) => {
+  const cookieToken = req.cookies?.token;
+  if (cookieToken) {
+    return cookieToken;
+  }
+
+  const authHeader = req.headers.authorization;
+  if (authHeader?.startsWith("Bearer ")) {
+    return authHeader.split(" ")[1];
+  }
+
+  return null;
+};
+
 export const createSendToken = (user, statusCode, res) => {
   const token = signToken(user);
-  res.cookie("token", token, {
-    httpOnly: true,
-    sameSite: "none",
-    maxAge: 24 * 3600000, // 1 day in milliseconds
-    secure: true, // Only set secure cookie in production
-  });
+  res.cookie("token", token, getCookieOptions());
   return res.status(statusCode).json({
     status: "success",
     token,
@@ -160,7 +191,9 @@ export const userLogin = CatchAsync(async (req, res, next) => {
       userType: true,
       active: true,
       isSubscribed: true,
-      ...checkAccountPermission,
+      seller: true,
+      donor: true,
+      buyer: true,
     },
     where: {
       OR: [{ email: usernameoremail }, { username: usernameoremail }],
@@ -171,12 +204,12 @@ export const userLogin = CatchAsync(async (req, res, next) => {
   console.log(user, checkAccountPermission);
   // If user not found, return error
   if (!user) {
-    res.clearCookie("token");
+    res.clearCookie("token", getCookieOptions());
     console.log("User not found");
     return res.status(403).json({ message: "Invalid credentials" });
   }
   if (user.role === "ADMIN") {
-    res.clearCookie("token");
+    res.clearCookie("token", getCookieOptions());
     console.log("User not found 2");
     return res.status(403).json({ message: "Invalid credentials" });
   }
@@ -184,7 +217,7 @@ export const userLogin = CatchAsync(async (req, res, next) => {
   // Check if password is correct
   const passwordMatch = await bcrypt.compare(password, user.password);
   if (!passwordMatch) {
-    res.clearCookie("token");
+    res.clearCookie("token", getCookieOptions());
     console.log("Password does not match");
     return res.status(403).json({ message: "Invalid credentials" });
   }
@@ -212,8 +245,7 @@ export const verifyUser = CatchAsync(async (req, res, next) => {
 });
 
 export const authMiddleware = async (req, res, next) => {
-  const token = req.cookies.token;
-  // console.log(token);
+  const token = getTokenFromRequest(req);
   if (!token) {
     return res.status(403).json({ status: false, message: "Session Expired, Please login again" });
   }
@@ -240,7 +272,7 @@ export const authMiddleware = async (req, res, next) => {
 
 export const getValidUser = async (req, res, next) => {
   try {
-    const token = req.cookies.token;
+    const token = getTokenFromRequest(req);
     if (!token) {
       return res.status(404).json({
         status: false,
@@ -305,7 +337,7 @@ export const getValidUser = async (req, res, next) => {
 };
 
 export const userLogout = CatchAsync(async (req, res, next) => {
-  res.clearCookie("token");
+  res.clearCookie("token", getCookieOptions());
   res.status(200).json({
     status: 200,
     message: "Logged out successfully",
@@ -344,14 +376,14 @@ export const AdminLogin = CatchAsync(async (req, res, next) => {
   console.log(user, role);
   // If user not found, return error
   if (!user) {
-    res.clearCookie("token");
+    res.clearCookie("token", getCookieOptions());
     return res.status(403).json({ message: "Invalid credentials" });
   }
 
   // Check if password is correct
   const passwordMatch = await bcrypt.compare(password, user.password);
   if (!passwordMatch) {
-    res.clearCookie("token");
+    res.clearCookie("token", getCookieOptions());
     return res.status(403).json({ message: "Invalid credentials" });
   }
 
@@ -379,7 +411,7 @@ export const sendOtp = CatchAsync(async (req, res, next) => {
   console.log(user);
   // If user not found, return error
   if (!user) {
-    res.clearCookie("token");
+    res.clearCookie("token", getCookieOptions());
     return res.status(403).json({ message: "Invalid email address" });
   }
 
@@ -387,12 +419,7 @@ export const sendOtp = CatchAsync(async (req, res, next) => {
   console.log(otp);
 
   const ot_expiry = signToken({ ...user, otp });
-  res.cookie("ot_expiry", ot_expiry, {
-    httpOnly: true,
-    sameSite: "none",
-    maxAge: 300000, // 5 min in milliseconds
-    secure: true, // Only set secure cookie in production
-  });
+  res.cookie("ot_expiry", ot_expiry, getOtpCookieOptions());
 
   await sendEmail({
     email: email,
@@ -472,7 +499,7 @@ export const changePassword = CatchAsync(async (req, res, next) => {
     });
   }
 
-  res.clearCookie("ot_expiry");
+  res.clearCookie("ot_expiry", getOtpCookieOptions());
   return res
     .status(200)
     .json({ status: true, message: "Password changed successfully" });

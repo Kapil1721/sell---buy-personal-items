@@ -2,11 +2,14 @@ import { Link } from "react-router-dom"
 import { AdminIcon, CompareIcon, LikeIcon } from "../../../components/Icons"
 import ProductCard from "../../../components/ProductCard"
 import ProductList from "../../products/sections/ProductList"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useContext, useEffect, useState } from "react"
 import { useQuery } from "@tanstack/react-query"
-import { GET_ALL_PRODUCTS } from "../../../services/operations/productsApi"
+import { ADD_TO_FAVORITE, GET_ALL_PRODUCTS } from "../../../services/operations/productsApi"
+import { toast } from "sonner"
+import { AuthContext } from "../../../auth/AuthContext"
 
 function MostViewedItems() {
+    const { user } = useContext(AuthContext)
     const [products, setProducts] = useState([]);
     const [pendingLike, setPendingLike] = useState(null);
 
@@ -25,18 +28,20 @@ function MostViewedItems() {
         }
     });
 
-    const handleLike = useCallback((id) => {
-        setProducts(products.map((itm) =>
-            itm.post_id === id ? {
-                ...itm,
-                likeStatus: !itm.likeStatus,
-                _count: { ...itm._count, likes: !itm?.likeStatus ? (itm._count.likes + 1) : (itm._count.likes - 1) },
-            } : { ...itm }
-        ));
     
-        const _products = products.find((itm) => itm.post_id === id);
-        setPendingLike({ id, likeStatus: !_products.likeStatus });
-    }, [products]);
+    const handleAddToFavorite = async (id) => {
+        if (user) {
+            const res = await ADD_TO_FAVORITE({
+                id
+            });
+            if (res.status) {
+                toast.success(res.message);
+            }
+        } else {
+            toast.error("Please login to add product to favorite");
+        }
+    }
+
     
     useEffect(() => {
         setProducts(data?.products)
@@ -74,7 +79,7 @@ function MostViewedItems() {
                     </div>
                 </div>
                 <div className="w-full mt-20">
-                    <ProductList products={products} isPending={isPending} handleLike={handleLike} />
+                    <ProductList products={products} isPending={isPending} handleFavorite={handleAddToFavorite} />
                 </div>
             </div>
         </div>

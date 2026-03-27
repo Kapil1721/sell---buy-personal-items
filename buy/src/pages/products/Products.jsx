@@ -4,12 +4,13 @@ import SearchSection from './sections/SearchSection'
 import ProductList from './sections/ProductList'
 import ProductFilter from './sections/ProductFilter'
 import ProductListHeader from './sections/ProductListHeader'
-import { GET_ALL_PRODUCTS, GET_PRODUCT_CATEGORY, POST_LIKE } from '../../services/operations/productsApi'
+import { ADD_TO_FAVORITE, GET_ALL_PRODUCTS, GET_PRODUCT_CATEGORY, POST_LIKE } from '../../services/operations/productsApi'
 import { useQuery } from '@tanstack/react-query'
 import ErrorUi from '../../components/ErrorUi'
 import { useSearchParams } from 'react-router-dom'
 import { AuthContext } from '../../auth/AuthContext'
 import { useDebounce } from '../../hooks/Hooks'
+import { toast } from 'sonner'
 
 function Products() {
 
@@ -86,6 +87,19 @@ function Products() {
     // const products = data?.products;
 
 
+    const handleAddToFavorite = async (id) => {
+        if (user) {
+            const res = await ADD_TO_FAVORITE({
+                id
+            });
+            if (res.status) {
+                toast.success(res.message);
+            }
+        } else {
+            toast.error("Please login to add product to favorite");
+        }
+    }
+
 
 
     return (
@@ -122,7 +136,7 @@ function Products() {
                                     </div>
                                     <div className='my-4'>
                                         <div>
-                                            <ProductList products={products} isPending={isPending} handleLike={handleLike} />
+                                            <ProductList products={products} isPending={isPending} handleFavorite={handleAddToFavorite} />
                                         </div>
                                     </div>
                                     <div>

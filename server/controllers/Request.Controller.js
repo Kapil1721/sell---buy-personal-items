@@ -2,7 +2,7 @@ import { CatchAsync } from "../utils/CatchAsync.js";
 import prisma from "../utils/prisma.js";
 
 export const sendPurchaseRequest = async (req, res) => {
-  const { buyerId, productId } = req.body;
+  const { buyerId, productId, message } = req.body;
 
   try {
     const product = await prisma.listedItem.findUnique({
@@ -19,6 +19,7 @@ export const sendPurchaseRequest = async (req, res) => {
         buyerId,
         sellerId: product.userId,
         productId,
+        message: message?.trim() || null,
         status: "Pending",
       },
     });
@@ -71,6 +72,7 @@ export const getPurchaseRequests = async (req, res) => {
           select: {
             name: true,
             post_id: true,
+            quantity: true,
             category: {
               select: {
                 name: true,
@@ -88,7 +90,7 @@ export const getPurchaseRequests = async (req, res) => {
       },
     });
 
-    if (!getPurchaseRequests) {
+    if (!purchaseRequests) {
       return res.status(404).json({
         status: false,
         message: "Purchase Requests not found",

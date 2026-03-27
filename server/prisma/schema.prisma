@@ -46,6 +46,7 @@ model Users {
   purchaseRequests    PurchaseRequest[]     @relation("BuyerPurchaseRequests")
   sellerRequests      PurchaseRequest[]     @relation("SellerPurchaseRequests")
   favoriteProductList favoriteProductList[]
+  reviews             Reviews[]
   RefreshToken        RefreshToken[]
   PromotedProduct     PromotedProduct[]
 }
@@ -383,9 +384,13 @@ model Reviews {
   id                  Int             @id @default(autoincrement())
   rating              Int
   comment             String
+  name                String?         @db.VarChar(100)
+  email               String?         @db.VarChar(150)
+  userId              Int?
   reviewImages        ReviewsImages[]
   createdAt           DateTime        @default(now())
   updatedAt           DateTime        @updatedAt
+  user                Users?          @relation(fields: [userId], references: [id], onDelete: SetNull)
   ListedItem          ListedItem?     @relation(fields: [listedItemPost_id], references: [post_id], onDelete: Cascade)
   listedItemPost_id   Int?
   // DonatedItems        DonatedItems?   @relation(fields: [donatedItemsPost_id], references: [post_id])
@@ -475,6 +480,7 @@ model PurchaseRequest {
   buyerId         Int
   sellerId        Int
   productId       Int
+  message         String?
   status          PurchaseRequestStatus @default(Pending)
   createdAt       DateTime              @default(now())
   updatedAt       DateTime              @updatedAt

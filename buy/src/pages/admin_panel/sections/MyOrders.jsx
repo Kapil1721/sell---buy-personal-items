@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import NoRecords from './components/NoRecords'
 import { useQuery } from '@tanstack/react-query'
-import { GET_PURCHASE_REQUEST, UPDATE_STATUS_PURCHASE_REQUEST } from '../../../services/operations/PurchaseRequestApi'
+import { CANCEL_PURCHASE_REQUEST_BY_BUYER, GET_PURCHASE_REQUEST } from '../../../services/operations/PurchaseRequestApi'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { AuthContext } from '../../../auth/AuthContext'
 import Topsection from './components/Topsection'
@@ -19,14 +19,14 @@ function MyOrders() {
   const sortValue = SearchParams.get('sort');
   const searchQuery = SearchParams.get('searchQuery');
   const { isPending, error, data } = useQuery({
-    queryKey: ['GET_PURCHASE_REQUEST', status, sortValue, searchQuery],
+    queryKey: ['GET_PURCHASE_REQUEST', 'buyer', sortValue, searchQuery],
     queryFn: async () => await GET_PURCHASE_REQUEST(user.id, { who: 'buyer', sort: SearchParams.get('sort'), searchQuery })
   });
 
 
 
   const handleRemoveItem = async (id) => {
-    const res = await UPDATE_STATUS_PURCHASE_REQUEST("Cancelled", id);
+    const res = await CANCEL_PURCHASE_REQUEST_BY_BUYER("Cancelled", id);
     // console.log(res);
     if (res) {
       setMyOrders(myOrders.map((item) => item.id === id ? ({ ...item, status: res.requestStatus }) : ({ ...item })));
@@ -68,6 +68,9 @@ function MyOrders() {
                     <span className="">Seller</span>
                   </th>
                   <th scope="col" className="px-6 py-3">
+                    <span className="">Message</span>
+                  </th>
+                  <th scope="col" className="px-6 py-3">
                     <span className="">Status</span>
                   </th>
                   <th scope="col" className="px-6 py-3">
@@ -89,6 +92,9 @@ function MyOrders() {
                         <div className='min-h-5 bg-loader animate-pulse rounded-md'></div>
                       </td>
                       <td className="px-6 py-4 w-0 font-semibold text-primary border">
+                        <div className='min-h-5 bg-loader animate-pulse rounded-md'></div>
+                      </td>
+                      <td className="px-6 py-4 font-semibold text-primary border">
                         <div className='min-h-5 bg-loader animate-pulse rounded-md'></div>
                       </td>
                       <td className="px-6 py-4 font-semibold text-primary border">
@@ -181,6 +187,9 @@ function MyOrders() {
                     <td className="px-6 py-4 font-semibold text-primary">
                       {item.seller.name}
                     </td>
+                    <td className="px-6 py-4 font-medium text-primary max-w-72">
+                      <p className="line-clamp-2">{item.message || "No message provided"}</p>
+                    </td>
                     <td className="px-6 py-4 font-semibold text-primary">
                       <span className={`${item.status === 'Pending' ? "bg-light text-white" : item.status === 'Accepted' ? "bg-secondary text-white" : "bg-red-500 text-white"} p-2 rounded-lg cursor-default`}>{item.status}</span>
                     </td>
@@ -188,7 +197,7 @@ function MyOrders() {
                         </td> */}
                     <td className="px-6 py-4">
                       <span
-                        onClick={() => handleRemoveItem(i)}
+                        onClick={() => handleRemoveItem(item.id)}
                         className="font-medium text-red-600 cursor-pointer hover:underline"
                       >
                         Remove

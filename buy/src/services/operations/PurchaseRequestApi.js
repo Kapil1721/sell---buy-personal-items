@@ -34,3 +34,12 @@ export const UPDATE_STATUS_PURCHASE_REQUEST = async (status, id) => {
     null
   );
 };
+export const CANCEL_PURCHASE_REQUEST_BY_BUYER = async (status, id) => {
+  return await responseHanlder(
+    "PUT",
+    `${statusUpdate}/buyer/${status}/${id}`,
+    null,
+    true,
+    null
+  );
+};

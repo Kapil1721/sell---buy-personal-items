@@ -54,6 +54,7 @@ export const productEndPoint = {
   getProducts_API: BASE_URL + "/products",
   getFavoriteProducts_API: BASE_URL + "/favorite",
   getProduct_API: BASE_URL + "/product",
+  postReview_API: BASE_URL + "/product",
   getProductCategory_API: BASE_URL + "/product-categories",
   postLike_API: BASE_URL + "/like",
   addToFavourite_API: BASE_URL + "/favorite",

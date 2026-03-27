@@ -72,6 +72,9 @@ function Orders() {
                     <span className="">Buyer</span>
                   </th>
                   <th scope="col" className="px-6 py-3 text-sm border">
+                    <span className="">Message</span>
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-sm border">
                     <span className="">Status</span>
                   </th>
                   <th scope="col" className="px-6 py-3 text-sm border">
@@ -93,6 +96,9 @@ function Orders() {
                         <div className='min-h-5 bg-loader animate-pulse rounded-md'></div>
                       </td>
                       <td className="px-6 py-4 w-0 font-semibold text-primary border">
+                        <div className='min-h-5 bg-loader animate-pulse rounded-md'></div>
+                      </td>
+                      <td className="px-6 py-4 font-semibold text-primary border">
                         <div className='min-h-5 bg-loader animate-pulse rounded-md'></div>
                       </td>
                       <td className="px-6 py-4 font-semibold text-primary border">
@@ -184,6 +190,9 @@ function Orders() {
                     </td>
                     <td className="px-6 py-4 font-semibold text-primary border">
                       {item.buyer.name}
+                    </td>
+                    <td className="px-6 py-4 font-medium text-primary border max-w-72">
+                      <p className="line-clamp-2">{item.message || "No message provided"}</p>
                     </td>
                     <td className="px-6 py-4 font-semibold text-primary border">
                       <span className={`${item.status === 'Pending' ? "bg-light text-white" : item.status === 'Accepted' ? "bg-secondary text-white" : "bg-red-500 text-white"} p-2 rounded-lg cursor-default`}>{item.status}</span>

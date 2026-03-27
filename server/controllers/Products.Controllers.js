@@ -1,5 +1,25 @@
 import { CatchAsync } from "../utils/CatchAsync.js";
 import prisma from "../utils/prisma.js";
+import jwt from "jsonwebtoken";
+
+const getOptionalUserFromRequest = (req) => {
+  const cookieToken = req.cookies?.token;
+  const authHeader = req.headers.authorization;
+  const bearerToken = authHeader?.startsWith("Bearer ")
+    ? authHeader.split(" ")[1]
+    : null;
+  const token = cookieToken || bearerToken;
+
+  if (!token) {
+    return null;
+  }
+
+  try {
+    return jwt.verify(token, process.env.JWT_SECRET);
+  } catch (error) {
+    return null;
+  }
+};
 
 export const getProductCategories = CatchAsync(async (req, res) => {
   const productCategories = await prisma.itemCategories.findMany({
@@ -81,6 +101,18 @@ export const getAllProducts = CatchAsync(async (req, res) => {
     };
   }
 
+  let favoriteWhereClause = false;
+  if (userId) {
+    favoriteWhereClause = {
+      where: {
+        userId: parseInt(userId),
+      },
+      select: {
+        id: true,
+      },
+    };
+  }
+
   let orderBy = { createdAt: "desc" };
 
   if (normalizedSort === "views") {
@@ -113,12 +145,14 @@ export const getAllProducts = CatchAsync(async (req, res) => {
               like: true,
             },
           },
+          favoriteProductList: true,
           views: true,
         },
       },
       images: true,
       comments: true,
       likes: likesWhereClause,
+      favoriteProductList: favoriteWhereClause,
       category: true,
     },
     orderBy,
@@ -137,6 +171,7 @@ export const getAllProducts = CatchAsync(async (req, res) => {
   const productsWithLikeStatus = products.map((product) => ({
     ...product,
     likeStatus: product.likes.length > 0 ? product.likes[0].like : false,
+    favoriteStatus: product.favoriteProductList?.length > 0,
   }));
 
   // if (products) {
@@ -209,10 +244,9 @@ export const getFavoriteProducts = CatchAsync(async (req, res) => {
 
 export const getSingleProduct = CatchAsync(async (req, res) => {
   const { slug } = req.params;
+  const { userId } = req.query;
 
-  const { userId } = req.params;
-
-  let likesWhereClause = true;
+  let likesWhereClause = false;
   if (userId) {
     likesWhereClause = {
       where: {
@@ -220,6 +254,18 @@ export const getSingleProduct = CatchAsync(async (req, res) => {
       },
       select: {
         like: true,
+      },
+    };
+  }
+
+  let favoriteWhereClause = false;
+  if (userId) {
+    favoriteWhereClause = {
+      where: {
+        userId: parseInt(userId),
+      },
+      select: {
+        id: true,
       },
     };
   }
@@ -236,12 +282,30 @@ export const getSingleProduct = CatchAsync(async (req, res) => {
               like: true,
             },
           },
+          favoriteProductList: true,
           views: true,
         },
       },
       images: true,
       comments: true,
-      // likes: likesWhereClause,
+      reviews: {
+        include: {
+          reviewImages: true,
+          user: {
+            select: {
+              id: true,
+              username: true,
+              name: true,
+              profileImage: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      },
+      likes: likesWhereClause,
+      favoriteProductList: favoriteWhereClause,
       category: true,
       user: {
         select: {
@@ -269,8 +333,81 @@ export const getSingleProduct = CatchAsync(async (req, res) => {
     status: true,
     product: {
       ...product,
+      likeStatus: product.likes?.length > 0 ? product.likes[0].like : false,
+      favoriteStatus: product.favoriteProductList?.length > 0,
       images: product.images?.map((item) => ({ ...item, url: item.image })),
     },
+  });
+});
+
+export const postReview = CatchAsync(async (req, res) => {
+  const { id, rating, comment, images = [], name, email } = req.body;
+  const authenticatedUser = getOptionalUserFromRequest(req);
+
+  if (!id || !rating || !comment?.trim()) {
+    return res.status(400).json({
+      status: false,
+      message: "Product, rating, and review comment are required",
+    });
+  }
+
+  const product = await prisma.listedItem.findUnique({
+    where: {
+      post_id: parseInt(id),
+    },
+    select: {
+      post_id: true,
+      userId: true,
+    },
+  });
+
+  if (!product) {
+    return res.status(404).json({
+      status: false,
+      message: "Product not found",
+    });
+  }
+
+  if (!authenticatedUser && (!name?.trim() || !email?.trim())) {
+    return res.status(400).json({
+      status: false,
+      message: "Name and email are required for guest reviews",
+    });
+  }
+
+  const review = await prisma.reviews.create({
+    data: {
+      rating: parseInt(rating),
+      comment: comment.trim(),
+      userId: authenticatedUser?.id ? parseInt(authenticatedUser.id) : null,
+      name: authenticatedUser?.name || name?.trim() || null,
+      email: authenticatedUser?.email || email?.trim() || null,
+      listedItemPost_id: product.post_id,
+      reviewImages: images.length
+        ? {
+            create: images.map((image) => ({
+              image: image.url || image.image || image,
+            })),
+          }
+        : undefined,
+    },
+    include: {
+      reviewImages: true,
+      user: {
+        select: {
+          id: true,
+          username: true,
+          name: true,
+          profileImage: true,
+        },
+      },
+    },
+  });
+
+  return res.status(201).json({
+    status: true,
+    message: "Review posted successfully",
+    review,
   });
 });
 

@@ -6,6 +6,7 @@ const {
   getProductCategory_API,
   postLike_API,
   getProduct_API,
+  postReview_API,
   addToFavourite_API,
   getFavoriteProducts_API,
   promoteProduct_API
@@ -40,6 +41,15 @@ export const GET_SINGLE_PRODUCTS = async (params, searchParams) => {
     false,
     null,
     searchParams
+  );
+};
+export const POST_PRODUCT_REVIEW = async (productId, body) => {
+  return await responseHanlder(
+    "POST",
+    `${postReview_API}/${productId}/review`,
+    body,
+    true,
+    null
   );
 };
 export const GET_PRODUCT_CATEGORY = async () => {

@@ -6,7 +6,7 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use((config) => {
-  const token = localStorage.getItem("_sell_token");
+  const token = localStorage.getItem("_sell_Token");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -21,7 +21,7 @@ axiosInstance.interceptors.response.use(
       // window.location.href = "/server-error";
     }
     if (error.response && error.response.status === 401) {
-      localStorage.removeItem("token");
+      localStorage.removeItem("_sell_Token");
       window.location.href = "/login"; // redirect to login page
     }
     return Promise.reject(error);
