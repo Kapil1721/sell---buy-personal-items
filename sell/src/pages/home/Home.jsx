@@ -1,5 +1,8 @@
 import Banner from './sections/Banner'
+import WhyNow from './sections/WhyNow'
 import Services from './sections/Services'
+import MembershipOpportunity from './sections/MembershipOpportunity'
+import ExclusiveMemberBenefit from './sections/ExclusiveMemberBenefit'
 import Newsletter from './sections/Newsletter'
 
 // import { useWebSocket } from '../../hooks/Hooks'
@@ -11,27 +14,14 @@ function Home() {
 
   // console.log(notifications);
 
-
   return (
     <>
-      <div>
-        <Banner />
-      </div>
-      <div>
-        <Services />
-      </div>
-      {/* <div>
-        <SellProducts />
-      </div> */}
-      <div>
-        <Newsletter />
-      </div>
-      <div>
-        {/* <CustomerReviews /> */}
-      </div>
-      <div>
-        {/* <ContactUs /> */}
-      </div>
+      <Banner />
+      <WhyNow />
+      <Services />
+      <MembershipOpportunity />
+      <ExclusiveMemberBenefit />
+      <Newsletter />
     </>
   )
 }

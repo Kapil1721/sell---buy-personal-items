@@ -60,6 +60,7 @@ function ProductList({ products, isPending, handleFavorite }) {
                 <div className="border-b  border-[#F2F4F8] flex flex-col justify-between">
                   <div className="p-6">
                     <h1 className="text-xl font-semibold min-h-[56px] text-start text-[#4E606F] line-clamp-2">{product.name}</h1>
+                    <p className="text-lg font-bold text-[#537CD9] mt-2">${product.price}</p>
                   </div>
                 </div>
               </Link>

@@ -25,6 +25,7 @@ function CreateProduct() {
   const [attachments, setAttachment] = useState([]);
   const [progress, setProgress] = useState(0);
   const [productName, setProductName] = useState('')
+  const [price, setPrice] = useState('')
   const [category, setCategory] = useState({ value: "", name: "" });
   const [description, setDescription] = useState('')
 
@@ -131,7 +132,7 @@ function CreateProduct() {
       const images = [...gallery].map((item) => ({ path: item.path, name: item.name, url: item.url, type: "GALLARY" }));
       const _attachments = [...attachments].map((item) => ({ path: item.path, name: item.name, url: item.url, type: "ATTACHMENTS" }));
 
-      const res = await ADDPRODUCT({ name: productName, description, category: category.id, images, _attachments });
+      const res = await ADDPRODUCT({ name: productName, price, description, category: category.id, images, _attachments });
 
       if (res.status) {
         setAttachment([]);
@@ -139,6 +140,7 @@ function CreateProduct() {
         setCategory('');
         setDescription('');
         setProductName('');
+        setPrice('');
         handleClearDropdown();
         toast.success('Product added successfully!')
       }
@@ -172,6 +174,10 @@ function CreateProduct() {
                   <div className='mt-4 lg:mt-8 flex flex-col'>
                     <label className='text-primary lg:text-lg font-semibold mb-2 lg:mb-4 ml-1 lg:ml-4' htmlFor="productName">Product Name <span>*</span></label>
                     <input type="text" className='border border-[#D5E3EE] flex justify-between items-center p-2 lg:p-4 gap-4 rounded-md focus:outline-none' name='productName' value={productName} onChange={(e) => setProductName(e.target.value)} />
+                  </div>
+                  <div className='mt-4 lg:mt-8 flex flex-col'>
+                    <label className='text-primary lg:text-lg font-semibold mb-2 lg:mb-4 ml-1 lg:ml-4' htmlFor="price">Price <span>*</span></label>
+                    <input type="number" className='border border-[#D5E3EE] flex justify-between items-center p-2 lg:p-4 gap-4 rounded-md focus:outline-none' name='price' value={price} onChange={(e) => setPrice(e.target.value)} />
                   </div>
                   <div className='mt-4 lg:mt-8 flex flex-col lg:max-w-72'>
                     <label className='text-primary lg:text-lg font-semibold mb-2 lg:mb-4 ml-1 lg:ml-4'>Category <span>*</span></label>

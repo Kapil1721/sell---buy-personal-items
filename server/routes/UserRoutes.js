@@ -3,6 +3,7 @@ import {
   AdminLogin,
   // authenticate,
   authMiddleware,
+  restrictToAdmin,
   changePassword,
   getValidUser,
   sendOtp,
@@ -35,7 +36,9 @@ import {
   upadatePassword,
   upadateEmail,
   deleteUser,
+  deleteUserByAdmin,
   deleteModerateProducts,
+  getAllUsersByAdmin,
 } from "../controllers/User.Controllers.js";
 import {
   getPlans,
@@ -148,6 +151,14 @@ router
   .route("/moderation/:id")
   .get(authMiddleware, getModerationProductsforAdminByID)
   .delete(authMiddleware, deleteModerateProducts);
+
+// Admin Routes for User Management
+router
+  .route("/admin/users")
+  .get(authMiddleware, restrictToAdmin, getAllUsersByAdmin);
+router
+  .route("/admin/users/:id")
+  .delete(authMiddleware, restrictToAdmin, deleteUserByAdmin);
 
 router.route("/my-products").get(authMiddleware, getMyProducts);
 router

@@ -252,6 +252,7 @@ const ProductDetail = () => {
                                 </div>
                                 <div className='mt-6 lg:px-6 px-2 text-primary'>
                                     <h1 className='text-3xl font-semibold '>{product.name}</h1>
+                                    <h2 className='text-2xl font-bold text-[#537CD9] mt-2'>${product.price}</h2>
                                     <p className='py-1 px-2 mt-4 rounded-md w-fit border border-helper text-helper'>{product.category.name}</p>
                                 </div>
                                 <div className='mt-6 lg:px-6 px-2 text-primary pb-6'>

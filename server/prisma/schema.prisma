@@ -355,6 +355,7 @@ model ListedItem {
   categoryId          Int?                  @default(1)
   category            ItemCategories?       @relation(fields: [categoryId], references: [id])
   expires             DateTime?
+  price               Float?                @default(0)
   createdAt           DateTime              @default(now())
   updatedAt           DateTime              @updatedAt
   active              Boolean               @default(true)

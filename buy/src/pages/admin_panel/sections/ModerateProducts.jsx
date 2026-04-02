@@ -177,6 +177,7 @@ function ModerateProducts() {
                               <h3 className='text-primary font-medium'>{item.name}</h3>
                               <div className='flex flex-col justify-start items-start gap-1 w-full'>
                                 <p className='text-primary font-medium'>Category: <span className='text-light font-normal'>{item.category.name}</span></p>
+                                <p className='text-primary font-medium'>Price: <span className='text-light font-normal'>${item.price}</span></p>
                                 <p className='text-primary font-medium'>Added: <span className='text-light font-normal'>{getFormatedDate(item.createdAt)}</span></p>
                                 <div className='flex justify-start gap-5 w-full'>
                                   <p className='text-primary font-medium'>Expires: <span className='text-light font-normal'>{getFormatedDate(item.expires) ? getFormatedDate(item.expires) : 'Never'}</span></p>

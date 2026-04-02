@@ -14,6 +14,7 @@ function ProductCard() {
                     <div className=" flex flex-col justify-between">
                         <div className="p-10">
                             <h1 className="text-xl font-semibold min-h-[56px] text-start text-[#4E606F]"> Mens White Shoes </h1>
+                            <p className="text-lg font-bold text-[#537CD9] mt-2">$99.99</p>
                         </div>
                     </div>
                     <div className="grid grid-cols-2 justify-center items-start border-t border-[#F2F4F8] py-3">

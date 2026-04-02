@@ -270,6 +270,13 @@ export const authMiddleware = async (req, res, next) => {
   }
 };
 
+export const restrictToAdmin = (req, res, next) => {
+  if (req.user.role !== "ADMIN") {
+    return res.status(403).json({ status: false, message: "Only admins are allowed to perform this action" });
+  }
+  next();
+};
+
 export const getValidUser = async (req, res, next) => {
   try {
     const token = getTokenFromRequest(req);

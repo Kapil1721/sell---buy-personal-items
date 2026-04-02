@@ -1,7 +1,6 @@
-import React, { useContext } from 'react'
-import { Link, NavLink } from 'react-router-dom'
-import { useAuthStore } from '../../store/AuthStore'
+import { NavLink } from 'react-router-dom'
 import { AuthContext } from '../../auth/AuthContext';
+import { useContext } from 'react';
 
 function AdminPanelHeader() {
 
@@ -12,7 +11,7 @@ function AdminPanelHeader() {
         { name: 'Moderation', link: '/panel/moderation' },
         // { name: 'Donations', link: '/panel/donations' },
         // { name: 'Memberships', link: '/panel/memberships' },
-        // { name: 'Users', link: '/panel/users' },
+        { name: 'Users', link: '/panel/users' },
         { name: 'Orders', link: '/panel/orders' },
         { name: 'My Products', link: '/panel/my-products' },
         { name: 'Favorites', link: '/panel/favorites' },

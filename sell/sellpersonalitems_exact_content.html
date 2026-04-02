@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:wght@400;500;600&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --gold: #F5A623; --gold-dark: #D4891A; --navy: #2C3E50;
+    --dark-bg: #1E2D3D; --darker-bg: #17222E;
+    --text: #2C2C2C; --muted: #666; --light-bg: #F8F7F4;
+    --white: #FFFFFF; --blue-cta: #3B6AC9;
+  }
+  body { font-family: 'Source Sans 3', sans-serif; color: var(--text); background: var(--white); font-size: 15px; }
+
+  /* NAV */
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 14px 48px; background: white; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 100; }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-icon { width: 42px; height: 42px; border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  .logo-text { font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 700; line-height: 1.2; text-transform: uppercase; letter-spacing: 0.5px; }
+  .logo-text span { display: block; }
+  .nav-links { display: flex; gap: 32px; list-style: none; }
+  .nav-links a { text-decoration: none; color: var(--text); font-weight: 500; font-size: 15px; }
+  .nav-right { display: flex; align-items: center; gap: 16px; }
+  .nav-right a { text-decoration: none; color: var(--text); font-weight: 500; }
+  .nav-divider { width: 1px; height: 20px; background: #ccc; }
+  .btn-sell { background: var(--gold); color: white; border: none; padding: 10px 22px; font-weight: 600; font-size: 15px; cursor: pointer; }
+
+  /* HERO */
+  .hero { position: relative; height: 520px; background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1600') center/cover no-repeat; display: flex; align-items: center; justify-content: center; text-align: center; }
+  .hero-content { color: white; max-width: 680px; padding: 20px; }
+  .hero h1 { font-family: 'Playfair Display', serif; font-size: 52px; font-weight: 900; line-height: 1.1; }
+  .hero h1 span { color: var(--gold); }
+  .hero .socials { display: flex; gap: 12px; justify-content: center; margin: 20px 0; }
+  .social-btn { width: 38px; height: 38px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.6); display: flex; align-items: center; justify-content: center; color: white; font-size: 13px; cursor: pointer; }
+  .hero p { font-size: 15px; line-height: 1.6; max-width: 580px; margin: 0 auto 24px; }
+  .hero-btns { display: flex; gap: 12px; justify-content: center; }
+  .btn-gold { background: var(--gold); color: white; border: none; padding: 12px 28px; font-weight: 600; cursor: pointer; font-size: 15px; }
+  .btn-outline { background: transparent; color: white; border: 2px solid white; padding: 10px 28px; font-weight: 600; cursor: pointer; font-size: 15px; }
+
+  /* CARDS ROW */
+  .cards-section { background: var(--light-bg); padding: 60px 48px; display: flex; gap: 24px; justify-content: center; }
+  .card { background: white; padding: 40px 32px; text-align: center; flex: 1; max-width: 480px; border: 1px solid #eee; }
+  .card-icon { font-size: 52px; margin-bottom: 16px; }
+  .card h3 { font-weight: 700; font-size: 15px; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 14px; }
+  .card p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+  /* ECONOMY CRISIS BANNER */
+  .crisis-banner { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); padding: 70px 48px; text-align: center; position: relative; overflow: hidden; }
+  .crisis-banner::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(245,166,35,0.03) 40px, rgba(245,166,35,0.03) 80px); }
+  .crisis-badge { display: inline-block; background: var(--gold); color: white; padding: 6px 18px; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px; position: relative; }
+  .crisis-banner h2 { font-family: 'Playfair Display', serif; font-size: 36px; color: white; max-width: 760px; margin: 0 auto 28px; line-height: 1.3; position: relative; }
+  .crisis-banner h2 em { color: var(--gold); font-style: normal; }
+  .crisis-body { max-width: 820px; margin: 0 auto; position: relative; }
+  .crisis-body p { color: rgba(255,255,255,0.78); font-size: 16px; line-height: 1.8; margin-bottom: 18px; text-align: left; }
+  .crisis-stats { display: flex; gap: 40px; justify-content: center; margin-top: 48px; flex-wrap: wrap; position: relative; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 40px; }
+  .stat-item { text-align: center; }
+  .stat-num { font-family: 'Playfair Display', serif; font-size: 40px; color: var(--gold); font-weight: 900; }
+  .stat-label { color: rgba(255,255,255,0.55); font-size: 13px; margin-top: 4px; }
+
+  /* OPPORTUNITY / MEMBERSHIP SECTION */
+  .opportunity-section { padding: 80px 48px; display: flex; gap: 60px; align-items: flex-start; max-width: 1160px; margin: 0 auto; }
+  .opp-text { flex: 1; }
+  .opp-text .section-label { font-size: 12px; font-weight: 700; color: var(--gold); letter-spacing: 2.5px; text-transform: uppercase; margin-bottom: 12px; }
+  .opp-text h2 { font-family: 'Playfair Display', serif; font-size: 32px; line-height: 1.25; margin-bottom: 24px; }
+  .opp-text p { color: var(--muted); line-height: 1.85; font-size: 15px; margin-bottom: 18px; }
+  .opp-text .brand-quote { background: #FFF8EC; border-left: 4px solid var(--gold); padding: 18px 22px; margin: 28px 0; font-size: 16px; font-style: italic; font-weight: 600; color: var(--navy); line-height: 1.5; }
+  .opp-visual { flex: 0 0 320px; }
+  .price-card { background: var(--navy); color: white; padding: 36px 28px; }
+  .price-card .plabel { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.55); margin-bottom: 8px; }
+  .price-card .amount { font-family: 'Playfair Display', serif; font-size: 68px; color: var(--gold); font-weight: 900; line-height: 1; }
+  .price-card .psub { font-size: 13px; color: rgba(255,255,255,0.45); margin-top: 6px; margin-bottom: 24px; }
+  .price-card ul { list-style: none; border-top: 1px solid rgba(255,255,255,0.1); }
+  .price-card ul li { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 14px; display: flex; gap: 8px; align-items: center; color: rgba(255,255,255,0.85); }
+  .price-card ul li::before { content: '✓'; color: var(--gold); font-weight: 700; flex-shrink: 0; }
+  .btn-gold-full { display: block; background: var(--gold); color: white; border: none; padding: 14px; font-weight: 700; cursor: pointer; font-size: 15px; margin-top: 24px; width: 100%; text-align: center; }
+
+  /* CBBL SECTION */
+  .cbbl-section { background: var(--light-bg); padding: 80px 48px; }
+  .cbbl-inner { max-width: 1100px; margin: 0 auto; }
+  .cbbl-header { text-align: center; margin-bottom: 50px; }
+  .cbbl-header .badge { background: var(--navy); color: var(--gold); display: inline-block; padding: 6px 16px; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
+  .cbbl-header h2 { font-family: 'Playfair Display', serif; font-size: 32px; margin-bottom: 12px; }
+  .cbbl-header .sub { color: var(--muted); max-width: 640px; margin: 0 auto; line-height: 1.7; font-size: 15px; }
+  .cbbl-body p { color: var(--muted); line-height: 1.85; font-size: 15px; margin-bottom: 18px; max-width: 860px; margin-left: auto; margin-right: auto; text-align: center; }
+  .cbbl-pullquote { background: var(--navy); color: white; padding: 40px 52px; margin: 40px 0; display: flex; gap: 28px; align-items: flex-start; }
+  .cbbl-pullquote .qmark { font-family: 'Playfair Display', serif; font-size: 72px; color: var(--gold); line-height: 0.75; flex-shrink: 0; margin-top: 8px; }
+  .cbbl-pullquote blockquote { font-family: 'Playfair Display', serif; font-size: 20px; font-style: italic; line-height: 1.6; }
+  .loan-terms-row { display: flex; gap: 16px; margin-top: 32px; flex-wrap: wrap; justify-content: center; }
+  .term-pill { background: white; border: 2px solid #ddd; padding: 10px 22px; font-weight: 700; font-size: 13px; color: var(--navy); }
+  .term-pill.active { border-color: var(--gold); background: #FFF8EC; color: var(--gold-dark); }
+  .cbbl-cta { text-align: center; margin-top: 20px; font-size: 14px; color: var(--muted); }
+  .cbbl-cta a { color: var(--gold); font-weight: 600; text-decoration: none; }
+
+  /* LOVE AT FIRST SALE */
+  .love-section { padding: 80px 48px; text-align: center; }
+  .love-section h2 { font-family: 'Playfair Display', serif; font-size: 34px; margin-bottom: 6px; }
+  .love-section .tagline { color: var(--muted); font-size: 15px; margin-bottom: 28px; }
+  .love-section p { max-width: 800px; margin: 0 auto 14px; color: var(--muted); line-height: 1.8; font-size: 15px; }
+  .btn-blue { background: var(--blue-cta); color: white; border: none; padding: 14px 36px; font-weight: 700; cursor: pointer; font-size: 16px; margin-top: 20px; }
+
+  /* NEWSLETTER */
+  .newsletter { background: var(--dark-bg); padding: 60px 48px; display: flex; gap: 60px; align-items: center; }
+  .newsletter-text h3 { font-family: 'Playfair Display', serif; font-size: 28px; color: white; margin-bottom: 12px; }
+  .newsletter-text p { color: rgba(255,255,255,0.6); font-size: 14px; line-height: 1.7; max-width: 420px; }
+  .newsletter-form { flex: 1; }
+  .email-input-wrap { display: flex; background: white; max-width: 480px; }
+  .email-input-wrap input { flex: 1; border: none; padding: 16px 20px; font-size: 15px; outline: none; }
+  .email-input-wrap button { background: #1a1a1a; color: white; border: none; padding: 16px 20px; cursor: pointer; font-size: 18px; }
+
+  /* FOOTER */
+  footer { background: var(--darker-bg); padding: 60px 48px 0; }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 60px; padding-bottom: 48px; }
+  .footer-logo-icon { font-size: 36px; margin-bottom: 10px; }
+  .footer-brand { font-family: 'Playfair Display', serif; color: white; font-size: 15px; letter-spacing: 1px; font-weight: 700; text-transform: uppercase; margin-bottom: 16px; }
+  .footer-about { color: rgba(255,255,255,0.5); font-size: 13px; line-height: 1.7; }
+  .footer-col h4 { color: white; font-weight: 700; margin-bottom: 20px; font-size: 15px; }
+  .footer-links { list-style: none; }
+  .footer-links li { margin-bottom: 12px; }
+  .footer-links a { color: rgba(255,255,255,0.55); text-decoration: none; font-size: 14px; display: flex; gap: 8px; align-items: center; }
+  .footer-links a::before { content: '»'; color: var(--gold); }
+  .contact-item { display: flex; gap: 10px; color: rgba(255,255,255,0.55); font-size: 14px; margin-bottom: 12px; align-items: flex-start; }
+  .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding: 20px 0; text-align: center; color: rgba(255,255,255,0.35); font-size: 13px; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">
+    <div class="logo-icon">🛍</div>
+    <div class="logo-text"><span>Sell</span><span>Personal</span><span>Items</span></div>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#">Home</a></li>
+    <li><a href="#">Memberships</a></li>
+    <li><a href="#">Donate Items</a></li>
+    <li><a href="#">Donate Money</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="#">Log In</a>
+    <div class="nav-divider"></div>
+    <a href="#">Register</a>
+    <button class="btn-sell">Sell +</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <h1>Give Your Items<br><span>A Second Chance!</span></h1>
+    <div class="socials">
+      <div class="social-btn">f</div>
+      <div class="social-btn">𝕏</div>
+      <div class="social-btn">in</div>
+      <div class="social-btn">📘</div>
+    </div>
+    <p>Join our group of buyers and sellers of some of the highest-quality merchandise, many of which have never been used. You will surely find great deals for yourself, your family, and your friends.</p>
+    <div class="hero-btns">
+      <button class="btn-gold">Login</button>
+      <button class="btn-outline">Subscribe</button>
+    </div>
+  </div>
+</section>
+
+<!-- ECONOMY CRISIS BANNER — new, placed after hero -->
+<section class="crisis-banner">
+  <div class="crisis-badge">⚡ Why Now</div>
+  <h2>Times are hard. <em>The Economy is not going well for many Americans.</em></h2>
+  <div class="crisis-body">
+    <p>Many are taking inventory of personal items they no longer need or want anymore and selling them for quick cash. This could be the best time for you to sell some unwanted personal items for Cold Hard Cash!</p>
+    <p>Looking at the current state of our economy. Things are not looking well. All the layoffs and announcements of more future layoffs. Add to that the raise of inflation, causing prices for necessities like food, housing and utilities to go up. Not to mention Car payments and Insurance. I know you see it too! Things are bad for individuals and for families alike.</p>
+    <p>Americans are waking up and starting to realize whats more important in there life and its not more stuff bought on credit. And now drowning in debt. They are now 'liquidating 'Big Time'. personal properties including furniture, clothing, appliance, electronics, sport equipment and bikes of all types.</p>
+    <p>Sellpersonalitems.com is where you can go to convert your no longer wanted personal items into mush needed cash.</p>
+    <p>We are looking for more members to help with the increase in the sell of personal items and unfortunately if our economy continues the way it has, we could see even a higher increase in personal items the near future.</p>
+  </div>
+  <div class="crisis-stats">
+    <div class="stat-item"><div class="stat-num">60s</div><div class="stat-label">To list your first item</div></div>
+    <div class="stat-item"><div class="stat-num">$97</div><div class="stat-label">One-time membership fee</div></div>
+    <div class="stat-item"><div class="stat-num">90 Days</div><div class="stat-label">Then it's free forever</div></div>
+    <div class="stat-item"><div class="stat-num">∞</div><div class="stat-label">Items you can sell</div></div>
+  </div>
+</section>
+
+<!-- EXISTING CARDS -->
+<section class="cards-section">
+  <div class="card">
+    <div class="card-icon">🛒</div>
+    <h3>Sell Your Products</h3>
+    <p>Ready to sell your products? It's as easy as 1-2-3! Simply take a snap of your items, set a price, and post it with a click-all in less than 60 seconds!</p>
+  </div>
+  <div class="card">
+    <div class="card-icon">📋</div>
+    <h3>Register/Membership</h3>
+    <p>We value our early registered members and offer our lowest membership fee for the first 90 days. After that, it's free!</p>
+  </div>
+</section>
+
+<!-- MEMBERSHIP OPPORTUNITY — new section -->
+<section style="background: white; padding: 80px 0;">
+  <div class="opportunity-section">
+    <div class="opp-text">
+      <div class="section-label">Membership Opportunity</div>
+      <h2>One of the Best Opportunities for Everyday Individuals to Earn Money</h2>
+      <p>You pay a one time membership fee of just $97 to become one of our affiliates. Our program is designed for every one. Whether you want to post personal items to sell for yourself or use it to sell for families and friends to generate a good income. Which is most needed in these challenging economic times.</p>
+      <p>We at Sellpersonlitems.com believe we have hands down one of the best opportunity for everyday individuals to earn money while helping others to come along in a very long time. A down economy don't have to be down for you</p>
+      <div class="brand-quote">"Sell what you want today! Sell what you can tomorrow!"</div>
+    </div>
+    <div class="opp-visual">
+      <div class="price-card">
+        <div class="plabel">One-Time Membership Fee</div>
+        <div class="amount">$97</div>
+        <div class="psub">Then only a small % per sale</div>
+        <ul>
+          <li>Post personal items to sell for yourself</li>
+          <li>Sell for families and friends</li>
+          <li>Access to CBBL loan program</li>
+          <li>Free after first 90 days</li>
+          <li>Early member pricing locked in</li>
+        </ul>
+        <button class="btn-gold-full">Become a Member Now →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CBBL SECTION — new -->
+<section class="cbbl-section">
+  <div class="cbbl-inner">
+    <div class="cbbl-header">
+      <div class="badge">Exclusive Member Benefit</div>
+      <h2>Collateral Back Bridge Loan (CBBL)</h2>
+      <p class="sub">We at Sellpersonlitems.com are proud to offer a new and exciting addition available all members at no cost.</p>
+    </div>
+
+    <div class="cbbl-body">
+      <p>Depending on certain requirements you make be able to qualify for a short term loan while waiting on the sell for your personal item(s) to be completed. These (CBBLs) will be resigned for sellers with item(s) whose values are high enough to justify short term loan for between 30 or 90 days.</p>
+      <p>Because normally big ticket items do take a little more time to sell especially if you are trying to get your best price possible. And you should. However, we all know that price sells. Doing hard economic times and recessions. The cost for nonessential, and some luxury items fall in prices. If you are thinking about selling some items for what ever reason now might be the best time.</p>
+    </div>
+
+    <div class="cbbl-pullquote">
+      <div class="qmark">"</div>
+      <blockquote>Imagine having access to capital to address some needed emergencies and not feeling rushed into excepting far less than your item(s) are actually worth. Get thousands in your CBBL to hold you over while your high end item(s) are being viewed and you get your price.</blockquote>
+    </div>
+
+    <div class="cbbl-body">
+      <p>A CBBL can be for as little as 30 days 60, 90 days or more with no early payoff penalties. Just pay interests and extend if necessary.</p>
+      <p>All the details will be made available upon membership. Become a member Now and lets get things moving.</p>
+    </div>
+
+    <div class="loan-terms-row">
+      <div class="term-pill active">30 Days</div>
+      <div class="term-pill">60 Days</div>
+      <div class="term-pill">90 Days</div>
+      <div class="term-pill">Extended (Interest Only)</div>
+    </div>
+    <div class="cbbl-cta"><a href="#">Become a member to learn more →</a></div>
+  </div>
+</section>
+
+<!-- LOVE AT FIRST SALE — existing -->
+<section class="love-section">
+  <h2>Love At First Sale!</h2>
+  <div class="tagline">Your Marketplace, Your Choice</div>
+  <p>Welcome to Sell Personal Items, your leading destination for buying and selling high-quality used products online. Founded with a passion for merchandise and a commitment to creating a more conscious consumer culture, we aim to provide a platform where individuals can easily buy, sell, and discover unique items of their choice.</p>
+  <p>Got too much stuff, right? Well, how about turning some of it into cold, hard cash? In these economic times, it's important to have a reliable place to raise money when you want to or get in a pinch, as we all do. That's what "Sell Personal Items" is here for. One of the best parts of our membership-only website is that it's cheap and only for 90 days. After that, we will only get a small percentage of the sales.</p>
+  <button class="btn-blue">Get your membership started today!</button>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="newsletter">
+  <div class="newsletter-text">
+    <h3>Join our news letter</h3>
+    <p>Get up to date information on current market conditions. Learn how these conditions effect your personal property. Learn also how to stage and price your personal items for quick sell.</p>
+  </div>
+  <div class="newsletter-form">
+    <div class="email-input-wrap">
+      <input type="email" placeholder="Email">
+      <button>→</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-logo-icon">🛍</div>
+      <div class="footer-brand">Sell Personal Items</div>
+      <p class="footer-about">Founded with a passion for merchandise and a commitment to creating a more eco-friendly consumer culture, we aim to provide a platform where individuals can easily buy, sell, and discover unique items of their choice.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Useful Links</h4>
+      <ul class="footer-links">
+        <li><a href="#">Refund Policy</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms & Conditions</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact Us</h4>
+      <div class="contact-item">📍 125 Ramsey Drive #314Greenville, SC 29607</div>
+      <div class="contact-item">✉️ Info@sellpersonalitems.com</div>
+    </div>
+  </div>
+  <div class="footer-bottom">Copyright © 2024 Sell Personal Items | Designed by Zonewebsites</div>
+</footer>
+
+</body>
+</html>

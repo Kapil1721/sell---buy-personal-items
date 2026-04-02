@@ -274,7 +274,7 @@ export const deleteUploads = async (req, res, next) => {
 
 export const postProduct = CatchAsync(async (req, res, next) => {
   // try {
-  const { name, description, category, images, _attachments, active } =
+  const { name, description, category, images, _attachments, active, price } =
     req.body;
 
   console.log(category);
@@ -284,6 +284,7 @@ export const postProduct = CatchAsync(async (req, res, next) => {
       name,
       desription: description,
       categoryId: category,
+      price: price ? parseFloat(price) : 0,
       slug,
       userId: req.user.id,
       images: {
@@ -318,7 +319,7 @@ export const postProduct = CatchAsync(async (req, res, next) => {
 
 export const updateProduct = CatchAsync(async (req, res, next) => {
   // try {
-  const { name, description, category, images, _attachments, post_id } =
+  const { name, description, category, images, _attachments, post_id, price } =
     req.body;
   const slug = Date.now() + name.replaceAll(" ", "-").replaceAll("/", "-");
   // console.log(post_id, "post_id");
@@ -342,6 +343,7 @@ export const updateProduct = CatchAsync(async (req, res, next) => {
       name,
       desription: description,
       categoryId: category.id,
+      price: price ? parseFloat(price) : 0,
       userId: req.user.id,
       updatedAt: new Date(),
       slug,
@@ -896,26 +898,8 @@ export const updateProfileImage = CatchAsync(async (req, res, next) => {
       message: "User not found",
     });
   }
-  if (!image) {
-    return res.status(404).json({
-      status: false,
-      message: "Image not found",
-    });
-  }
-  let newUser = await prisma.users.update({
-    where: {
-      id: parseInt(id),
-    },
-    data: {
-      profileImage: image,
-    },
-  });
-  if (!newUser) {
-    return res.status(404).json({
-      status: false,
-      message: "User not found",
-    });
-  }
+  newUser.password = undefined;
+  newUser.verification = undefined;
   res.status(200).json({
     status: true,
     message: "Profile image updated successfully",
@@ -986,6 +970,74 @@ export const updateAccountDetails = CatchAsync(async (req, res, next) => {
     status: true,
     message: "Account details updated successfully",
     user: { ...newUser, password: undefined, verification: undefined },
+  });
+});
+
+// Admin Controllers
+export const getAllUsersByAdmin = CatchAsync(async (req, res, next) => {
+  const { searchQuery, sort } = req.query;
+  const order = sort ? (sort === "Oldest" ? "asc" : "desc") : "desc";
+
+  const users = await prisma.users.findMany({
+    where: searchQuery
+      ? {
+          OR: [
+            { name: { contains: searchQuery, mode: "insensitive" } },
+            { email: { contains: searchQuery, mode: "insensitive" } },
+            { username: { contains: searchQuery, mode: "insensitive" } },
+          ],
+        }
+      : {},
+    select: {
+      id: true,
+      username: true,
+      name: true,
+      email: true,
+      role: true,
+      userType: true,
+      active: true,
+      isSubscribed: true,
+      createdAt: true,
+    },
+    orderBy: {
+      createdAt: order,
+    },
+  });
+
+  res.status(200).json({
+    status: true,
+    users,
+  });
+});
+
+export const deleteUserByAdmin = CatchAsync(async (req, res, next) => {
+  const { id } = req.params;
+
+  const user = await prisma.users.findUnique({
+    where: { id: parseInt(id) },
+  });
+
+  if (!user) {
+    return res.status(404).json({
+      status: false,
+      message: "User not found",
+    });
+  }
+
+  if (user.role === "ADMIN") {
+    return res.status(403).json({
+      status: false,
+      message: "You cannot delete another administrator",
+    });
+  }
+
+  await prisma.users.delete({
+    where: { id: parseInt(id) },
+  });
+
+  res.status(200).json({
+    status: true,
+    message: "User deleted successfully",
   });
 });
 

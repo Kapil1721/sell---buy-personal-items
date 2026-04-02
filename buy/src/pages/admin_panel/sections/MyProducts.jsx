@@ -110,6 +110,7 @@ function MyProducts() {
                               <div className='flex justify-evenly gap-4 items-center'>
                                 <p className='text-helper font-medium'>Added: <span className='text-light font-normal'>{getFormatedDate(item.createdAt)}</span></p>
                                 <p className='text-helper font-medium'>Expires: <span className='text-light font-normal'>{item.expires ? getFormatedDate(item.expires) : "Never"}</span></p>
+                                <p className='text-helper font-medium'>Price: <span className='text-light font-normal'>${item.price}</span></p>
                                 <p className='text-helper font-medium'>Status: <span className='text-light font-normal'>{item.status}</span></p>
                               </div>
                               <div className='bg-[#F2F4F8] flex justify-between items-center px-2 py-1 rounded-md gap-4'>

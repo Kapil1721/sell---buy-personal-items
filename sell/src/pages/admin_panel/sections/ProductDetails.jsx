@@ -25,6 +25,7 @@ function ProductDetails() {
     const [attachments, setAttachment] = useState([]);
     const [progress, setProgress] = useState(0);
     const [productName, setProductName] = useState('')
+    const [price, setPrice] = useState(0)
     const [category, setCategory] = useState({ value: '', name: "" });
     const [description, setDescription] = useState('')
     const [descriptionDefault, setDescriptionDefault] = useState('')
@@ -39,6 +40,7 @@ function ProductDetails() {
             let _Attachments = res?.products?.images.filter((item) => item.imagesType === 'ATTACHMENTS')
             const _productCategory = category.productCategories.find((itm) => itm.id === res.products.categoryId)
             setProductName(res?.products?.name)
+            setPrice(res?.products?.price || 0)
             setCategory({ value: _productCategory.id, name: _productCategory.name })
             setDescriptionDefault(res?.products?.desription)
             setDescription(res?.products?.desription)
@@ -172,7 +174,7 @@ function ProductDetails() {
         const images = [...gallery].map((item) => ({ path: item.path, name: item.name, url: item.url, type: "GALLARY" }));
         const _attachments = [...attachments].map((item) => ({ path: item.path, name: item.name, url: item.url, type: "ATTACHMENTS" }));
 
-        const res = await UPDATEPRODUCT({ name: productName, description, category, images, _attachments, post_id: data.products.post_id });
+        const res = await UPDATEPRODUCT({ name: productName, price, description, category, images, _attachments, post_id: data.products.post_id });
         // console.log(res, "handlePostProduct");
         if (res.status) {
             toast.success('Product updated successfully!')
@@ -211,6 +213,10 @@ function ProductDetails() {
                                     <div className='mt-8 flex flex-col'>
                                         <label className='text-primary text-lg font-semibold mb-4 ml-4' htmlFor="productName">Product Name <span>*</span></label>
                                         <input type="text" className='border border-[#D5E3EE] flex justify-between items-center p-4 gap-4 rounded-md focus:outline-none' name='productName' value={productName} onChange={(e) => setProductName(e.target.value)} />
+                                    </div>
+                                    <div className='mt-8 flex flex-col'>
+                                        <label className='text-primary text-lg font-semibold mb-4 ml-4' htmlFor="price">Price <span>*</span></label>
+                                        <input type="number" className='border border-[#D5E3EE] flex justify-between items-center p-4 gap-4 rounded-md focus:outline-none' name='price' value={price} onChange={(e) => setPrice(e.target.value)} />
                                     </div>
                                     <div className='mt-8 flex flex-col max-w-72'>
                                         <label className='text-primary text-lg font-semibold mb-4 ml-4'>Category <span>*</span></label>

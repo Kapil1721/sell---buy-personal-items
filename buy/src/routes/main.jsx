@@ -24,6 +24,7 @@ import {
     Donations,
     MembershipPlans,
     MembershipPurchase,
+    ManageMembers,
     PrivacyPolicy,
     TermsAndConditions,
     RefundPolicy,
@@ -229,6 +230,10 @@ const routes = [
                     {
                         path: 'settings',
                         element: <Settings />
+                    },
+                    {
+                        path: 'users',
+                        element: <ManageMembers />
                     },
                 ]
             },

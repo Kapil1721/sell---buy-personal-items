@@ -48,6 +48,8 @@ export const adminEndpoints = {
   getMyOrders_API: BASE_URL + "/my-orders",
   getSettings_API: BASE_URL + "/settings",
   adminLoginUrl: BASE_URL + "/admin/login",
+  getUsers_API: BASE_URL + "/admin/users",
+  deleteUser_API: BASE_URL + "/admin/users",
 };
 
 export const productEndPoint = {

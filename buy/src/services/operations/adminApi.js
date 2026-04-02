@@ -12,7 +12,9 @@ const {
   updatePassword_API,
   updateEmail_API,
   deleteProfile_API,
-  adminLoginUrl
+  adminLoginUrl,
+  getUsers_API,
+  deleteUser_API,
 } = adminEndpoints;
 const { fileUpload_API, deleteFileUpload_API } = fileUploadEndpoints;
 
@@ -180,6 +182,27 @@ export const adminLogin = async (data) => {
     "POST",
     adminLoginUrl,
     data,
+    true,
+    null
+  );
+};
+
+export const GET_ALL_USERS = async (params) => {
+  return await responseHanlder(
+    "GET",
+    getUsers_API,
+    null,
+    true,
+    null,
+    params
+  );
+};
+
+export const DELETE_USER_BY_ADMIN = async (id) => {
+  return await responseHanlder(
+    "DELETE",
+    deleteUser_API + "/" + id,
+    null,
     true,
     null
   );
