@@ -1,7 +1,7 @@
 function WhyNow() {
   const stats = [
     { num: '60s', label: 'To list your first item' },
-    { num: '$97', label: 'One-time membership fee' },
+    { num: '$59', label: 'One-time membership fee' },
     { num: '90 Days', label: 'Then it\'s free forever' },
     { num: '∞', label: 'Items you can sell' },
   ]

@@ -27,7 +27,7 @@ function Membership() {
 export default Membership
 
 
-// The cost for membership is only $47/Month for only (3 months) or for onetime fee of $97
+// The cost for membership is only $47/Month for only (3 months) or for onetime fee of $59
 //  which is a 69% discount!. Also, Auto Withdrawal are available for monthly fee payments"
 
 

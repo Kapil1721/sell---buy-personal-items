@@ -25,7 +25,7 @@ function MembershipOpportunity() {
           </h2>
 
           <p className="text-light text-base leading-relaxed mb-4">
-            You pay a one-time membership fee of just <strong className="text-primary">$97</strong> to become one of our
+            You pay a one-time membership fee of just <strong className="text-primary">$59</strong> to become one of our
             affiliates. Our program is designed for everyone &mdash; whether you want to post personal items to sell for yourself
             or use it to sell for families and friends to generate a good income, which is most needed in these challenging
             economic times.
@@ -47,7 +47,7 @@ function MembershipOpportunity() {
           <div className="bg-primary text-white p-9 rounded-sm shadow-lg">
             <p className="text-xs tracking-[2px] uppercase text-white/50 mb-2">One-Time Membership Fee</p>
             <div className="text-secondary font-bold leading-none mb-1" style={{ fontSize: '72px' }}>
-              $97
+              $59
             </div>
             <p className="text-white/40 text-sm mb-6">Then only a small % per sale</p>
 
