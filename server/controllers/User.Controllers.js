@@ -6,11 +6,19 @@ import { CatchAsync } from "../utils/CatchAsync.js";
 import bcrypt from "bcryptjs";
 import { count, log } from "console";
 import { sendMultipleEmails } from "../services/Email.js";
+import {
+  capturePayPalOrder,
+  createPayPalOrder,
+  getPayPalClientId,
+} from "../utils/paypal.js";
+import { renderHtmlTemplate } from "../utils/renderTemplate.js";
 // import { broadcastService } from "../app.js";
 
 const prisma = new PrismaClient();
 
 const __dirname = path.resolve();
+const membershipActivatedTemplatePath =
+  __dirname + "/templates/membershipActivated.html";
 
 function addMonths(date, months) {
   const newDate = new Date(date); // Copy the original date
@@ -25,6 +33,42 @@ function addMonths(date, months) {
 
   return newDate;
 }
+
+const formatDisplayDate = (date) =>
+  new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }).format(new Date(date));
+
+const buildMembershipActivatedEmail = ({
+  customerName,
+  planName,
+  amount,
+  currency = "USD",
+  paymentMethod,
+  transactionId,
+  paymentDate,
+  membershipStartDate,
+  membershipEndDate,
+}) => {
+  const displayAmount = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency,
+  }).format(Number(amount || 0));
+
+  return renderHtmlTemplate(membershipActivatedTemplatePath, {
+    customerName: customerName || "there",
+    planName: planName || "Membership plan",
+    displayAmount,
+    paymentMethod: paymentMethod || "Membership Payment",
+    transactionId: transactionId || "Processed successfully",
+    paymentDate: formatDisplayDate(paymentDate),
+    membershipPeriod: `${formatDisplayDate(
+      membershipStartDate
+    )} - ${formatDisplayDate(membershipEndDate)}`,
+  });
+};
 
 const processPayment = async (amount) => {
   try {
@@ -47,6 +91,29 @@ const processPayment = async (amount) => {
   } catch (error) {
     console.error("Payment processing failed", error);
     return { success: false };
+  }
+};
+
+const getMembershipAmount = (plan) => {
+  if (plan?.offerValue) {
+    return Number(plan.offerValue);
+  }
+
+  return 59;
+};
+
+const getMembershipEndDate = (startDate, plan) => {
+  switch (plan?.durationType) {
+    case "DAY": {
+      const endDate = new Date(startDate);
+      endDate.setDate(endDate.getDate() + plan.duration);
+      return endDate;
+    }
+    case "YEAR":
+      return addMonths(startDate, plan.duration * 12);
+    case "MONTH":
+    default:
+      return addMonths(startDate, plan.duration);
   }
 };
 
@@ -142,7 +209,17 @@ export const addMembership = CatchAsync(async (req, res, next) => {
   await sendMultipleEmails({
     email: req.user.email,
     subject: "Subscription Activated",
-    html: `<p>Your subscription plan has been successfully activated.</p>`,
+    html: buildMembershipActivatedEmail({
+      customerName: req.user.name,
+      planName: plan.name,
+      amount,
+      currency: paymentResult.currency === "$" ? "USD" : paymentResult.currency,
+      paymentMethod: "Membership Payment",
+      transactionId: paymentResult.stripePaymentId,
+      paymentDate: new Date(),
+      membershipStartDate: startDate,
+      membershipEndDate: endDate,
+    }),
   });
 
   // Step 9: Return a success response to the client
@@ -152,6 +229,196 @@ export const addMembership = CatchAsync(async (req, res, next) => {
     isSubscribed: true,
   });
 });
+
+export const getPayPalMembershipConfig = CatchAsync(async (req, res, next) => {
+  const clientId = getPayPalClientId();
+
+  return res.status(200).json({
+    status: true,
+    clientId,
+    currency: "USD",
+  });
+});
+
+export const createMembershipPayPalOrder = CatchAsync(
+  async (req, res, next) => {
+    const { planId } = req.body;
+    const userId = req.user.id;
+
+    const existingMembership = await prisma.memberships.findFirst({
+      where: { userId },
+    });
+
+    if (existingMembership) {
+      return res.status(400).json({
+        status: false,
+        message: "User already has an active membership",
+      });
+    }
+
+    const plan = await prisma.subscriptionPlan.findFirst({
+      where: { id: Number(planId), active: true },
+    });
+
+    if (!plan) {
+      return res.status(400).json({
+        status: false,
+        message: "Invalid subscription plan",
+      });
+    }
+
+    const amount = getMembershipAmount(plan);
+    const order = await createPayPalOrder({
+      amount,
+      description: `${plan.name} membership`,
+      customId: JSON.stringify({
+        userId,
+        planId: Number(planId),
+        type: "membership",
+      }),
+    });
+
+    return res.status(201).json({
+      status: true,
+      orderId: order.id,
+      amount,
+    });
+  }
+);
+
+export const captureMembershipPayPalOrder = CatchAsync(
+  async (req, res, next) => {
+    const { orderId, planId } = req.body;
+    const userId = req.user.id;
+
+    if (!orderId || !planId) {
+      return res.status(400).json({
+        status: false,
+        message: "Order ID and plan ID are required",
+      });
+    }
+
+    const existingMembership = await prisma.memberships.findFirst({
+      where: { userId },
+    });
+
+    if (existingMembership) {
+      return res.status(400).json({
+        status: false,
+        message: "User already has an active membership",
+      });
+    }
+
+    const plan = await prisma.subscriptionPlan.findFirst({
+      where: { id: Number(planId), active: true },
+    });
+
+    if (!plan) {
+      return res.status(400).json({
+        status: false,
+        message: "Invalid subscription plan",
+      });
+    }
+
+    const captureResult = await capturePayPalOrder(orderId);
+
+    if (captureResult.status !== "COMPLETED") {
+      return res.status(400).json({
+        status: false,
+        message: "PayPal payment was not completed",
+      });
+    }
+
+    const capture =
+      captureResult.purchase_units?.[0]?.payments?.captures?.[0] ?? null;
+
+    if (!capture || capture.status !== "COMPLETED") {
+      return res.status(400).json({
+        status: false,
+        message: "PayPal capture was not completed",
+      });
+    }
+
+    const paidAmount = Number(capture.amount?.value ?? 0);
+    const expectedAmount = getMembershipAmount(plan);
+
+    if (paidAmount !== expectedAmount) {
+      return res.status(400).json({
+        status: false,
+        message: "Paid amount does not match the membership price",
+      });
+    }
+
+    const existingPayment = await prisma.payment.findFirst({
+      where: { stripePaymentId: capture.id },
+      include: {
+        subscription: true,
+      },
+    });
+
+    if (existingPayment) {
+      return res.status(200).json({
+        status: true,
+        message: "Membership payment already captured.",
+        isSubscribed: true,
+        membershipId: existingPayment.subscriptionId,
+      });
+    }
+
+    const startDate = new Date();
+    const endDate = getMembershipEndDate(startDate, plan);
+
+    const newMembership = await prisma.memberships.create({
+      data: {
+        startDate,
+        endDate,
+        userId,
+        subscriptionPlanId: Number(planId),
+        status: "ACTIVE",
+      },
+    });
+
+    await prisma.payment.create({
+      data: {
+        amount: paidAmount,
+        currency: capture.amount?.currency_code ?? "USD",
+        paymentDate: new Date(capture.create_time ?? Date.now()),
+        stripePaymentId: capture.id,
+        subscriptionId: newMembership.id,
+      },
+    });
+
+    await prisma.users.update({
+      where: { id: userId },
+      data: {
+        isSubscribed: true,
+      },
+    });
+
+    await sendMultipleEmails({
+      email: req.user.email,
+      subject: "Subscription Activated",
+      html: buildMembershipActivatedEmail({
+        customerName: req.user.name,
+        planName: plan.name,
+        amount: paidAmount,
+        currency: capture.amount?.currency_code ?? "USD",
+        paymentMethod: "PayPal",
+        transactionId: capture.id,
+        paymentDate: capture.create_time ?? new Date(),
+        membershipStartDate: startDate,
+        membershipEndDate: endDate,
+      }),
+    });
+
+    return res.status(201).json({
+      status: true,
+      message: "Congratulations, your membership has been activated successfully.",
+      isSubscribed: true,
+      membershipId: newMembership.id,
+    });
+  }
+);
 
 export const getMembership = CatchAsync(async (req, res, next) => {
   const { id } = req.user;

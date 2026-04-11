@@ -20,6 +20,9 @@ export const membershipEndpoints = {
   GET_MEMBERSHIP_API: BASE_URL + "/membership",
   CREATEMEMBERSHIP_API: BASE_URL + "/membership",
   GETPLANS_API: BASE_URL + "/plans",
+  PAYPAL_CONFIG_API: BASE_URL + "/membership/paypal/config",
+  PAYPAL_CREATE_ORDER_API: BASE_URL + "/membership/paypal/order",
+  PAYPAL_CAPTURE_ORDER_API: BASE_URL + "/membership/paypal/capture",
 };
 
 export const donationEndpoints = {

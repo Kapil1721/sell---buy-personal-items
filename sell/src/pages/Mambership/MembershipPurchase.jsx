@@ -1,16 +1,26 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import './MembershipPurchase.css'
-import { CREATEMEMBERSHIP, GETPLANSBYID } from '../../services/operations/membershipApi';
+import {
+    CAPTUREPAYPALMEMBERSHIPORDER,
+    CREATEPAYPALMEMBERSHIPORDER,
+    GETPAYPALMEMBERSHIPCONFIG,
+    GETPLANSBYID
+} from '../../services/operations/membershipApi';
 import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
-import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Tab, Tabs, useDisclosure } from '@nextui-org/react';
+import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@nextui-org/react';
 import { AuthContext } from '../../auth/AuthContext';
 
 function MembershipPurchase({ _planID }) {
 
     const { user, setUser } = useContext(AuthContext);
     const [isLoading, setIsLoading] = useState(false);
+    const [paypalClientId, setPaypalClientId] = useState('');
+    const [paypalScriptLoaded, setPaypalScriptLoaded] = useState(false);
+    const [isPayPalReady, setIsPayPalReady] = useState(false);
+    const paypalButtonRef = useRef(null);
+    const hasRenderedPayPalButtons = useRef(false);
 
     const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -29,6 +39,10 @@ function MembershipPurchase({ _planID }) {
 
     const [PaymentType, setPaymentType] = useState('onetime');
     const includedFeatures = data?.plans?.features?.map((itm) => itm.feature.name)
+    const payableAmount = useMemo(() => {
+        const apiAmount = PaymentType === "onetime" ? data?.plans?.offerValue : data?.plans?.price;
+        return Number(apiAmount || 59);
+    }, [PaymentType, data?.plans?.offerValue, data?.plans?.price]);
 
     const handleToggle = (e) => {
         e.preventDefault();
@@ -41,21 +55,121 @@ function MembershipPurchase({ _planID }) {
         e.preventDefault()
         handleOpen()
     }
-    const handlePayment = async () => {
-        setIsLoading(true);
-        const amount = PaymentType === "onetime" ? data?.plans?.offerValue : data?.plans?.price
-        const res = await CREATEMEMBERSHIP({ planId: Number(planID), amount: amount });
-        if (res?.status) {
-            setUser({ ...user, isSubscribed: true });
-            onClose();
-            setIsLoading(false);
-            toast.success(res.message);
-        } else {
-            onClose();
-            setIsLoading(false);
-            // toast.error(res.message);
+
+    useEffect(() => {
+        let isMounted = true;
+
+        const loadPayPalConfig = async () => {
+            const res = await GETPAYPALMEMBERSHIPCONFIG();
+            if (isMounted && res?.clientId) {
+                setPaypalClientId(res.clientId);
+            }
+        };
+
+        loadPayPalConfig();
+
+        return () => {
+            isMounted = false;
+        };
+    }, []);
+
+    useEffect(() => {
+        if (!isOpen) {
+            hasRenderedPayPalButtons.current = false;
+            setIsPayPalReady(false);
+            if (paypalButtonRef.current) {
+                paypalButtonRef.current.innerHTML = '';
+            }
+            return;
         }
-    };
+
+        if (!paypalClientId) {
+            return;
+        }
+
+        const scriptId = 'paypal-membership-sdk';
+        const existingScript = document.getElementById(scriptId);
+
+        if (window.paypal) {
+            setPaypalScriptLoaded(true);
+            return;
+        }
+
+        if (existingScript) {
+            const handleLoad = () => setPaypalScriptLoaded(true);
+            existingScript.addEventListener('load', handleLoad);
+            return () => existingScript.removeEventListener('load', handleLoad);
+        }
+
+        const script = document.createElement('script');
+        script.id = scriptId;
+        script.src = `https://www.paypal.com/sdk/js?client-id=${paypalClientId}&currency=USD&intent=capture`;
+        script.async = true;
+        script.onload = () => setPaypalScriptLoaded(true);
+        script.onerror = () => toast.error('Unable to load PayPal checkout.');
+        document.body.appendChild(script);
+    }, [isOpen, paypalClientId]);
+
+    useEffect(() => {
+        if (!isOpen || !paypalScriptLoaded || !paypalButtonRef.current || hasRenderedPayPalButtons.current) {
+            return;
+        }
+
+        if (!window.paypal?.Buttons) {
+            return;
+        }
+
+        hasRenderedPayPalButtons.current = true;
+
+        window.paypal.Buttons({
+            style: {
+                layout: 'vertical',
+                shape: 'rect',
+                label: 'paypal',
+            },
+            createOrder: async () => {
+                setIsLoading(true);
+                const res = await CREATEPAYPALMEMBERSHIPORDER({ planId: Number(planID) });
+                if (!res?.status || !res?.orderId) {
+                    setIsLoading(false);
+                    throw new Error(res?.message || 'Unable to create PayPal order.');
+                }
+                return res.orderId;
+            },
+            onApprove: async (paypalData) => {
+                const res = await CAPTUREPAYPALMEMBERSHIPORDER({
+                    orderId: paypalData.orderID,
+                    planId: Number(planID),
+                });
+
+                setIsLoading(false);
+
+                if (res?.status) {
+                    setUser({ ...user, isSubscribed: true });
+                    toast.success(res.message);
+                    onClose();
+                    return;
+                }
+
+                throw new Error(res?.message || 'Unable to confirm PayPal payment.');
+            },
+            onCancel: () => {
+                setIsLoading(false);
+                toast.error('PayPal payment was cancelled.');
+            },
+            onError: (error) => {
+                console.error(error);
+                setIsLoading(false);
+                toast.error('PayPal checkout failed. Please try again.');
+            },
+        }).render(paypalButtonRef.current).then(() => {
+            setIsPayPalReady(true);
+        }).catch((error) => {
+            console.error(error);
+            setIsLoading(false);
+            toast.error('Unable to render PayPal checkout.');
+        });
+    }, [isOpen, paypalScriptLoaded, planID, onClose, setUser, user]);
 
     return (
 
@@ -166,10 +280,14 @@ function MembershipPurchase({ _planID }) {
                                             <div className='flex justify-center items-center w-full mt-4'>
                                                 <div className='grid grid-cols-2 w-full gap-4'>
                                                     <p className=" text-light font-bold ">Plane Name: <span className='text-lg font-medium text-primary '>{data?.plans?.name}</span></p>
-                                                    <p className=" text-light font-bold ">Offer Type: <span className='text-lg font-medium text-primary '>{"Payment"}</span></p>
+                                                    <p className=" text-light font-bold ">Offer Type: <span className='text-lg font-medium text-primary '>PayPal</span></p>
                                                     <p className=" text-light font-bold ">Payment Type: <span className='text-lg font-medium text-primary '>{PaymentType}</span></p>
-                                                    <p className=" text-light font-bold ">Payable Amount: <span className='text-lg font-medium text-primary '>{` $${PaymentType === "onetime" ? data?.plans?.offerValue : data?.plans?.price}`}</span></p>
-                                                    <Button isLoading={isLoading} className='col-span-2 mx-40 mt-10' variant='shadow' color='primary' onClick={handlePayment}>Proceed To Payment</Button>
+                                                    <p className=" text-light font-bold ">Payable Amount: <span className='text-lg font-medium text-primary '>{` $${payableAmount.toFixed(2)}`}</span></p>
+                                                    <div className='col-span-2 mt-6'>
+                                                        {!paypalClientId && <p className='text-sm text-danger'>PayPal is not configured yet on the server.</p>}
+                                                        {paypalClientId && !isPayPalReady && <p className='text-sm text-primary mb-3'>Loading PayPal checkout...</p>}
+                                                        <div ref={paypalButtonRef} />
+                                                    </div>
                                                 </div>
                                             </div>
                                         </ModalBody>

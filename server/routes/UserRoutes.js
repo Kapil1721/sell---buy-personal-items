@@ -18,7 +18,10 @@ import {
 import AppError from "../utils/appError.js";
 import {
   addMembership,
+  captureMembershipPayPalOrder,
   getMembership,
+  getPayPalMembershipConfig,
+  createMembershipPayPalOrder,
   deleteUploads,
   getModerationProductsforAdmin,
   getMyProducts,
@@ -126,6 +129,13 @@ router.route("/profile/email").put(authMiddleware, upadateEmail);
 // for membership
 router.route("/membership").post(authMiddleware, addMembership);
 router.route("/membership").get(authMiddleware, getMembership);
+router.route("/membership/paypal/config").get(getPayPalMembershipConfig);
+router
+  .route("/membership/paypal/order")
+  .post(authMiddleware, createMembershipPayPalOrder);
+router
+  .route("/membership/paypal/capture")
+  .post(authMiddleware, captureMembershipPayPalOrder);
 router.route("/plans").get(getPlans);
 router.route("/plans/:id").get(getPlansById);
 
