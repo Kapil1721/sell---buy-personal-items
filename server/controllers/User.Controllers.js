@@ -1,4 +1,5 @@
 import path from "path";
+import { fileURLToPath } from "url";
 import AppError from "../utils/appError.js";
 import fs, { stat } from "fs";
 import { PrismaClient } from "@prisma/client";
@@ -16,9 +17,11 @@ import { renderHtmlTemplate } from "../utils/renderTemplate.js";
 
 const prisma = new PrismaClient();
 
-const __dirname = path.resolve();
-const membershipActivatedTemplatePath =
-  __dirname + "/templates/membershipActivated.html";
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const membershipActivatedTemplatePath = path.resolve(
+  __dirname,
+  "../templates/membershipActivated.html"
+);
 
 function addMonths(date, months) {
   const newDate = new Date(date); // Copy the original date
