@@ -9,8 +9,23 @@ const {
   postReview_API,
   addToFavourite_API,
   getFavoriteProducts_API,
-  promoteProduct_API
+  promoteProduct_API,
+  PAYPAL_CONFIG_API,
+  PAYPAL_PRODUCT_ORDER_API,
+  PAYPAL_PRODUCT_CAPTURE_API,
 } = productEndPoint;
+
+export const GET_PAYPAL_PRODUCT_CONFIG = async () => {
+  return await responseHanlder("GET", PAYPAL_CONFIG_API, null, false, null);
+};
+
+export const CREATE_PAYPAL_PRODUCT_ORDER = async (body) => {
+  return await responseHanlder("POST", PAYPAL_PRODUCT_ORDER_API, body, true, null);
+};
+
+export const CAPTURE_PAYPAL_PRODUCT_ORDER = async (body) => {
+  return await responseHanlder("POST", PAYPAL_PRODUCT_CAPTURE_API, body, true, null);
+};
 
 export const GET_ALL_PRODUCTS = async (searchParams, userId) => {
   console.log(`${getProducts_API}${userId !== null ? `/${userId}` : ""}`);

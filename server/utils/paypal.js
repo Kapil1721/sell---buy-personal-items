@@ -5,11 +5,18 @@ const PAYPAL_API_BASE =
     : "https://api-m.sandbox.paypal.com");
 
 const getPayPalCredentials = () => {
-  const clientId = process.env.PAYPAL_CLIENT_ID;
-  const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
+  const env = process.env.PAYPAL_ENV || "sandbox";
+  const clientId =
+    env === "live"
+      ? process.env.PAYPAL_LIVE_CLIENT_ID
+      : process.env.PAYPAL_SANDBOX_CLIENT_ID;
+  const clientSecret =
+    env === "live"
+      ? process.env.PAYPAL_LIVE_CLIENT_SECRET
+      : process.env.PAYPAL_SANDBOX_CLIENT_SECRET;
 
   if (!clientId || !clientSecret) {
-    throw new Error("PayPal credentials are not configured");
+    throw new Error(`PayPal credentials are not configured for ${env} environment`);
   }
 
   return { clientId, clientSecret };

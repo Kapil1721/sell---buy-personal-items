@@ -1328,3 +1328,113 @@ export const deleteUserByAdmin = CatchAsync(async (req, res, next) => {
 //     data: user,
 //   });
 // });
+
+export const createProductPayPalOrder = CatchAsync(async (req, res, next) => {
+  const { productId } = req.body;
+  const userId = req.user.id;
+
+  const product = await prisma.listedItem.findUnique({
+    where: { post_id: Number(productId) },
+  });
+
+  if (!product || !product.active || product.itemsType !== "SALE") {
+    return res.status(400).json({
+      status: false,
+      message: "Invalid product or not for sale",
+    });
+  }
+
+  if (!product.price || product.price <= 0) {
+    return res.status(400).json({
+      status: false,
+      message: "Product does not have a valid price",
+    });
+  }
+
+  const order = await createPayPalOrder({
+    amount: product.price,
+    description: `Purchase of ${product.name}`,
+    customId: JSON.stringify({
+      userId,
+      productId: Number(productId),
+      type: "product_purchase",
+    }),
+  });
+
+  return res.status(201).json({
+    status: true,
+    orderId: order.id,
+    amount: product.price,
+  });
+});
+
+export const captureProductPayPalOrder = CatchAsync(async (req, res, next) => {
+  const { orderId, productId, message } = req.body;
+  const userId = req.user.id;
+
+  if (!orderId || !productId) {
+    return res.status(400).json({
+      status: false,
+      message: "Order ID and Product ID are required",
+    });
+  }
+
+  const product = await prisma.listedItem.findUnique({
+    where: { post_id: Number(productId) },
+  });
+
+  if (!product) {
+    return res.status(400).json({
+      status: false,
+      message: "Invalid product",
+    });
+  }
+
+  const captureResult = await capturePayPalOrder(orderId);
+
+  if (captureResult.status !== "COMPLETED") {
+    return res.status(400).json({
+      status: false,
+      message: "PayPal payment was not completed",
+    });
+  }
+
+  const capture = captureResult.purchase_units?.[0]?.payments?.captures?.[0] ?? null;
+
+  if (!capture || capture.status !== "COMPLETED") {
+    return res.status(400).json({
+      status: false,
+      message: "PayPal capture was not completed",
+    });
+  }
+
+  const paidAmount = Number(capture.amount?.value ?? 0);
+
+  if (paidAmount !== product.price) {
+    return res.status(400).json({
+      status: false,
+      message: "Paid amount does not match the product price",
+    });
+  }
+
+  // Create the PurchaseRequest marked as Accepted and Paid
+  const purchaseRequest = await prisma.purchaseRequest.create({
+    data: {
+      buyerId: userId,
+      sellerId: product.userId,
+      productId: Number(productId),
+      message: message || "Purchased via PayPal",
+      status: "Accepted",
+      paymentId: capture.id,
+      amount: paidAmount,
+      statusUpdatedBy: "Buyer",
+    },
+  });
+
+  return res.status(201).json({
+    status: true,
+    message: "Congratulations, your purchase was completed successfully.",
+    purchaseRequest,
+  });
+});
+

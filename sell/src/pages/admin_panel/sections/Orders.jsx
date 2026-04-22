@@ -185,8 +185,13 @@ function Orders() {
                     <td className="px-6 py-4 font-semibold text-primary border">
                       {item.buyer.name}
                     </td>
-                    <td className="px-6 py-4 font-semibold text-primary border">
-                      <span className={`${item.status === 'Pending' ? "bg-light text-white" : item.status === 'Accepted' ? "bg-secondary text-white" : "bg-red-500 text-white"} p-2 rounded-lg cursor-default`}>{item.status}</span>
+                    <td className="px-6 py-4 font-semibold text-primary border text-center">
+                      <div className="flex flex-col gap-2 items-center">
+                        <span className={`${item.status === 'Pending' ? "bg-light text-white" : item.status === 'Accepted' ? "bg-secondary text-white" : "bg-red-500 text-white"} p-2 rounded-lg cursor-default w-full text-center`}>{item.status}</span>
+                        {item.paymentId && (
+                          <span className="bg-green-500 text-white p-1 px-2 rounded-md text-[10px] uppercase font-bold">Paid via PayPal</span>
+                        )}
+                      </div>
                     </td>
                     {/* {item.description}
                         </td> */}

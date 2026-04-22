@@ -61,6 +61,9 @@ export const productEndPoint = {
   postLike_API: BASE_URL + "/like",
   addToFavourite_API: BASE_URL + "/favorite",
   promoteProduct_API: BASE_URL + "/promote",
+  PAYPAL_CONFIG_API: BASE_URL + "/membership/paypal/config",
+  PAYPAL_PRODUCT_ORDER_API: BASE_URL + "/product/paypal/order",
+  PAYPAL_PRODUCT_CAPTURE_API: BASE_URL + "/product/paypal/capture",
 };
 
 export const newsLetterEndPoint = {

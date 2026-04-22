@@ -42,6 +42,8 @@ import {
   deleteUserByAdmin,
   deleteModerateProducts,
   getAllUsersByAdmin,
+  createProductPayPalOrder,
+  captureProductPayPalOrder,
 } from "../controllers/User.Controllers.js";
 import {
   getPlans,
@@ -138,6 +140,15 @@ router
   .post(authMiddleware, captureMembershipPayPalOrder);
 router.route("/plans").get(getPlans);
 router.route("/plans/:id").get(getPlansById);
+
+// for product payments
+router
+  .route("/product/paypal/order")
+  .post(authMiddleware, createProductPayPalOrder);
+router
+  .route("/product/paypal/capture")
+  .post(authMiddleware, captureProductPayPalOrder);
+
 
 // for donation
 router.route("/donation/create").post(authMiddleware, createDonation);

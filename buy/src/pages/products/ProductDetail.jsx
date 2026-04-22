@@ -15,6 +15,54 @@ import { SEND_PURCHASE_REQUEST } from '../../services/operations/PurchaseRequest
 import UserStatus from './sections/UserStatus';
 import TooltipIcon from '../../components/Tooltip';
 import RatingComponent from '../../components/RatingComponent';
+import { CAPTURE_PAYPAL_PRODUCT_ORDER, CREATE_PAYPAL_PRODUCT_ORDER, GET_PAYPAL_PRODUCT_CONFIG } from '../../services/operations/productsApi';
+import { useRef, useEffect } from 'react';
+
+
+const LoadingUi = () => {
+    return (
+        <div className="relative bg-[#F8FAFD]" >
+            <div className="max-w-[1200px] mx-auto py-14">
+                <div className='relative'>
+                    <div className='w-full'>
+                        <div className='min-h-14 animate-pulse bg-loader rounded-3xl mb-10 w-full'></div>
+                        <div className='bg-[#FDFDFE]  p-10 w-full'>
+                            <form className='w-full '>
+                                <div className='w-full'>
+                                    <h3 className='text-3xl text-[#374B5C] font-semibold animate-pulse bg-loader w-1/2 rounded-3xl'></h3>
+                                    <div className='mt-8 flex flex-col w-full'>
+                                        <div className='min-h-6 animate-pulse bg-loader w-1/2 rounded-3xl m-1'></div>
+                                        <div className='min-h-6 animate-pulse bg-loader w-full rounded-3xl m-1'></div>
+                                    </div>
+                                    <div className='mt-8 flex flex-col max-w-72 w-full'>
+                                        <div className='min-h-6 animate-pulse bg-loader w-1/2 rounded-3xl m-1'></div>
+                                        <div className='min-h-6 animate-pulse bg-loader w-full rounded-3xl m-1'></div>
+                                    </div>
+                                    <div className='mt-8 flex flex-col w-full'>
+                                        <div className='min-h-20 animate-pulse bg-loader w-full rounded-3xl'></div>
+                                    </div>
+                                    <div className='mt-8 flex flex-col w-full'>
+                                        <div className='min-h-20 animate-pulse bg-loader w-full rounded-3xl'></div>
+                                    </div>
+                                    <div className='mt-8 flex flex-col w-full'>
+                                        <div className='min-h-20 animate-pulse bg-loader w-full rounded-3xl'></div>
+                                    </div>
+                                    <div className='mt-8 flex justify-end'>
+                                        <div>
+                                            <div className='post_product_button min-h-14 animate-pulse bg-loader rounded-3xl mb-10'>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div >
+    )
+}
 
 
 const ProductDetail = () => {
@@ -36,6 +84,13 @@ const ProductDetail = () => {
         setIsLoading(false)
         setModalOpen(false);
     };
+
+    const [paypalClientId, setPaypalClientId] = useState('');
+    const [paypalScriptLoaded, setPaypalScriptLoaded] = useState(false);
+    const [isPayPalReady, setIsPayPalReady] = useState(false);
+    const paypalButtonRef = useRef(null);
+    const hasRenderedPayPalButtons = useRef(false);
+
 
     const params = useParams()
     const searchQuery = useQueryData();
@@ -226,6 +281,102 @@ const ProductDetail = () => {
     const handleViewMore = (id) => {
         navigate(breadcrumsData[2].link + `&postId=${id}`);
     }
+
+    useEffect(() => {
+        let isMounted = true;
+        const loadPayPalConfig = async () => {
+            const res = await GET_PAYPAL_PRODUCT_CONFIG();
+            if (isMounted && res?.clientId) {
+                setPaypalClientId(res.clientId);
+            }
+        };
+        loadPayPalConfig();
+        return () => {
+            isMounted = false;
+        };
+    }, []);
+
+    useEffect(() => {
+        if (!paypalClientId || window.paypal) {
+            if (window.paypal) setPaypalScriptLoaded(true);
+            return;
+        }
+
+        const scriptId = 'paypal-sdk-script';
+        if (document.getElementById(scriptId)) return;
+
+        const script = document.createElement('script');
+        script.id = scriptId;
+        script.src = `https://www.paypal.com/sdk/js?client-id=${paypalClientId}&currency=USD&intent=capture`;
+        script.async = true;
+        script.onload = () => setPaypalScriptLoaded(true);
+        script.onerror = () => toast.error('Unable to load PayPal checkout.');
+        document.body.appendChild(script);
+    }, [paypalClientId]);
+
+    useEffect(() => {
+        if (!paypalScriptLoaded || !paypalButtonRef.current || hasRenderedPayPalButtons.current || !product) {
+            return;
+        }
+
+        if (!window.paypal?.Buttons) {
+            return;
+        }
+
+        if (product.itemsType !== 'SALE' || !product.price || product.price <= 0) {
+            return;
+        }
+
+        hasRenderedPayPalButtons.current = true;
+
+        window.paypal.Buttons({
+            style: {
+                layout: 'vertical',
+                shape: 'rect',
+                label: 'paypal',
+            },
+            createOrder: async () => {
+                setIsLoading(true);
+                const res = await CREATE_PAYPAL_PRODUCT_ORDER({ productId: product.post_id });
+                if (!res?.status || !res?.orderId) {
+                    setIsLoading(false);
+                    throw new Error(res?.message || 'Unable to create PayPal order.');
+                }
+                return res.orderId;
+            },
+            onApprove: async (paypalData) => {
+                const res = await CAPTURE_PAYPAL_PRODUCT_ORDER({
+                    orderId: paypalData.orderID,
+                    productId: product.post_id,
+                });
+
+                setIsLoading(false);
+
+                if (res?.status) {
+                    toast.success(res.message);
+                    return;
+                }
+
+                throw new Error(res?.message || 'Unable to confirm PayPal payment.');
+            },
+            onCancel: () => {
+                setIsLoading(false);
+                toast.error('PayPal payment was cancelled.');
+            },
+            onError: (error) => {
+                console.error(error);
+                setIsLoading(false);
+                toast.error('PayPal checkout failed. Please try again.');
+            },
+        }).render(paypalButtonRef.current).then(() => {
+            setIsPayPalReady(true);
+        }).catch((error) => {
+            console.error(error);
+            setIsLoading(false);
+            // hasRenderedPayPalButtons.current = false;
+        });
+    }, [paypalScriptLoaded, product]);
+
 
 
 
@@ -444,21 +595,24 @@ const ProductDetail = () => {
                                             </svg>
                                             <span className='ml-4'>Send Request</span>
                                         </button> */}
-                                        <button className='bg-helper px-8 py-4 text-white font-bold text-base' onClick={(message) => OpenEmailModal(message)}>
-                                            {/* <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                width={14}
-                                                height={11}
-                                                viewBox="0 0 14 11"
-                                                fill="none"
-                                            >
-                                                <path
-                                                    d="M1.4 0C0.6279 0 0 0.616687 0 1.375V9.625C0 10.3833 0.6279 11 1.4 11H12.6C13.3721 11 14 10.3833 14 9.625V1.375C14 0.616687 13.3721 0 12.6 0H1.4ZM1.4 1.375H12.6V1.37903L7 4.8125L1.4 1.37769V1.375ZM1.4 2.75269L7 6.1875L12.6 2.75403L12.6014 9.625H1.4V2.75269Z"
-                                                    fill="#FDFDFE"
-                                                />
-                                            </svg> */}
+                                    <div className='flex flex-col justify-between items-center gap-4'>
+                                        <button className='bg-helper w-full px-8 py-4 text-white font-bold text-base' onClick={(message) => OpenEmailModal(message)}>
                                             <span className='ml-4'>Send Purchase Request</span>
                                         </button>
+                                        
+                                        {product.itemsType === 'SALE' && product.price > 0 && (
+                                            <div className='w-full mt-4'>
+                                                <div className='flex items-center gap-2 mb-4'>
+                                                    <div className='h-[1px] bg-[#D5E3EE] flex-1'></div>
+                                                    <span className='text-light text-sm font-medium'>OR</span>
+                                                    <div className='h-[1px] bg-[#D5E3EE] flex-1'></div>
+                                                </div>
+                                                {!paypalClientId && <p className='text-sm text-danger'>PayPal is not configured yet.</p>}
+                                                {paypalClientId && !isPayPalReady && <p className='text-sm text-primary mb-3'>Loading PayPal checkout...</p>}
+                                                <div ref={paypalButtonRef} className='w-full' />
+                                            </div>
+                                        )}
+
                                         <EmailModal
                                             isLoading={isLoading}
                                             isOpen={modalOpen}
@@ -492,6 +646,7 @@ const ProductDetail = () => {
                     </div>
                 </div>
             </div>
+            </div>
         </div>
     )
 }
@@ -500,47 +655,3 @@ export default ProductDetail;
 
 
 
-const LoadingUi = () => {
-    return (
-        <div className="relative bg-[#F8FAFD]" >
-            <div className="max-w-[1200px] mx-auto py-14">
-                <div className='relative'>
-                    <div className='w-full'>
-                        <div className='min-h-14 animate-pulse bg-loader rounded-3xl mb-10 w-full'></div>
-                        <div className='bg-[#FDFDFE]  p-10 w-full'>
-                            <form className='w-full '>
-                                <div className='w-full'>
-                                    <h3 className='text-3xl text-[#374B5C] font-semibold animate-pulse bg-loader w-1/2 rounded-3xl'></h3>
-                                    <div className='mt-8 flex flex-col w-full'>
-                                        <div className='min-h-6 animate-pulse bg-loader w-1/2 rounded-3xl m-1'></div>
-                                        <div className='min-h-6 animate-pulse bg-loader w-full rounded-3xl m-1'></div>
-                                    </div>
-                                    <div className='mt-8 flex flex-col max-w-72 w-full'>
-                                        <div className='min-h-6 animate-pulse bg-loader w-1/2 rounded-3xl m-1'></div>
-                                        <div className='min-h-6 animate-pulse bg-loader w-full rounded-3xl m-1'></div>
-                                    </div>
-                                    <div className='mt-8 flex flex-col w-full'>
-                                        <div className='min-h-20 animate-pulse bg-loader w-full rounded-3xl'></div>
-                                    </div>
-                                    <div className='mt-8 flex flex-col w-full'>
-                                        <div className='min-h-20 animate-pulse bg-loader w-full rounded-3xl'></div>
-                                    </div>
-                                    <div className='mt-8 flex flex-col w-full'>
-                                        <div className='min-h-20 animate-pulse bg-loader w-full rounded-3xl'></div>
-                                    </div>
-                                    <div className='mt-8 flex justify-end'>
-                                        <div>
-                                            <div className='post_product_button min-h-14 animate-pulse bg-loader rounded-3xl mb-10'>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div >
-    )
-}

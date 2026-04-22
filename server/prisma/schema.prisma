@@ -483,6 +483,8 @@ model PurchaseRequest {
   productId       Int
   message         String?
   status          PurchaseRequestStatus @default(Pending)
+  paymentId       String?
+  amount          Float?
   createdAt       DateTime              @default(now())
   updatedAt       DateTime              @updatedAt
   statusUpdatedBy StatusUpdatedBy?
