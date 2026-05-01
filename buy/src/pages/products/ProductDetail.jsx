@@ -1,10 +1,10 @@
-import React, { useContext, useState } from 'react'
+import { useContext, useState } from 'react'
 import Breadcrums from './sections/Breadcrums'
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
+import {  useLocation, useNavigate, useParams } from 'react-router-dom';
 import { IMAGEURL } from '../../utils/constants'
 import ErrorUi from '../../components/ErrorUi';
-import { AdminIcon, CompareIcon, EmailIcon, LikeIcon, MessageIcon, MobileIcon, ViewIcon } from '../../components/Icons';
+import { AdminIcon, LikeIcon, MobileIcon, ViewIcon } from '../../components/Icons';
 import FileUpload from '../../components/FileUpload';
 import { toast } from 'sonner';
 import { ADD_TO_FAVORITE, GET_SINGLE_PRODUCTS, POST_PRODUCT_REVIEW } from '../../services/operations/productsApi';
@@ -12,7 +12,6 @@ import { useQueryData } from '../../hooks/Hooks';
 import EmailModal from '../../components/EmailModal';
 import { AuthContext } from '../../auth/AuthContext';
 import { SEND_PURCHASE_REQUEST } from '../../services/operations/PurchaseRequestApi';
-import UserStatus from './sections/UserStatus';
 import TooltipIcon from '../../components/Tooltip';
 import RatingComponent from '../../components/RatingComponent';
 import { CAPTURE_PAYPAL_PRODUCT_ORDER, CREATE_PAYPAL_PRODUCT_ORDER, GET_PAYPAL_PRODUCT_CONFIG } from '../../services/operations/productsApi';
@@ -75,11 +74,6 @@ const ProductDetail = () => {
     const location = useLocation();
     const queryClient = useQueryClient();
 
-
-    const openModal = () => {
-        setModalOpen(true);
-    };
-
     const closeModal = () => {
         setIsLoading(false)
         setModalOpen(false);
@@ -94,7 +88,7 @@ const ProductDetail = () => {
 
     const params = useParams()
     const searchQuery = useQueryData();
-    const productQueryKey = ['GET_PRODUCT_BY_ID', params.slug, JSON.stringify(searchQuery ?? {})];
+    const productQueryKey = ['GET_PRODUCT_BY_ID', params.slug, JSON.stringify(searchQuery ?? {}), user?.id];
 
     console.log(searchQuery);
 
@@ -102,10 +96,12 @@ const ProductDetail = () => {
     const { isPending, error, data, refetch } = useQuery({
         queryKey: productQueryKey,
         queryFn: async () => {
-            let res = await GET_SINGLE_PRODUCTS(params.slug, searchQuery);
+            let res = await GET_SINGLE_PRODUCTS(params.slug, { ...searchQuery, userId: user?.id });
             return res;
         }
     });
+
+    const product = data?.product;
     const [progress, setProgress] = useState(0);
     const [gallery, setGallery] = useState([]);
     const [show, setShow] = useState(false);
@@ -150,10 +146,6 @@ const ProductDetail = () => {
         list.splice(i, 1);
         setGallery(list);
     }
-
-    const handleRating = () => {
-
-    };
 
     const handleShow = (value) => {
         setShow(value)
@@ -221,11 +213,6 @@ const ProductDetail = () => {
         }
     }
 
-    const OpenChatModal = () => {
-        toast.error("You can't send message to yourself!");
-        setModalOpen(true);
-    };
-
     const OpenEmailModal = () => {
         if (!user) {
             return navigate('/login', { state: { to: location.pathname, for: "buyer" } });
@@ -249,37 +236,58 @@ const ProductDetail = () => {
         }
     }
 
-    if (isPending) {
-        return <LoadingUi />
-    }
-    if (error) {
-        return <ErrorUi />
-    }
-
-    const { product } = data;
-    const breadcrumsData = [
+    const breadcrumsData = product ? [
         { name: "Home", link: "/" },
         { name: 'Search Result', link: `/products?type=sale&category=${product.categoryId}` },
         { name: product.category.name, link: `/products?type=sale&category=${product.categoryId}` },
         { name: product.name, link: null }
-    ]
+    ] : [];
 
 
-    const handleAddToFavorite = async (id) => {
+    const handleLike = async (id) => {
         if (user) {
-            const res = await ADD_TO_FAVORITE({
-                id
+            const newLikeStatus = !product.likeStatus;
+            
+            // Optimistic update
+            queryClient.setQueryData(productQueryKey, (old) => {
+                if (!old?.product) return old;
+                return {
+                    ...old,
+                    product: {
+                        ...old.product,
+                        likeStatus: newLikeStatus,
+                        _count: {
+                            ...old.product._count,
+                            likes: newLikeStatus 
+                                ? (old.product._count.likes + 1) 
+                                : Math.max(0, old.product._count.likes - 1)
+                        }
+                    }
+                };
             });
-            if (res.status) {
-                toast.success(res.message);
+
+            try {
+                const res = await POST_LIKE({
+                    id,
+                    like: newLikeStatus
+                });
+                if (res?.status) {
+                    toast.success(newLikeStatus ? "Liked successfully" : "Unliked successfully");
+                } else {
+                    refetch();
+                }
+            } catch (error) {
+                refetch();
             }
         } else {
-            toast.error("Please login to add product to favorite");
+            toast.error("Please login to like this product");
         }
     }
 
     const handleViewMore = (id) => {
-        navigate(breadcrumsData[2].link + `&postId=${id}`);
+        if (breadcrumsData.length >= 3) {
+            navigate(breadcrumsData[2].link + `&postId=${id}`);
+        }
     }
 
     useEffect(() => {
@@ -378,6 +386,14 @@ const ProductDetail = () => {
     }, [paypalScriptLoaded, product]);
 
 
+    if (isPending) {
+        return <LoadingUi />
+    }
+    if (error || !product) {
+        return <ErrorUi />
+    }
+
+
 
 
     return (
@@ -391,14 +407,20 @@ const ProductDetail = () => {
                                 <img className='rounded-t-md w-full block aspect-video object-cover' src={IMAGEURL + product.images[0].image} alt="product-images" />
                                 <div className='mt-4 lg:flex lg:justify-between lg:px-6 px-2 '>
                                     <div className='flex gap-4 items-center'>
-                                        <span className='p-2 bg-light opacity-35  rounded-full'><AdminIcon className={'stroke-white'} /></span>
-                                        <p className='text-light font-semibold'>{product.user.userType}</p>
-                                    </div>
-                                    <div className='flex gap-1 items-center'>
-                                        {/* <span className='p-2 bg-light opacity-35  rounded-full'><AdminIcon /></span> */}
-                                        <p className='text-light font-medium'>1 second ago</p>
-                                        <span className='p-1 mt-0.5'><ViewIcon /></span>
-                                        <p className='text-light font-medium'>{product._count.views} Views</p>
+                                        <div className='flex gap-1 items-center'>
+                                            <span className='p-2 bg-light opacity-35  rounded-full'><AdminIcon className={'stroke-white'} /></span>
+                                            <p className='text-light font-semibold'>{product.user.userType}</p>
+                                        </div>
+                                        <div className='flex gap-3 items-center'>
+                                            <div className='flex gap-1 items-center'>
+                                                <span className='p-1 mt-0.5'><LikeIcon className="stroke-light" color="#6d8396" /></span>
+                                                <p className='text-light font-medium'>{product._count.likes} Likes</p>
+                                            </div>
+                                            <div className='flex gap-1 items-center'>
+                                                <span className='p-1 mt-0.5'><ViewIcon color="#6d8396" /></span>
+                                                <p className='text-light font-medium'>{product._count.views} Views</p>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div className='mt-6 lg:px-6 px-2 text-primary'>
@@ -633,9 +655,9 @@ const ProductDetail = () => {
                                     <div className="rounded-full border size-12  flex justify-center items-center cursor-pointer hover:border-[#537CD9]">
                                         <CompareIcon />
                                     </div> */}
-                                    <TooltipIcon IconComponent={ViewIcon} tooltipText="View More" id={'Like'} like={false} onClick={() => handleViewMore(product.post_id)} />
+                                    <TooltipIcon IconComponent={ViewIcon} tooltipText="View More" id={`ViewMore-${product.post_id}`} like={false} onClick={() => handleViewMore(product.post_id)} />
                                     {/* <TooltipIcon IconComponent={CompareIcon} tooltipText="Compare" id={'Like'} like={false} onClick={() => handleLike(product.post_id)} /> */}
-                                    <TooltipIcon IconComponent={LikeIcon} tooltipText="Add To Favorite" id={'Like'} like={product.favoriteStatus} onClick={() => handleAddToFavorite(product.post_id)} />
+                                    <TooltipIcon IconComponent={LikeIcon} tooltipText="Like" id={`Like-${product.post_id}`} like={product.likeStatus} onClick={() => handleLike(product.post_id)} />
                                 </div>
                             </div>
                             {/* <div className=' ml-10 mt-8 flex justify-center items-center gap-4'>

@@ -54,6 +54,7 @@ const buildMembershipActivatedEmail = ({
   paymentDate,
   membershipStartDate,
   membershipEndDate,
+  membershipId,
 }) => {
   const displayAmount = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -70,6 +71,7 @@ const buildMembershipActivatedEmail = ({
     membershipPeriod: `${formatDisplayDate(
       membershipStartDate
     )} - ${formatDisplayDate(membershipEndDate)}`,
+    membershipId,
   });
 };
 
@@ -222,6 +224,7 @@ export const addMembership = CatchAsync(async (req, res, next) => {
       paymentDate: new Date(),
       membershipStartDate: startDate,
       membershipEndDate: endDate,
+      membershipId: newMembership.id,
     }),
   });
 
@@ -411,6 +414,7 @@ export const captureMembershipPayPalOrder = CatchAsync(
         paymentDate: capture.create_time ?? new Date(),
         membershipStartDate: startDate,
         membershipEndDate: endDate,
+        membershipId: newMembership.id,
       }),
     });
 

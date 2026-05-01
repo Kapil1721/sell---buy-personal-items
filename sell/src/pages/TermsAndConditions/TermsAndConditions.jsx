@@ -9,7 +9,7 @@ function TermsAndConditions() {
                     <p className='mt-5'>
                         Welcome to Sell Personal Items! These Terms and Conditions outline the rules
                         and regulations for the use of our website, located at
-                        <a className='text-helper' href={'https://thewpwebsites.com/sellpersonalitems/'}>https://thewpwebsites.com/sellpersonalitems/.</a> By accessing this website, we
+                        <a className='text-helper' href={'https://sellpersonalitems.com'}>https://sellpersonalitems.com.</a> By accessing this website, we
                         assume you accept these terms and conditions. Do not continue to use Sell
                         Personal Items if you do not agree to all of the terms and conditions stated
                         on this page.

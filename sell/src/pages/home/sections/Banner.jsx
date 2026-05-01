@@ -1,15 +1,10 @@
-import { useContext } from 'react'
 import { Link } from 'react-router-dom'
-import { AuthContext } from '../../../auth/AuthContext'
+import { getBuyRoute } from '../../../config/appConfig'
 
 
 
 
 function Banner() {
-
-    const { user } = useContext(AuthContext)
-
-
     return (
         <div className='w-full h-[100vh] lg:h-screen relative flex flex-col justify-center items-center'>
             <div className='absolute top-0 left-0 w-full h-[100vh] lg:h-screen bg-[#44525ecf]'>
@@ -152,9 +147,51 @@ function Banner() {
                         <div className='max-w-3xl mx-auto text-center mt-12 lg:mt-20 px-10 lg:px-0'>
                             <p className='lg:text-3xl lg:leading-10 text-white font-medium '>Join our group of buyers and sellers of some of the highest-quality merchandise, many of which have never been used. You will surely find great deals for yourself, your family, and your friends.</p>
                         </div>
-                        <div className='max-w-3xl mx-auto text-center mt-12 lg:mt-20 px-10 lg:px-0 '>
-                            {!user && <Link to={'/login-register?tab=login'} className='bg-secondary px-8 rounded text-white font-bold py-5 ring-2 ring-secondary hover:ring-white'>Login</Link>}
-                            <a href='#subcribe' className='px-8 rounded font-bold py-5 ring-2 ring-secondary text-secondary ml-4'>Subscribe</a>
+                        <div className='max-w-6xl mx-auto mt-12 px-6 lg:px-0'>
+                            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4'>
+                                {/* Donation Button */}
+                                <Link to="/donate" className="flex flex-col items-center justify-center p-6 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl hover:bg-secondary transition-all group">
+                                    <span className="text-3xl mb-2 group-hover:scale-110 transition-transform">🎁</span>
+                                    <span className="text-white font-bold text-lg">Donation</span>
+                                    <span className="text-white/60 text-xs text-center mt-1 group-hover:text-white/90">Donate Items</span>
+                                </Link>
+
+                                {/* Member/Login Button */}
+                                <div className="flex flex-col items-center justify-center p-6 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl hover:bg-helper transition-all group relative">
+                                    <Link to="/login-register?tab=login" className="flex flex-col items-center justify-center w-full mb-1">
+                                        <span className="text-3xl mb-2 group-hover:scale-110 transition-transform">🔐</span>
+                                        <span className="text-white font-bold text-lg">Member Login</span>
+                                    </Link>
+                                    <Link to="/cbbl-apply" className="text-secondary font-bold text-xs hover:underline z-20 relative">
+                                        (CBBL apply!)
+                                    </Link>
+                                </div>
+
+                                {/* Buyer/Register Button */}
+                                <div className="flex flex-col items-center justify-center p-6 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl hover:bg-green-600 transition-all group relative">
+                                    <Link to="/login-register?tab=register" className="flex flex-col items-center justify-center w-full text-center mb-1">
+                                        <span className="text-3xl mb-2 group-hover:scale-110 transition-transform">📝</span>
+                                        <span className="text-white font-bold text-lg">Buyer Register</span>
+                                    </Link>
+                                    <Link to="/cbbl-invest" className="text-white font-bold text-[10px] group-hover:text-white/90 hover:underline z-20 relative">
+                                        FREE (CBBL invest!)
+                                    </Link>
+                                </div>
+
+                                {/* Buyer/Login Button */}
+                                <a href={getBuyRoute('/login-register?tab=login')} className="flex flex-col items-center justify-center p-6 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl hover:bg-primary transition-all group">
+                                    <span className="text-3xl mb-2 group-hover:scale-110 transition-transform">🛒</span>
+                                    <span className="text-white font-bold text-lg">Buyer Login</span>
+                                    <span className="text-white/60 text-xs text-center mt-1 group-hover:text-white/90">High-End Items</span>
+                                </a>
+
+                                {/* Membership Button */}
+                                <Link to="/memberships" className="flex flex-col items-center justify-center p-6 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl hover:bg-amber-500 transition-all group">
+                                    <span className="text-3xl mb-2 group-hover:scale-110 transition-transform">💎</span>
+                                    <span className="text-white font-bold text-lg">Membership</span>
+                                    <span className="text-white font-bold text-xs mt-1 group-hover:text-white/90">(Join!)</span>
+                                </Link>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -23,7 +23,9 @@ import {
     ChangePassword,
     Layout,
     DonationForm,
-    DonateMoney
+    DonateMoney,
+    CbblApply,
+    CbblInvest
 } from "./AllComponents";
 
 const routes = [
@@ -104,6 +106,14 @@ const routes = [
             {
                 path: "refund-policy",
                 element: <RefundPolicy />,
+            },
+            {
+                path: "cbbl-apply",
+                element: <CbblApply />,
+            },
+            {
+                path: "cbbl-invest",
+                element: <CbblInvest />,
             },
             {
                 path: "login-register",

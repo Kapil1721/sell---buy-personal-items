@@ -28,15 +28,14 @@
               <td style="background:linear-gradient(135deg,#16213e 0%,#1e3a5f 100%);padding:18px 28px 34px 28px;">
                 <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:22px;padding:34px 28px;">
                   <div style="display:inline-block;background:#fbbf24;color:#16213e;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:8px 14px;border-radius:999px;">
-                    Payment Confirmed
+                    Membership Activated
                   </div>
-                  <h1 style="margin:18px 0 12px 0;font-size:38px;line-height:1.15;color:#ffffff;font-weight:800;">
-                    Welcome to your<br />
-                    <span style="color:#fbbf24;">Sell Personal Items</span> membership
+                  <h1 style="margin:18px 0 12px 0;font-size:32px;line-height:1.2;color:#ffffff;font-weight:800;">
+                    Welcome! And thanks for joining us
                   </h1>
-                  <p style="margin:0;color:#d8e3f0;font-size:16px;line-height:1.8;">
-                    Hi {{customerName}}, your membership purchase has been completed successfully.
-                    Your payment details are below, and your account is now ready to use with member benefits.
+                  <p style="margin:0;color:#d8e3f0;font-size:16px;line-height:1.7;">
+                    Hi {{customerName}}, we truly believe this will prove to be one of the best choices you have made in a very long time. 
+                    Together, we offer a reliable solution for converting personal assets into Hard Cash.
                   </p>
                 </div>
               </td>
@@ -46,25 +45,48 @@
                 <table width="100%" cellpadding="0" cellspacing="0" border="0">
                   <tr>
                     <td valign="top" style="padding-right:12px;">
-                      <div style="background:#fff8e8;border-left:4px solid #fbbf24;border-radius:16px;padding:20px;">
-                        <div style="font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#b7791f;margin-bottom:10px;">
-                          Membership Opportunity
-                        </div>
-                        <div style="font-size:16px;line-height:1.8;color:#486581;">
-                          One of the best opportunities for everyday individuals to earn money is now active on your account.
+                      <div style="background:#f8fafc;border:1px solid #d9e2ec;border-radius:16px;padding:24px;">
+                        <div style="font-size:14px;line-height:1.8;color:#243b53;">
+                          <p style="margin-top:0;"><strong>Onboarding Instructions:</strong></p>
+                          <p>Please accept this onboarding letter to serve as your record of receipt. At this time we are setting up your membership account (3 weeks). Afterward, you will be directed to our <strong>Buyers Platform</strong>.</p>
+                          
+                          <p style="margin-bottom:8px;"><strong>There you will:</strong></p>
+                          <ol style="margin-top:0;padding-left:20px;">
+                            <li>Enter your member id provided: <strong>#{{membershipId}}</strong></li>
+                            <li>Create your password</li>
+                          </ol>
+
+                          <p style="margin-bottom:8px;"><strong>Once set up, you will be able to:</strong></p>
+                          <ul style="margin-top:0;padding-left:20px;">
+                            <li>Post items for sell</li>
+                            <li>Add your prices</li>
+                            <li>Change prices</li>
+                            <li>Remove or change items before or after sells</li>
+                          </ul>
+
+                          <p>I recommend you now use this setup time to gather all your items for sale. Prepare clear photos for uploading and evaluate them for competitive pricing.</p>
+                          
+                          <p style="margin-bottom:0;">Please email us at <a href="mailto:infor@salepersonalitems.com" style="color:#1e3a5f;font-weight:700;text-decoration:none;">infor@salepersonalitems.com</a> to confirm you have received our instructions.</p>
                         </div>
                       </div>
                     </td>
                     <td width="240" valign="top">
                       <div style="background:linear-gradient(180deg,#334e68 0%,#243b53 100%);border-radius:18px;padding:24px;color:#ffffff;">
-                        <div style="font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#d9e2ec;">
-                          One-Time Membership Fee
+                        <div style="font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#d9e2ec;">
+                          Member ID (MID)
                         </div>
-                        <div style="margin:10px 0 4px 0;font-size:54px;line-height:1;font-weight:800;color:#fbbf24;">
+                        <div style="margin:8px 0 16px 0;font-size:32px;line-height:1;font-weight:800;color:#fbbf24;">
+                          #{{membershipId}}
+                        </div>
+                        
+                        <div style="font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#d9e2ec;border-top:1px solid rgba(255,255,255,0.1);padding-top:16px;">
+                          One-Time Fee Paid
+                        </div>
+                        <div style="margin:8px 0 4px 0;font-size:32px;line-height:1;font-weight:800;color:#fbbf24;">
                           {{displayAmount}}
                         </div>
-                        <div style="font-size:14px;line-height:1.7;color:#d9e2ec;">
-                          {{planName}} is now active on your account.
+                        <div style="font-size:14px;line-height:1.5;color:#d9e2ec;">
+                          {{planName}}
                         </div>
                       </div>
                     </td>
@@ -75,24 +97,13 @@
             <tr>
               <td style="padding:18px 28px 8px 28px;">
                 <div style="font-size:14px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#f59e0b;margin-bottom:12px;">
-                  Payment Information
+                  Payment Details
                 </div>
               </td>
             </tr>
             <tr>
               <td style="padding:0 28px 32px 28px;">
                 <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:separate;border-spacing:0 12px;">
-                  <tr>
-                    <td style="background:#f8fafc;border:1px solid #d9e2ec;border-radius:14px;padding:16px 18px;font-size:14px;color:#486581;">
-                      <strong style="display:block;color:#102a43;font-size:13px;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Plan</strong>
-                      {{planName}}
-                    </td>
-                    <td style="width:12px;"></td>
-                    <td style="background:#f8fafc;border:1px solid #d9e2ec;border-radius:14px;padding:16px 18px;font-size:14px;color:#486581;">
-                      <strong style="display:block;color:#102a43;font-size:13px;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Amount Paid</strong>
-                      {{displayAmount}}
-                    </td>
-                  </tr>
                   <tr>
                     <td style="background:#f8fafc;border:1px solid #d9e2ec;border-radius:14px;padding:16px 18px;font-size:14px;color:#486581;">
                       <strong style="display:block;color:#102a43;font-size:13px;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Payment Method</strong>
@@ -120,14 +131,14 @@
             </tr>
             <tr>
               <td style="padding:0 28px 34px 28px;">
-                <div style="background:linear-gradient(135deg,#fff7d6 0%,#fff1b8 100%);border-radius:16px;padding:18px 20px;color:#7c5e10;font-size:16px;font-style:italic;font-weight:700;">
-                  "Sell what you want today. Sell what you can tomorrow."
+                <div style="background:linear-gradient(135deg,#fff7d6 0%,#fff1b8 100%);border-radius:16px;padding:18px 20px;color:#7c5e10;font-size:18px;font-weight:800;text-align:center;">
+                  Again Welcome Aboard!
                 </div>
               </td>
             </tr>
             <tr>
               <td style="background:#102a43;padding:22px 28px;color:#d9e2ec;font-size:13px;line-height:1.8;">
-                Need help with your membership? Reply to this email and our team will be happy to help.
+                Need help with your membership? Reply to this email or contact us at <a href="mailto:infor@salepersonalitems.com" style="color:#ffffff;text-decoration:underline;">infor@salepersonalitems.com</a>.
               </td>
             </tr>
           </table>

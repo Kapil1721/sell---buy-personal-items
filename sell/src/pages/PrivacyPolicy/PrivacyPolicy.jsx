@@ -10,7 +10,7 @@ function PrivacyPolicy() {
                     <p className='mt-5 '>
                         Welcome to Sell Personal Items! This Privacy Policy outlines how we collect,
                         use, disclose, and protect your information when you use our website located
-                        at <a className='text-helper' href={'https://thewpwebsites.com/sellpersonalitems/'}>https://thewpwebsites.com/sellpersonalitems/.</a> Please take a moment to
+                        at <a className='text-helper' href={'https://sellpersonalitems.com'}>https://sellpersonalitems.com.</a> Please take a moment to
                         read it to understand our practices regarding your personal data and how we
                         handle it.
                     </p>

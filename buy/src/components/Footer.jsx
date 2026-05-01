@@ -126,7 +126,7 @@ function Footer() {
                     </div>
                 </div>
             </div>
-            <div className='bg-black w-full text-xs lg:text-base text-center py-4'><p className='text-white'>Copyright © 2024 Sell Personal Items | Designed by Zonewebsites</p></div>
+            <div className='bg-black w-full text-xs lg:text-base text-center py-4'><p className='text-white'>Copyright © 2026 Sell Personal Items | Designed by <a href={'https://designbyzonewebsites.com'} target='blank'>Zone Websites</a></p></div>
         </footer>
     )
 }

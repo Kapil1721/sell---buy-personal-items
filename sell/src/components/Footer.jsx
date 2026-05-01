@@ -45,7 +45,7 @@ function Footer() {
                             <h3 className='text-white font-normal'>Useful Links</h3>
                             <ul className='mt-6 flex flex-col justify-between items-start'>
                                 {
-                                    [{ label: "Refund Policy", url: '/refund-policy' }, { label: "Privacy Policy", url: '/privacy-policy' }, { label: "Terms & Conditions", url: '/terms-and-conditions' }].map((itm) => {
+                                    [{ label: "Refund Policy", url: '/refund-policy' }, { label: "Privacy Policy", url: '/privacy-policy' }, { label: "Terms & Conditions", url: '/terms-and-conditions' }, { label: "CBBL Apply", url: '/cbbl-apply' }, { label: "CBBL Invest", url: '/cbbl-invest' }].map((itm) => {
                                         return (
                                             <li className='py-3' key={itm.url}>
                                                 <Link className='flex gap-3 group:' to={`${itm.url}`} >
@@ -126,7 +126,7 @@ function Footer() {
                     </div>
                 </div>
             </div>
-            <div className='bg-black w-full text-xs lg:text-base text-center py-4'><p className='text-white'>Copyright © 2024 Sell Personal Items | Designed by Zonewebsites</p></div>
+            <div className='bg-black w-full text-xs lg:text-base text-center py-4'><p className='text-white'>Copyright © 2026 Sell Personal Items | Designed by <a href={'https://designbyzonewebsites.com'} target='blank'>Zone Websites</a></p></div>
         </footer>
     )
 }

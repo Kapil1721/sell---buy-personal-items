@@ -16,7 +16,7 @@ function RefundPolicy() {
                         (b) Refund Method: If your return is approved, your refund will be processed, and a credit will be automatically applied to your original method of payment within a specified number of days.
                     </p>
                     <p className='mt-4'>
-                        (c) Late or Missing Refunds: If you haven't received a refund yet, please check your bank account or contact your credit card company. It may take some time before your refund is officially posted. If you've done all of this and still have not received your refund, please contact us at darnellc1@yahoo.com.</p>
+                        (c) Late or Missing Refunds: If you haven't received a refund yet, please check your bank account or contact your credit card company. It may take some time before your refund is officially posted. If you've done all of this and still have not received your refund, please contact us at info@sellpersonalitems.com.</p>
                 </p>
             </div>
         </div>

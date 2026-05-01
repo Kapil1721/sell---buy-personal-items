@@ -136,7 +136,7 @@ function Products() {
                                     </div>
                                     <div className='my-4'>
                                         <div>
-                                            <ProductList products={products} isPending={isPending} handleFavorite={handleAddToFavorite} />
+                                            <ProductList products={products} isPending={isPending} handleLike={handleLike} />
                                         </div>
                                     </div>
                                     <div>

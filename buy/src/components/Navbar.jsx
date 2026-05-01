@@ -281,7 +281,7 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
                                 <nav className=" px-4 py-4 lg:mt-9 lg:px-6">
                                     <ul className='flex flex-col items-start '>
                                         <li className='font-[lexend deca] text-primary font-medium text-base py-2 '><Link to={''}>Home</Link></li>
-                                        {/*<li className='font-[lexend deca] text-primary font-medium text-base py-2  '><Link to={'/memberships'}>Memberships</Link></li>*/}
+                                        <li className='font-[lexend deca] text-primary font-medium text-base py-2  '><a href={appRedirectEndpoints.SELL_MEMBERSHIPS_URL}>Memberships</a></li>
                                         <li className='font-[lexend deca] text-primary font-medium text-base py-2  '><Link to={'/qualified-items-list'}>Qualified Items</Link></li>
                                         {/*<li className='font-[lexend deca] text-primary font-medium text-base py-2  '><Link to={user ? '/donate' : "/login"} state={user ? { to: "/" } : { to: "/donate" }}>Donate Items</Link></li>*/}
                                         {/*<li className='font-[lexend deca] text-primary font-medium text-base py-2  '><Link to={user ? '/donate/money' : "/login"} state={user ? { to: "/" } : { to: "/donate/money" }}>Donate Money</Link></li>*/}
@@ -297,7 +297,7 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
                     <nav className='ml-[45px]'>
                         <ul className='flex items-center '>
                             <li className='font-[lexend deca] text-primary font-medium text-base py-2 '><Link to={''}>Home</Link></li>
-                            {/*<li className='font-[lexend deca] text-primary font-medium text-base py-2 ml-[45px] '><Link to={'/memberships'}>Memberships</Link></li>*/}
+                            <li className='font-[lexend deca] text-primary font-medium text-base py-2 ml-[45px] '><a href={appRedirectEndpoints.SELL_MEMBERSHIPS_URL}>Memberships</a></li>
                             <li className='font-[lexend deca] text-primary font-medium text-base py-2 ml-[45px] '><Link to={'/qualified-items-list'}>Qualified Items</Link></li>
                             {/*<li className='font-[lexend deca] text-primary font-medium text-base py-2 ml-[45px] '><Link to={user ? '/donate' : "/login"} state={user ? { to: "/" } : { to: "/donate" }}>Donate Items</Link></li>*/}
                             {/*<li className='font-[lexend deca] text-primary font-medium text-base py-2 ml-[45px] '><Link to={user ? '/donate/money' : "/login"} state={user ? { to: "/" } : { to: "/donate/money" }}>Donate Money</Link></li>*/}

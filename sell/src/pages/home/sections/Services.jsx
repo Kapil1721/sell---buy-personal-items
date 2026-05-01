@@ -28,7 +28,7 @@ function Services() {
                     <Link to={user ? '/memberships' : "/login-register?tab=login"} className='flex flex-col justify-center items-center p-4 border gap-4 rounded-md'>
                         <img src={REGISTERMEMBERSHIP} alt="" />
                         <h1 className='text-lg font-bold '>REGISTER/MEMBERSHIP</h1>
-                        <p className='text-center'>{`We value our early registered members and offer our lowest membership fee for the first 90 days. After that, it's free!`}</p>
+                        <p className='text-center'>{`We value our registered members and offer our lifetime membership at a one-time cost of $59.`}</p>
                     </Link>
                     {/* <div className='flex flex-col justify-center items-center p-4 border gap-4 rounded-md'>
                         <img src={FINDYOURSTYLE} alt="" />
@@ -68,7 +68,7 @@ function Services() {
                         <p className='font-light text-center px-2 text-light' >Welcome to Sell Personal Items, your leading destination for buying and selling high-quality used products online. Founded with a passion for merchandise and a commitment to creating a more conscious consumer culture, we aim to provide a platform where individuals can easily buy, sell, and discover unique items of their choice.
                             <br />Got too much stuff, right? Well, how about turning some of it into cold, hard cash?  In these economic times, it’s important to have a reliable place to raise money when you want to or get in a pinch, as we all do. That’s what “Sell Personal Items” is here for.
 
-                            One of the best parts of our membership-only website is that it’s cheap and only for 90 days. After that, we will only get a small percentage of the sales.
+                            One of the best parts of our membership-only website is that it’s one-time cost of $59. After that, you will never have to pay any fees to sell.
 
                         </p>
                     </div>

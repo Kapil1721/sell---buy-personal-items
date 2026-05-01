@@ -4,7 +4,7 @@ const benefits = [
   'Post personal items to sell for yourself',
   'Sell for families and friends',
   'Access to CBBL loan program',
-  'Free after first 90 days',
+  'One time membership fee of $59',
   'Early member pricing locked in',
 ]
 
@@ -49,7 +49,6 @@ function MembershipOpportunity() {
             <div className="text-secondary font-bold leading-none mb-1" style={{ fontSize: '72px' }}>
               $59
             </div>
-            <p className="text-white/40 text-sm mb-6">Then only a small % per sale</p>
 
             <ul className="border-t border-white/10 divide-y divide-white/[0.07]">
               {benefits.map((b) => (
