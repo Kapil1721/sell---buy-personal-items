@@ -59,9 +59,9 @@ function Login_Signup() {
 
     const navigate = useNavigate();
     const location = useLocation();
-    const [URLSearchParams, SetURLSearchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
     const { login } = useContext(AuthContext);
-    const checkLoginActive = () => URLSearchParams.get("tab") === 'login'
+    const checkLoginActive = () => searchParams.get("tab") === 'login'
     // const loginActive = checkLoginActive();
 
     const [loginActive, setLoginActive] = useState(checkLoginActive());
@@ -155,13 +155,23 @@ function Login_Signup() {
         } else {
             setLoginActive(false)
         }
-    }, [URLSearchParams]);
+        
+        if (searchParams.get('verified') === 'true') {
+            toast.success("Email verified successfully! You can now login.");
+            // Remove the query param so toast doesn't reappear on reload
+            setSearchParams({ tab: 'login' }, { replace: true });
+        }
+    }, [searchParams]);
 
     const toggleForm = (id) => {
         if (id === 'login') {
             setLoginActive(true)
         } else {
             setLoginActive(false)
+            // If redirected with a message (e.g. from Buy platform), show it
+            if (location.state?.message) {
+                toast.info(location.state.message);
+            }
         }
     };
 
@@ -220,8 +230,17 @@ function Login_Signup() {
             // console.log(res);
             if (res?.status === 'success') {
                 localStorage.setItem("_sell_Token", res.token)
-                SetURLSearchParams({ tab: 'login' })
-                toast.success("Signup successful.");
+                setLoginActive(true)
+                setSearchParams({ tab: 'login' })
+                toast.success("Signup successful. Please check your email for verification.");
+                // Clear form data
+                setRoleData({});
+                setContactNumber({ countryCode: '', contactNumber: '' });
+                if (signupinputrefs.current) {
+                    signupinputrefs.current.forEach(ref => {
+                        if (ref) ref.value = '';
+                    });
+                }
             }
         }
 
@@ -442,7 +461,14 @@ function Login_Signup() {
                                     </div>
 
                                 </div>
-                                <button onClick={handleSignup} className={`w-full rounded px-8 py-4 bg-[#537CD9] text-white font-bold`}>{loading ? "Loading" : "Regitser"}</button>
+                                <div className='text-center text-sm text-[#374b5c] mb-2'>
+                                    {roleData.buyer && !roleData.seller ? (
+                                        <p className="text-green-600 font-medium">Buyer registration is 100% free!</p>
+                                    ) : roleData.seller ? (
+                                        <p className="text-helper font-medium">Seller membership requires a one-time $59 fee.</p>
+                                    ) : null}
+                                </div>
+                                <button onClick={handleSignup} className={`w-full rounded px-8 py-4 bg-[#537CD9] text-white font-bold`}>{loading ? "Loading" : "Register Now"}</button>
                             </div>
                         </form>}
                 </div>

@@ -27,8 +27,8 @@ function Services() {
                 <div className='flex flex-col items-center justify-center gap-8'>
                     <Link to={user ? '/memberships' : "/login"} className='flex flex-col justify-center items-center p-4 border gap-4 rounded-md'>
                         <img src={REGISTERMEMBERSHIP} alt="" />
-                        <h1 className='text-lg font-bold '>REGISTER/MEMBERSHIP</h1>
-                        <p className='text-center'>{`We value our registered members and offer our lifetime membership at a one-time cost of $59.`}</p>
+                        <h1 className='text-lg font-bold '>REGISTER / BECOME A SELLER</h1>
+                        <p className='text-center'>{`Registration is free for everyone! To list and sell your products, join our strong community with a one-time lifetime membership fee of only $59.`}</p>
                     </Link>
                     {/* <div className='flex flex-col justify-center items-center p-4 border gap-4 rounded-md'>
                         <img src={FINDYOURSTYLE} alt="" />
@@ -73,7 +73,7 @@ function Services() {
                         </p>
                     </div>
                     <div className='mt-8 md:mt-4 flex justify-center items-center'>
-                        <Link to={'/memberships'} className='bg-[#537CD9] text-white md:text-xl font-medium py-2 px-7 rounded-md'>Get your membership started today!</Link>
+                        <Link to={user ? '/memberships' : "/login"} className='bg-[#537CD9] text-white md:text-xl font-medium py-2 px-7 rounded-md'>Register or Get Started Today!</Link>
                     </div>
                     {/* </div> */}
                     {/* </div> */}

@@ -13,9 +13,9 @@ function Membership() {
         <div className="bg-white py-12 sm:py-16">
             <div className="mx-auto max-w-7xl px-6 lg:px-8">
                 <div className="mx-auto max-w-2xl sm:text-center">
-                    <h2 className="text-3xl font-bold tracking-tight text-primary sm:text-4xl">Become a member & Enjoy The Benefits</h2>
+                    <h2 className="text-3xl font-bold tracking-tight text-primary sm:text-4xl">Seller Membership Plans</h2>
                     <p className="mt-6 text-lg leading-8 text-gray-600">
-                        Joining the platform means joining a strong community of sellers. Apply for our lifetime membership plan to sell more products and generate more revenue.
+                        Joining our seller community means access to powerful tools to list and sell your products globally. Register as a seller and enjoy lifetime benefits with a one-time membership fee.
                     </p>
                 </div>
                 {<Outlet/>}

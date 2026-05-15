@@ -215,7 +215,7 @@ const ProductDetail = () => {
 
     const OpenEmailModal = () => {
         if (!user) {
-            return navigate('/login', { state: { to: location.pathname, for: "buyer" } });
+            return navigate('/login', { state: { to: location.pathname, for: "buyer", message: "Register for free to send purchase requests!" } });
         }
         console.log(user.id, product.userId);
         if (user.id === product.userId) {
@@ -621,6 +621,7 @@ const ProductDetail = () => {
                                         <button className='bg-helper w-full px-8 py-4 text-white font-bold text-base' onClick={(message) => OpenEmailModal(message)}>
                                             <span className='ml-4'>Send Purchase Request</span>
                                         </button>
+                                        {!user && <p className="mt-1 text-center text-xs text-gray-500 font-medium italic">Free Registration Required</p>}
                                         
                                         {product.itemsType === 'SALE' && product.price > 0 && (
                                             <div className='w-full mt-4'>

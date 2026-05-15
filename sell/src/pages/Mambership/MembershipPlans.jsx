@@ -34,12 +34,12 @@ function MembershipPlans() {
     return (
         <div className="mx-auto mt-16 rounded-3xl ring-1 ring-gray-200 sm:mt-20 lg:mx-0 lg:flex">
             <div className="p-8 sm:p-10 lg:flex-auto">
-                <h3 className="text-2xl font-bold tracking-tight text-primary">Ready to sell?</h3>
+                <h3 className="text-2xl font-bold tracking-tight text-primary">Start Selling Today</h3>
                 <p className="mt-6 text-base leading-7 text-gray-600">
-                    To sell items online, you just need to register with us, upload product photographs and prices, and just relax.
+                    To list and sell items online, you just need to become a verified seller. Upload product photographs, set your prices, and reach thousands of buyers instantly.
                 </p>
                 <div className="mt-10 flex items-center gap-x-4">
-                    <h4 className="flex-none text-sm font-semibold leading-6 text-indigo-600">Benefits of Membership</h4>
+                    <h4 className="flex-none text-sm font-semibold leading-6 text-indigo-600">Seller-Only Benefits</h4>
                     <div className="h-px flex-auto bg-gray-100" />
                 </div>
                 <ul

@@ -124,7 +124,6 @@ export const userSignUp = CatchAsync(async (req, res, next) => {
     };
 
     const user = await prisma.users.create({ data: newUser });
-    createSendToken({ userId: user.id, email: user.email }, 201, res);
 
     const message = ``;
 
@@ -135,14 +134,16 @@ export const userSignUp = CatchAsync(async (req, res, next) => {
       "utf8"
     );
 
+    const baseUrl = `${req.protocol}://${req.get("host")}`;
+
     let y = x
       .replace("{{name}}", user.username)
       .replace(
         "{{link}}",
-        `https://sell-personal-items-server.vercel.app/api/v1/u-verify/${verificationToken}/${user.id}`
+        `${baseUrl}/api/v1/u-verify?token=${verificationToken}&id=${user.id}`
       )
-      .replace("{{email}}", req.email)
-      .replace("{{password}}", req.password);
+      .replace("{{email}}", email)
+      .replace("{{password}}", password);
     await sendMail({
       email: req.body.email,
       subject: "Email Verification: Thank you for registering with us",
@@ -227,21 +228,25 @@ export const userLogin = CatchAsync(async (req, res, next) => {
 
 export const verifyUser = CatchAsync(async (req, res, next) => {
   const { token, id } = req.query;
-  const user = prisma.users.update({
+  const user = await prisma.users.update({
     data: {
       verified: true,
     },
     where: {
-      id: id,
+      id: parseInt(id),
       verification: token,
     },
   });
   if (!user) {
     return res.status(404).json({ message: "User not found" });
   }
-  return res.status(200).json({
-    message: "User verification has been completed successfully",
-  });
+  
+  // Redirect to frontend login page with a success message
+  const frontendUrl = process.env.NODE_ENV === "production" 
+    ? "https://sell.sellpersonalitems.com" 
+    : "http://localhost:5173";
+    
+  return res.redirect(`${frontendUrl}?tab=login&verified=true`);
 });
 
 export const authMiddleware = async (req, res, next) => {
