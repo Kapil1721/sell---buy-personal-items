@@ -95,8 +95,8 @@ function MyProducts() {
                 </div> :
                 <div className='bg-white border border-[#F2F4F8] rounded relative overflow-auto'>
                   {data?.products.filter((item) => activeFilter ? item.status === activeFilter : item).map((item) => <div key={item.post_id} className='grid grid-cols-12'>
-                    <div className='col-span-10 border-r border-[#F2F4F8]'>
-                      <div className='grid grid-cols-3'>
+                    <div className='col-span-12 lg:col-span-10 border-r border-[#F2F4F8]'>
+                      <div className='grid grid-cols-1 lg:grid-cols-3'>
                         <Link to={location.pathname + "/" + item.post_id + "-" + item.name} className='col-span-1 rounded-lg flex justify-center items-center overflow-hidden mx-4 my-2 size-60'>
                           <img className='rounded-lg object-cover w-full' src={IMAGEURL + item?.images[0]?.image} alt="" />
                         </Link>
@@ -107,7 +107,7 @@ function MyProducts() {
                             </Link>
                             <div className='flex flex-col justify-start items-start gap-2'>
                               <p className='text-primary font-normal border border-[#F2F4F8] py-2 px-6 rounded-md'>{item.category.name}</p>
-                              <div className='flex justify-evenly gap-4 items-center'>
+                              <div className='flex flex-wrap justify-between gap-4 items-center'>
                                 <p className='text-helper font-medium'>Added: <span className='text-light font-normal'>{getFormatedDate(item.createdAt)}</span></p>
                                 <p className='text-helper font-medium'>Expires: <span className='text-light font-normal'>{item.expires ? getFormatedDate(item.expires) : "Never"}</span></p>
                                 <p className='text-helper font-medium'>Price: <span className='text-light font-normal'>${item.price}</span></p>
@@ -132,8 +132,8 @@ function MyProducts() {
                         </div>
                       </div>
                     </div>
-                    <div className='col-span-2 relative p-4 flex justify-between items-start flex-col'>
-                      <ul>
+                    <div className='col-span-12 lg:col-span-2 relative p-4 flex justify-between items-start flex-row lg:flex-col'>
+                      <ul className='flex-1 flex flex-row lg:flex-col gap-3 lg:gap-0'>
                         <li onClick={() => handleEdit(item.post_id)} className={`cursor-pointer text-base font-medium text-[#3F5263] hover:text-[#FFB300] py-1 transition ease-in-out flex justify-start gap-2 items-center`} ><EditIcon />Edit</li>
                         <li onClick={() => handleDelete(item.post_id)} className={`cursor-pointer text-base font-medium text-[#3F5263] hover:text-[#FFB300] py-1 transition ease-in-out flex justify-start gap-2 items-center`} ><DeleteIcon />Delete</li>
                       </ul>

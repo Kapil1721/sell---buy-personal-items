@@ -133,7 +133,7 @@ model favoriteProductList {
   id       Int        @id @default(autoincrement())
   userId   Int
   user     Users      @relation(fields: [userId], references: [id])
-  products ListedItem @relation(fields: [postId], references: [post_id])
+  products ListedItem @relation(fields: [postId], references: [post_id], onDelete: Cascade)
   postId   Int
 }
 
@@ -490,7 +490,7 @@ model PurchaseRequest {
   statusUpdatedBy StatusUpdatedBy?
   buyer           Users                 @relation("BuyerPurchaseRequests", fields: [buyerId], references: [id])
   seller          Users                 @relation("SellerPurchaseRequests", fields: [sellerId], references: [id])
-  product         ListedItem            @relation(fields: [productId], references: [post_id])
+  product         ListedItem            @relation(fields: [productId], references: [post_id], onDelete: Cascade)
 }
 
 enum StatusUpdatedBy {
@@ -510,7 +510,7 @@ model PromotedProduct {
   userId Int
   user   Users            @relation(fields: [userId], references: [id])
   postId Int
-  posts  ListedItem       @relation(fields: [postId], references: [post_id])
+  posts  ListedItem       @relation(fields: [postId], references: [post_id], onDelete: Cascade)
   planId Int
   plan   SubscriptionPlan @relation(fields: [planId], references: [id])
 }
