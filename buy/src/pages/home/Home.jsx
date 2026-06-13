@@ -154,15 +154,15 @@ function Home() {
 
         <div className="relative">
           <h2 className="text-4xl md:text-5xl font-black text-[#eef5fb] leading-tight mb-6">
-            Have something<br />to sell?{' '}
-            <em className="not-italic text-[#3ebd8d]">Make<br />money today.</em>
+            Start Selling Today<br />At A{' '}
+            <em className="not-italic text-[#3ebd8d]">One-time Cost<br />Of Only $59.</em>
           </h2>
           <Link
             to={user ? '/panel/create' : '/login'}
             state={user ? undefined : { to: '/panel/create', for: 'sell' }}
             className="inline-block bg-[#3ebd8d] text-[#283948] px-10 py-4 text-xs uppercase tracking-[0.08em] font-bold transition hover:bg-[#35aa7f] hover:-translate-y-0.5 mt-4"
           >
-            Start Selling Free →
+            Sell Now →
           </Link>
         </div>
 
