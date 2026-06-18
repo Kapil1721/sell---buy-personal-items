@@ -81,4 +81,5 @@ export const appRedirectEndpoints = {
   SELL_MEMBERSHIPS_URL: getSellRoute("/memberships"),
   SELL_REGISTER_URL: getSellRoute("/login-register?tab=register"),
   BUY_QUALIFIED_ITEMS_URL: getBuyRoute("/qualified-items-list"),
+  SELL_DONATION_URL: getSellRoute("/donate"),
 };

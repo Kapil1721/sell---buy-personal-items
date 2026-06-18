@@ -280,9 +280,10 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
                                 {/* <!-- Sidebar Menu --> */}
                                 <nav className=" px-4 py-4 lg:mt-9 lg:px-6">
                                     <ul className='flex flex-col items-start '>
-                                        <li className='font-[lexend deca] text-primary font-medium text-base py-2 '><Link to={''}>Home</Link></li>
+                                        {/* <li className='font-[lexend deca] text-primary font-medium text-base py-2 '><Link to={''}>Home</Link></li> */}
                                         <li className='font-[lexend deca] text-primary font-medium text-base py-2  '><a href={appRedirectEndpoints.SELL_MEMBERSHIPS_URL}>Memberships</a></li>
-                                        <li className='font-[lexend deca] text-primary font-medium text-base py-2  '><Link to={'/qualified-items-list'}>Qualified Items</Link></li>
+                                        <li className='font-[lexend deca] text-primary font-medium text-base py-2  '><a href={appRedirectEndpoints.SELL_DONATION_URL}>Donation</a></li>
+                                        {/* <li className='font-[lexend deca] text-primary font-medium text-base py-2  '><Link to={'/qualified-items-list'}>Qualified Items</Link></li> */}
                                         {/*<li className='font-[lexend deca] text-primary font-medium text-base py-2  '><Link to={user ? '/donate' : "/login"} state={user ? { to: "/" } : { to: "/donate" }}>Donate Items</Link></li>*/}
                                         {/*<li className='font-[lexend deca] text-primary font-medium text-base py-2  '><Link to={user ? '/donate/money' : "/login"} state={user ? { to: "/" } : { to: "/donate/money" }}>Donate Money</Link></li>*/}
                                     </ul>
@@ -296,9 +297,10 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
                     <Link to={'/'} className="logo"><img width={"100"} height={"100"} src={logo} /></Link>
                     <nav className='ml-[45px]'>
                         <ul className='flex items-center '>
-                            <li className='font-[lexend deca] text-primary font-medium text-base py-2 '><Link to={''}>Home</Link></li>
+                            {/* <li className='font-[lexend deca] text-primary font-medium text-base py-2 '><Link to={''}>Home</Link></li> */}
                             <li className='font-[lexend deca] text-primary font-medium text-base py-2 ml-[45px] '><a href={appRedirectEndpoints.SELL_MEMBERSHIPS_URL}>Memberships</a></li>
-                            <li className='font-[lexend deca] text-primary font-medium text-base py-2 ml-[45px] '><Link to={'/qualified-items-list'}>Qualified Items</Link></li>
+                            <li className='font-[lexend deca] text-primary font-medium text-base py-2 ml-[45px] '><a href={appRedirectEndpoints.SELL_DONATION_URL}>Donation</a></li>
+                            {/* <li className='font-[lexend deca] text-primary font-medium text-base py-2 ml-[45px] '><Link to={'/qualified-items-list'}>Qualified Items</Link></li> */}
                             {/*<li className='font-[lexend deca] text-primary font-medium text-base py-2 ml-[45px] '><Link to={user ? '/donate' : "/login"} state={user ? { to: "/" } : { to: "/donate" }}>Donate Items</Link></li>*/}
                             {/*<li className='font-[lexend deca] text-primary font-medium text-base py-2 ml-[45px] '><Link to={user ? '/donate/money' : "/login"} state={user ? { to: "/" } : { to: "/donate/money" }}>Donate Money</Link></li>*/}
                         </ul>
@@ -350,12 +352,12 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
 
                         </div>
 
-                        { <div className='post_product_button'>
+                        {/* { <div className='post_product_button'>
                             <Link to={user ? '/panel/create' : '/login'} state={{ to: "/panel/create" }} className='bg-btn-primay px-4 py-3 rounded-md flex items-center justify-between w-full gap-4 button'>
                                 <span className='text-nowrap text-primary'>Sell</span>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M5.00488 11.525V7.075H0.854883V5.125H5.00488V0.65H7.00488V5.125H11.1549V7.075H7.00488V11.525H5.00488Z" fill="#000"></path></svg>
                             </Link>
-                        </div>}
+                        </div>} */}
                         {/* {!user && <Link to={loggedIn ? '/panel/create' : '/login'} state={{ to: "/panel/create", "for": "sell" }} className='bg-btn-primay px-4 py-3 rounded-md flex items-center justify-between w-full gap-4 button'>
                             <span className='text-nowrap text-primary'>Sell</span>
                             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M5.00488 11.525V7.075H0.854883V5.125H5.00488V0.65H7.00488V5.125H11.1549V7.075H7.00488V11.525H5.00488Z" fill="#000"></path></svg>
