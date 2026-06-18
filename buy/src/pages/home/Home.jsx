@@ -10,12 +10,13 @@ import featuredCutlery from '../../assets/24-Piece-Silverware.jpg'
 import MostViewedItems from './sections/MostViewedItems'
 import Categories from './sections/Categories'
 import { GET_PRODUCT_CATEGORY } from '../../services/operations/productsApi'
+import { LockClosedIcon, ChatBubbleIcon, StarIcon, CheckCircledIcon } from '@radix-ui/react-icons';
 
 const trustItems = [
-  { icon: '🔒', title: 'Verified Sellers', desc: "Every seller goes through phone & ID verification so you know exactly who you're dealing with." },
-  { icon: '💬', title: 'In-App Chat', desc: 'Negotiate and communicate safely without ever sharing personal contact details.' },
-  { icon: '⭐', title: 'Ratings & Reviews', desc: 'Buyer and seller ratings after every transaction keep our community trustworthy.' },
-  { icon: '🛡️', title: 'Buyer Protection', desc: 'Dispute resolution and buyer protection on all eligible transactions.' },
+  { icon: LockClosedIcon, title: 'Verified Sellers', desc: "Every seller goes through phone & ID verification so you know exactly who you're dealing with." },
+  { icon: ChatBubbleIcon, title: 'In-App Chat', desc: 'Negotiate and communicate safely without ever sharing personal contact details.' },
+  { icon: StarIcon, title: 'Ratings & Reviews', desc: 'Buyer and seller ratings after every transaction keep our community trustworthy.' },
+  { icon: CheckCircledIcon, title: 'Buyer Protection', desc: 'Dispute resolution and buyer protection on all eligible transactions.' },
 ]
 
 const collageItems = [
@@ -184,16 +185,19 @@ function Home() {
       </section>
 
       <section className="px-8 md:px-16 py-16 bg-[#f8fafd] grid sm:grid-cols-2 xl:grid-cols-4 gap-5">
-        {trustItems.map(item => (
-          <div
-            key={item.title}
-            className="text-center p-8 border border-[#d5e3f0] bg-[#eef5fb] transition duration-300 hover:-translate-y-1 hover:shadow-[0_8px_24px_rgba(40,57,72,0.08)]"
-          >
-            <div className="text-4xl mb-4">{item.icon}</div>
-            <div className="font-bold text-lg text-[#283948] mb-3">{item.title}</div>
-            <div className="text-sm text-[#556e82] leading-relaxed font-light">{item.desc}</div>
-          </div>
-        ))}
+        {trustItems.map(item => {
+          const Icon = item.icon;
+          return (
+            <div
+              key={item.title}
+              className="text-center p-8 border border-[#d5e3f0] bg-[#eef5fb] transition duration-300 hover:-translate-y-1 hover:shadow-[0_8px_24px_rgba(40,57,72,0.08)]"
+            >
+              <div className="text-4xl mb-4"><Icon className="w-10 h-10 mx-auto mb-4 text-[#283948]" /></div>
+              <div className="font-bold text-lg text-[#283948] mb-3">{item.title}</div>
+              <div className="text-sm text-[#556e82] leading-relaxed font-light">{item.desc}</div>
+            </div>
+          )
+        })}
       </section>
 
       <style>{`
