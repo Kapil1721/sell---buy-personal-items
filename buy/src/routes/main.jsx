@@ -1,10 +1,7 @@
 import { appRedirectEndpoints } from "../services/api";
 import {
     Home,
-    About,
     Products,
-    Blog,
-    ContactUs,
     Login_Signup,
     AdminPanel,
     CreateProduct,
@@ -15,15 +12,11 @@ import {
     Messages,
     MyOrders,
     Settings,
-    Membership,
-    Donation,
     Unauthorised,
     ErrorUi,
     ProductDetails,
     ProductPage,
     Donations,
-    MembershipPlans,
-    MembershipPurchase,
     ManageMembers,
     PrivacyPolicy,
     TermsAndConditions,
@@ -39,8 +32,8 @@ import {
     OtpVerification,
     ChangePassword,
     Layout,
-    DonationForm,
-    DonateMoney
+    CbblApply,
+    CbblInvest
 } from "./AllComponents";
 
 const MembershipRedirect = () => {
@@ -126,6 +119,14 @@ const routes = [
             {
                 path: "refund-policy",
                 element: <RefundPolicy />,
+            },
+            {
+                path: "cbbl-apply",
+                element: <CbblApply />,
+            },
+            {
+                path: "cbbl-invest",
+                element: <CbblInvest />,
             },
             {
                 path: "login",

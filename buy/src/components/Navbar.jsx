@@ -283,6 +283,8 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
                                         {/* <li className='font-[lexend deca] text-primary font-medium text-base py-2 '><Link to={''}>Home</Link></li> */}
                                         <li className='font-[lexend deca] text-primary font-medium text-base py-2  '><a href={appRedirectEndpoints.SELL_MEMBERSHIPS_URL}>Memberships</a></li>
                                         <li className='font-[lexend deca] text-primary font-medium text-base py-2  '><a href={appRedirectEndpoints.SELL_DONATION_URL}>Donation</a></li>
+                                        <li className='font-[lexend deca] text-primary font-medium text-base py-2'><Link to={'/cbbl-apply'}>CBBL Apply</Link></li>
+                                        <li className='font-[lexend deca] text-primary font-medium text-base py-2'><Link to={'/cbbl-invest'}>CBBL Invest</Link></li>
                                         {/* <li className='font-[lexend deca] text-primary font-medium text-base py-2  '><Link to={'/qualified-items-list'}>Qualified Items</Link></li> */}
                                         {/*<li className='font-[lexend deca] text-primary font-medium text-base py-2  '><Link to={user ? '/donate' : "/login"} state={user ? { to: "/" } : { to: "/donate" }}>Donate Items</Link></li>*/}
                                         {/*<li className='font-[lexend deca] text-primary font-medium text-base py-2  '><Link to={user ? '/donate/money' : "/login"} state={user ? { to: "/" } : { to: "/donate/money" }}>Donate Money</Link></li>*/}
@@ -300,6 +302,8 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
                             {/* <li className='font-[lexend deca] text-primary font-medium text-base py-2 '><Link to={''}>Home</Link></li> */}
                             <li className='font-[lexend deca] text-primary font-medium text-base py-2 ml-[45px] '><a href={appRedirectEndpoints.SELL_MEMBERSHIPS_URL}>Memberships</a></li>
                             <li className='font-[lexend deca] text-primary font-medium text-base py-2 ml-[45px] '><a href={appRedirectEndpoints.SELL_DONATION_URL}>Donation</a></li>
+                            <li className='font-[lexend deca] text-primary font-medium text-base py-2 ml-[45px] '><Link to={'/cbbl-apply'}>CBBL Apply</Link></li>
+                            <li className='font-[lexend deca] text-primary font-medium text-base py-2 ml-[45px] '><Link to={'/cbbl-invest'}>CBBL Invest</Link></li>
                             {/* <li className='font-[lexend deca] text-primary font-medium text-base py-2 ml-[45px] '><Link to={'/qualified-items-list'}>Qualified Items</Link></li> */}
                             {/*<li className='font-[lexend deca] text-primary font-medium text-base py-2 ml-[45px] '><Link to={user ? '/donate' : "/login"} state={user ? { to: "/" } : { to: "/donate" }}>Donate Items</Link></li>*/}
                             {/*<li className='font-[lexend deca] text-primary font-medium text-base py-2 ml-[45px] '><Link to={user ? '/donate/money' : "/login"} state={user ? { to: "/" } : { to: "/donate/money" }}>Donate Money</Link></li>*/}
