@@ -13,6 +13,8 @@ import {
   getPayPalClientId,
 } from "../utils/paypal.js";
 import { renderHtmlTemplate } from "../utils/renderTemplate.js";
+import jwt from "jsonwebtoken";
+import { signToken } from "./Auth.Controllers.js";
 // import { broadcastService } from "../app.js";
 
 const prisma = new PrismaClient();
@@ -246,20 +248,46 @@ export const getPayPalMembershipConfig = CatchAsync(async (req, res, next) => {
   });
 });
 
+const getOptionalUser = (req) => {
+  const token = req.cookies?.token || (req.headers.authorization?.startsWith("Bearer ") ? req.headers.authorization.split(" ")[1] : null);
+  if (!token) return null;
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    return decoded;
+  } catch (error) {
+    return null;
+  }
+};
+
+const getCookieOptions = () => {
+  const isProduction = process.env.NODE_ENV === "production";
+  return {
+    httpOnly: true,
+    sameSite: isProduction ? "none" : "lax",
+    maxAge: 24 * 3600000,
+    secure: isProduction,
+  };
+};
+
 export const createMembershipPayPalOrder = CatchAsync(
   async (req, res, next) => {
     const { planId } = req.body;
-    const userId = req.user.id;
+    
+    // Check if token exists to get user ID
+    const decodedUser = getOptionalUser(req);
+    let userId = decodedUser?.id;
 
-    const existingMembership = await prisma.memberships.findFirst({
-      where: { userId },
-    });
-
-    if (existingMembership) {
-      return res.status(400).json({
-        status: false,
-        message: "User already has an active membership",
+    if (userId) {
+      const existingMembership = await prisma.memberships.findFirst({
+        where: { userId },
       });
+
+      if (existingMembership) {
+        return res.status(400).json({
+          status: false,
+          message: "An active membership already exists for this account.",
+        });
+      }
     }
 
     const plan = await prisma.subscriptionPlan.findFirst({
@@ -278,7 +306,7 @@ export const createMembershipPayPalOrder = CatchAsync(
       amount,
       description: `${plan.name} membership`,
       customId: JSON.stringify({
-        userId,
+        userId: userId || null,
         planId: Number(planId),
         type: "membership",
       }),
@@ -295,23 +323,15 @@ export const createMembershipPayPalOrder = CatchAsync(
 export const captureMembershipPayPalOrder = CatchAsync(
   async (req, res, next) => {
     const { orderId, planId } = req.body;
-    const userId = req.user.id;
+    
+    // Check if token exists to get user ID
+    const decodedUser = getOptionalUser(req);
+    let userId = decodedUser?.id;
 
     if (!orderId || !planId) {
       return res.status(400).json({
         status: false,
         message: "Order ID and plan ID are required",
-      });
-    }
-
-    const existingMembership = await prisma.memberships.findFirst({
-      where: { userId },
-    });
-
-    if (existingMembership) {
-      return res.status(400).json({
-        status: false,
-        message: "User already has an active membership",
       });
     }
 
@@ -355,6 +375,83 @@ export const captureMembershipPayPalOrder = CatchAsync(
       });
     }
 
+    // Extract user details from PayPal payer info if guest
+    let targetEmail = decodedUser?.email;
+    let targetName = decodedUser?.name;
+
+    if (!userId) {
+      targetEmail = captureResult.payer?.email_address;
+      targetName = captureResult.payer?.name 
+        ? `${captureResult.payer.name.given_name || ""} ${captureResult.payer.name.surname || ""}`.trim() 
+        : "PayPal Buyer";
+      
+      if (!targetEmail) {
+        return res.status(400).json({
+          status: false,
+          message: "Unable to extract email from PayPal payer information.",
+        });
+      }
+    }
+
+    // Now, check or create the user
+    let userToSubscribe = null;
+    let isNewUser = false;
+    let generatedPassword = "";
+
+    if (userId) {
+      userToSubscribe = await prisma.users.findUnique({
+        where: { id: userId },
+      });
+    } else {
+      // Find by email
+      userToSubscribe = await prisma.users.findFirst({
+        where: { email: targetEmail.toLowerCase() },
+      });
+
+      if (!userToSubscribe) {
+        // Automatically register the user!
+        isNewUser = true;
+        
+        // Generate password and username
+        generatedPassword = "Member" + Math.floor(100000 + Math.random() * 900000);
+        const hashedPassword = await bcrypt.hash(generatedPassword, 12);
+        
+        let baseUsername = (targetName || targetEmail.split("@")[0]).replace(/\s+/g, "").toLowerCase().slice(0, 15);
+        let username = baseUsername;
+        let userExists = await prisma.users.findUnique({ where: { username } });
+        while (userExists) {
+          username = `${baseUsername}${Math.floor(1000 + Math.random() * 9000)}`;
+          userExists = await prisma.users.findUnique({ where: { username } });
+        }
+
+        userToSubscribe = await prisma.users.create({
+          data: {
+            username,
+            email: targetEmail.toLowerCase(),
+            name: targetName,
+            password: hashedPassword,
+            countryCode: "+1",
+            contactNumber: "1234567890",
+            verified: true,
+            active: true,
+            seller: true,
+            buyer: true,
+            donor: false,
+          },
+        });
+      }
+    }
+
+    if (!userToSubscribe) {
+      return res.status(500).json({
+        status: false,
+        message: "Failed to locate or create user for subscription.",
+      });
+    }
+
+    userId = userToSubscribe.id;
+
+    // Check if user already has this payment captured
     const existingPayment = await prisma.payment.findFirst({
       where: { stripePaymentId: capture.id },
       include: {
@@ -363,26 +460,71 @@ export const captureMembershipPayPalOrder = CatchAsync(
     });
 
     if (existingPayment) {
+      // Set auth cookie for auto-login
+      const token = signToken({
+        id: userToSubscribe.id,
+        email: userToSubscribe.email,
+        username: userToSubscribe.username,
+        name: userToSubscribe.name,
+        role: userToSubscribe.role,
+        isSubscribed: true,
+        seller: userToSubscribe.seller,
+        buyer: userToSubscribe.buyer,
+        donor: userToSubscribe.donor,
+      });
+      res.cookie("token", token, getCookieOptions());
+
       return res.status(200).json({
         status: true,
         message: "Membership payment already captured.",
         isSubscribed: true,
         membershipId: existingPayment.subscriptionId,
+        token,
+        data: {
+          id: userToSubscribe.id,
+          username: userToSubscribe.username,
+          email: userToSubscribe.email,
+          name: userToSubscribe.name,
+          role: userToSubscribe.role,
+          isSubscribed: true,
+          seller: userToSubscribe.seller,
+          buyer: userToSubscribe.buyer,
+          donor: userToSubscribe.donor,
+        }
       });
     }
 
+    // Check if user already has an active membership
+    let existingMembership = await prisma.memberships.findFirst({
+      where: { userId },
+    });
+
+    let newMembership;
     const startDate = new Date();
     const endDate = getMembershipEndDate(startDate, plan);
 
-    const newMembership = await prisma.memberships.create({
-      data: {
-        startDate,
-        endDate,
-        userId,
-        subscriptionPlanId: Number(planId),
-        status: "ACTIVE",
-      },
-    });
+    if (existingMembership) {
+      // Just activate/update existing membership
+      newMembership = await prisma.memberships.update({
+        where: { id: existingMembership.id },
+        data: {
+          startDate,
+          endDate,
+          status: "ACTIVE",
+          subscriptionPlanId: Number(planId),
+        },
+      });
+    } else {
+      newMembership = await prisma.memberships.create({
+        data: {
+          startDate,
+          endDate,
+          userId,
+          subscriptionPlanId: Number(planId),
+          status: "ACTIVE",
+        },
+      });
+    }
 
     await prisma.payment.create({
       data: {
@@ -401,11 +543,21 @@ export const captureMembershipPayPalOrder = CatchAsync(
       },
     });
 
+    // Build welcome email content
+    let welcomeMessage = `Your seller membership has been activated successfully!`;
+    if (isNewUser) {
+      welcomeMessage += `<br/><br/><strong>An account has been automatically created for you:</strong><br/>
+      Email: ${targetEmail}<br/>
+      Username: ${userToSubscribe.username}<br/>
+      Temporary Password: ${generatedPassword}<br/>
+      Please log in to the <a href="https://buy.sellpersonalitems.com/login">Buy App</a> to access your profile and listings.`;
+    }
+
     await sendMultipleEmails({
-      email: req.user.email,
+      email: targetEmail.toLowerCase(),
       subject: "Subscription Activated",
       html: buildMembershipActivatedEmail({
-        customerName: req.user.name,
+        customerName: targetName,
         planName: plan.name,
         amount: paidAmount,
         currency: capture.amount?.currency_code ?? "USD",
@@ -415,14 +567,46 @@ export const captureMembershipPayPalOrder = CatchAsync(
         membershipStartDate: startDate,
         membershipEndDate: endDate,
         membershipId: newMembership.id,
-      }),
+      }) + `<div style="margin-top: 20px; padding: 15px; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
+        <h4 style="margin: 0 0 10px 0; color: #1e293b;">Account Access Information</h4>
+        <p style="margin: 0; font-size: 14px; color: #475569; line-height: 1.6;">${welcomeMessage}</p>
+      </div>`,
     });
+
+    // Set auth cookie for auto-login
+    const token = signToken({
+      id: userToSubscribe.id,
+      email: userToSubscribe.email,
+      username: userToSubscribe.username,
+      name: userToSubscribe.name,
+      role: userToSubscribe.role,
+      isSubscribed: true,
+      seller: userToSubscribe.seller,
+      buyer: userToSubscribe.buyer,
+      donor: userToSubscribe.donor,
+    });
+    res.cookie("token", token, getCookieOptions());
 
     return res.status(201).json({
       status: true,
       message: "Congratulations, your membership has been activated successfully.",
       isSubscribed: true,
       membershipId: newMembership.id,
+      isNewUser,
+      username: userToSubscribe.username,
+      email: userToSubscribe.email,
+      token,
+      data: {
+        id: userToSubscribe.id,
+        username: userToSubscribe.username,
+        email: userToSubscribe.email,
+        name: userToSubscribe.name,
+        role: userToSubscribe.role,
+        isSubscribed: true,
+        seller: userToSubscribe.seller,
+        buyer: userToSubscribe.buyer,
+        donor: userToSubscribe.donor,
+      }
     });
   }
 );

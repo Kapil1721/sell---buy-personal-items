@@ -1,5 +1,6 @@
 import axios from "axios";
 import { toast } from "sonner";
+import { getBuyRoute } from "../config/appConfig";
 
 const axiosInstance = axios.create({
   // baseURL: baseURL,
@@ -22,7 +23,7 @@ axiosInstance.interceptors.response.use(
     }
     if (error.response && error.response.status === 401) {
       localStorage.removeItem("token");
-      window.location.href = "/login-register?tab=login"; // redirect to login page
+      window.location.href = getBuyRoute("/login?tab=login"); // redirect to login page
     }
     return Promise.reject(error);
   }

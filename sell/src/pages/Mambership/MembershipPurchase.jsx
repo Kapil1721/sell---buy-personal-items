@@ -11,6 +11,7 @@ import { useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@nextui-org/react';
 import { AuthContext } from '../../auth/AuthContext';
+import { jwtDecode } from 'jwt-decode';
 
 function MembershipPurchase({ _planID }) {
 
@@ -33,7 +34,7 @@ function MembershipPurchase({ _planID }) {
     const planID = _planID ? _planID : SearchParams.get('planId')
 
     const { isPending, data } = useQuery({
-        queryKey: ['getplans'],
+        queryKey: ['getplans', planID],
         queryFn: async () => await GETPLANSBYID(planID)
     });
 
@@ -129,7 +130,9 @@ function MembershipPurchase({ _planID }) {
             },
             createOrder: async () => {
                 setIsLoading(true);
-                const res = await CREATEPAYPALMEMBERSHIPORDER({ planId: Number(planID) });
+                const res = await CREATEPAYPALMEMBERSHIPORDER({ 
+                    planId: Number(planID)
+                });
                 if (!res?.status || !res?.orderId) {
                     setIsLoading(false);
                     throw new Error(res?.message || 'Unable to create PayPal order.');
@@ -145,8 +148,14 @@ function MembershipPurchase({ _planID }) {
                 setIsLoading(false);
 
                 if (res?.status) {
-                    setUser({ ...user, isSubscribed: true });
                     toast.success(res.message);
+                    if (res.token) {
+                        localStorage.setItem('_sell_Token', res.token);
+                        const decoded = jwtDecode(res.token);
+                        setUser({ ...decoded, ...res.data });
+                    } else {
+                        setUser((prev) => ({ ...prev, isSubscribed: true }));
+                    }
                     onClose();
                     return;
                 }
@@ -179,7 +188,7 @@ function MembershipPurchase({ _planID }) {
                     <div className="modal">
                         <form className="form">
                             <div className="banner-membership" />
-                            <label className="title">Offers</label>
+                            <label className="title font-bold text-primary">Offers</label>
                             <div className='w-full flex justify-center items-center mt-5'>
                                 <div className="flex w-fit py-2 gap-2 px-2  bg-light bg-opacity-60 rounded-[30px] shadow-2xl">
                                     <label className={`bg-white px-6 py-2 rounded-[30px] text-primary font-medium text-center cursor-pointer hover:ring-2 hover:ring-helper ${PaymentType === 'onetime' && 'shadow-md ring-2 ring-blue-600'}`} htmlFor="onetime">One Time
@@ -188,9 +197,9 @@ function MembershipPurchase({ _planID }) {
                                 </div>
                             </div>
 
-                            <div className='lg:flex lg:items-center lg:justify-between'>
+                            <div className='lg:flex lg:items-center lg:justify-between mt-6'>
                                 <div className="benefits w-full">
-                                    <span className='text-primary'>What we offer</span>
+                                    <span className='text-primary font-bold'>What we offer</span>
                                     <ul className='w-full'>
                                         {isPending && [...Array(3)].map((feature, index) => (
                                             <li key={index} className="flex bg-light bg-opacity-60 items-center gap-2 animate-pulse h-5 rounded-3xl w-full"></li>
@@ -224,7 +233,7 @@ function MembershipPurchase({ _planID }) {
                                 {
                                     PaymentType === 'onetime' &&
                                     <>
-                                        <label className="text-nowrap text-lg font-bold lg:text-2xl lg:font-extrabold">
+                                        <label className="text-nowrap text-lg font-bold lg:text-2xl lg:font-extrabold text-primary">
                                             <span className=''>Total: $</span>{data?.plans?.offerValue} only
                                         </label>
 
@@ -279,10 +288,11 @@ function MembershipPurchase({ _planID }) {
                                         <ModalBody>
                                             <div className='flex justify-center items-center w-full mt-4'>
                                                 <div className='grid grid-cols-2 w-full gap-4'>
-                                                    <p className=" text-light font-bold ">Plane Name: <span className='text-lg font-medium text-primary '>{data?.plans?.name}</span></p>
+                                                    <p className=" text-light font-bold ">Plan Name: <span className='text-lg font-medium text-primary '>{data?.plans?.name}</span></p>
                                                     <p className=" text-light font-bold ">Offer Type: <span className='text-lg font-medium text-primary '>PayPal</span></p>
                                                     <p className=" text-light font-bold ">Payment Type: <span className='text-lg font-medium text-primary '>{PaymentType}</span></p>
                                                     <p className=" text-light font-bold ">Payable Amount: <span className='text-lg font-medium text-primary '>{` $${payableAmount.toFixed(2)}`}</span></p>
+                                                    
                                                     <div className='col-span-2 mt-6'>
                                                         {!paypalClientId && <p className='text-sm text-danger'>PayPal is not configured yet on the server.</p>}
                                                         {paypalClientId && !isPayPalReady && <p className='text-sm text-primary mb-3'>Loading PayPal checkout...</p>}

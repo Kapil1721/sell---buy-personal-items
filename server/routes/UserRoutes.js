@@ -134,10 +134,10 @@ router.route("/membership").get(authMiddleware, getMembership);
 router.route("/membership/paypal/config").get(getPayPalMembershipConfig);
 router
   .route("/membership/paypal/order")
-  .post(authMiddleware, createMembershipPayPalOrder);
+  .post(createMembershipPayPalOrder);
 router
   .route("/membership/paypal/capture")
-  .post(authMiddleware, captureMembershipPayPalOrder);
+  .post(captureMembershipPayPalOrder);
 router.route("/plans").get(getPlans);
 router.route("/plans/:id").get(getPlansById);
 

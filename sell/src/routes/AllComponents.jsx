@@ -6,7 +6,7 @@ export const About = React.lazy(() => import("../pages/about/About"))
 export const Products = React.lazy(() => import("../pages/products/Products"))
 export const Blog = React.lazy(() => import("../pages/Blog/Blog"))
 export const ContactUs = React.lazy(() => import("../pages/contactus/ContactUs"))
-export const Login_Signup = React.lazy(() => import("../pages/login_signup/Login_Signup"))
+
 export const AdminPanel = React.lazy(() => import("../pages/admin_panel/AdminPanel"))
 export const CreateProduct = React.lazy(() => import("../pages/admin_panel/sections/CreateProduct"))
 export const ModerateProducts = React.lazy(() => import("../pages/admin_panel/sections/ModerateProducts"))
@@ -29,17 +29,14 @@ export const PrivacyPolicy = React.lazy(() => import("../pages/PrivacyPolicy/Pri
 export const TermsAndConditions = React.lazy(() => import("../pages/TermsAndConditions/TermsAndConditions"))
 export const RefundPolicy = React.lazy(() => import("../pages/RefundPolicy/RefundPolicy"))
 export const Protected = React.lazy(() => import("../auth/Protected"))
-export const LoginSignupReview = React.lazy(() => import("../pages/login_signup/LoginSignupReview"))
+
 export const ProductDetail = React.lazy(() => import("../pages/products/ProductDetail"))
 export const QualifiedItemsList = React.lazy(() => import("../pages/QualifiedListItems/QualifiedItemsList"))
 export const CbblApply = React.lazy(() => import("../pages/CBBL/CbblApply"))
 export const CbblInvest = React.lazy(() => import("../pages/CBBL/CbblInvest"))
 export const AdminLogin = React.lazy(() => import("../pages/admin_panel/AdminLogin"))
 export const AdminLayout = React.lazy(() => import("../layouts/AdminLayout"))
-export const ForgetPassword = React.lazy(() => import("../pages/login_signup/ForgetPassword"))
-export const ForgetPasswordLayout = React.lazy(() => import("../pages/login_signup/ForgetPasswordLayout"))
-export const OtpVerification = React.lazy(() => import("../pages/login_signup/OtpVerification"))
-export const ChangePassword = React.lazy(() => import("../pages/login_signup/ChangePassword"))
+
 export const Layout = React.lazy(() => import("../layouts/Layout"))
 export const DonationForm = React.lazy(() => import("../pages/Donation/sections/DonationForm"))
 export const DonateMoney = React.lazy(() => import("../pages/Donation/sections/DonateMoney"));

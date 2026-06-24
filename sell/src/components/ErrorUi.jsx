@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { getBuyRoute } from '../config/appConfig'
 import { useGlobalState } from '../store/AuthStore'
 
 function ErrorUi({ error }) {
@@ -59,8 +60,8 @@ export const UnAuthorisedUi = ({ setAuthorisation }) => {
                                 }} className='text-secondary text-lg font-medium ring-2 cursor-pointer ring-inset ring-secondary rounded-2xl px-6 py-2 transition-colors ease-in-out duration-500 hover:bg-secondary  hover:bg-sering-secondary hover:text-white hover:ring-white '>Back To Home</div>
                                 <div onClick={() => {
                                     logout()
-                                    navigate('/login-register?tab=login')
                                     setAuthorisation(true)
+                                    window.location.href = getBuyRoute("/login?tab=login");
                                 }} className='hover:text-helper text-lg font-medium ring-2 cursor-pointer ring-inset hover:ring-helper rounded-2xl px-6 py-2 transition-colors ease-in-out duration-500  bg-helper hover:bg-white text-white ring-white '>Back To Login</div>
                             </div>
                         </div>

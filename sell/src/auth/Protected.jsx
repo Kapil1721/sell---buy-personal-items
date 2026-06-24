@@ -1,17 +1,23 @@
-import { useContext } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { useContext, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { AuthContext } from './AuthContext';
+import { getBuyRoute } from '../config/appConfig';
 
 const Protected = ({ children }) => {
-    const { user } = useContext(AuthContext);
+    const { user, loading } = useContext(AuthContext);
     const location = useLocation();
 
-    // useBrowserFocus(() => {
-    //     checkSession();
-    // });
+    useEffect(() => {
+        if (!loading && !user) {
+            window.location.href = getBuyRoute('/login?tab=login');
+        }
+    }, [user, loading]);
 
+    if (loading) {
+        return null;
+    }
 
-    return user ? children : <Navigate to="/login-register?tab=login" state={{ from: location }} />;
+    return user ? children : null;
 };
 
 export default Protected;

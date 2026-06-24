@@ -1,5 +1,6 @@
 import donationImage from '../../assets/donate.jpg'
 import { Outlet, useLocation } from 'react-router-dom'
+import { ArchiveIcon } from '@radix-ui/react-icons'
 
 function Donation() {
     const { pathname } = useLocation()
@@ -32,7 +33,7 @@ function Donation() {
                         <div className="mx-5 lg:mx-10 mb-8 rounded-xl overflow-hidden border border-secondary/30">
                             {/* Top accent bar */}
                             <div className="bg-secondary px-6 py-3 flex items-center gap-3">
-                                <span className="text-white text-lg">🎁</span>
+                                <ArchiveIcon className="text-white w-5 h-5" />
                                 <span className="text-white font-bold text-sm tracking-wide uppercase">
                                     Donation Guidelines — Please Read
                                 </span>

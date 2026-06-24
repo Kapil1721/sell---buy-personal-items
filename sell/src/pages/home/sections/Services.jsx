@@ -3,6 +3,7 @@ import SELLYOURPRODUCTS from '../../../assets/SELL-YOUR-PRODUCTS-.png'
 import REGISTERMEMBERSHIP from '../../../assets/REGISTER-MEMBERSHIP-.png'
 import { Link } from 'react-router-dom'
 import { AuthContext } from '../../../auth/AuthContext'
+import { getBuyRoute } from '../../../config/appConfig'
 
 function Services() {
     const { user } = useContext(AuthContext)
@@ -10,11 +11,11 @@ function Services() {
         <div className='w-full relative bg-white mb-20'>
             <div className='lg:mx-auto grid  lg:grid-cols-2 lg:gap-6 lg:max-w-7xl lg:mt-32 mt-20 mb-20 px-10 lg:px-0 gap-3'>
                 <div className='flex flex-col items-center justify-center gap-8'>
-                    <Link to={user && user.seller ? '/panel/create' : "/login-register?tab=login"} state={{ to: '/panel/create', "for": "sell" }} className='flex flex-col justify-center items-center p-4 border gap-4 rounded-md '>
+                    <a href={getBuyRoute('/panel/create')} className='flex flex-col justify-center items-center p-4 border gap-4 rounded-md w-full'>
                         <img src={SELLYOURPRODUCTS} alt="" />
                         <h1 className='text-lg font-bold  text-center'>SELL YOUR PRODUCTS</h1>
                         <p className='text-center'>{`Ready to sell your products? It's as easy as 1-2-3! Simply take a snap of your items, set a price, and post it with a click-all in less than 60 seconds!`}</p>
-                    </Link>
+                    </a>
                     {/* <div className='flex flex-col justify-center items-center p-4 border gap-4 rounded-md'>
                         <img className='object-cover' src={CUSTOMERSUPPORT} alt="" />
                         <h1 className='text-lg font-bold '>CUSTOMER SUPPORT</h1>
@@ -25,7 +26,7 @@ function Services() {
                     <img src={belowbanner} alt='below-banner' />
                 </div> */}
                 <div className='flex flex-col items-center justify-center gap-8'>
-                    <Link to={user ? '/memberships' : "/login-register?tab=login"} className='flex flex-col justify-center items-center p-4 border gap-4 rounded-md'>
+                    <Link to={'/memberships'} className='flex flex-col justify-center items-center p-4 border gap-4 rounded-md w-full'>
                         <img src={REGISTERMEMBERSHIP} alt="" />
                         <h1 className='text-lg font-bold '>REGISTER/MEMBERSHIP</h1>
                         <p className='text-center'>{`We value our registered members and offer our lifetime membership at a one-time cost of $59.`}</p>

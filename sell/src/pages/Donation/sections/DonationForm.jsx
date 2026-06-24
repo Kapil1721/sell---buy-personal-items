@@ -1,292 +1,136 @@
-import { useContext, useState } from 'react'
-import { AddIcon, CalenderIcon, CrossIcon, EmailIcon, LocationIcon, MobileIcon, UserNameIcon } from '../../../components/Icons'
-import { CREATEDONATION } from '../../../services/operations/donationApi';
-import { toast } from 'sonner';
-import { yupResolver } from "@hookform/resolvers/yup"
-import * as yup from "yup"
-import { useForm } from 'react-hook-form';
-import { DropdownList, SelectGroupOne } from '../../../components/Dropdown';
-import EditorComponent from '../../../components/CKEEditor';
-import FileUpload from '../../../components/FileUpload';
-import { AuthContext } from '../../../auth/AuthContext';
-import Table from '../../../components/Table';
-import PhoneNumber from '../../../components/PhoneNumber';
+import React, { useState } from 'react';
 
-
-const donationSchema = yup
-    .object({
-        name: yup.string().required(),
-        email: yup.string().email().required(),
-        countryCode: yup.string().length(10),
-        phone: yup.string().required(),
-        pickupAddress: yup.string().required(),
-        pickupDate: yup.string().required(),
-        otherAmount: yup.bool(),
-        amount: yup.number().positive().required()
-    })
-    .required()
+// You can change this to the real postal address whenever needed
+const DONATION_ADDRESS = `Sell Personal Items LLC
+3210 N. Pleasantburg #1006
+Greenville, SC 29609`;
 
 function DonationForm() {
+    const [copied, setCopied] = useState(false);
 
-    const [formData, setFormData] = useState({
-        name: "",
-        email: '',
-        countryCode: "+91",
-        phone: '',
-        pickupAddress: '',
-        pickupDate: '',
-    });
-
-    const [items, setItems] = useState([]);
-    const [itemsData, setItemData] = useState({
-        name: '',
-        category: "",
-        quantity: '',
-        description: '',
-        image: []
-    });
-
-    const handleChange = (e) => {
-        const { value, name } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }))
-    }
-
-
-    const handleDonation = async (e) => {
-        e.preventDefault();
-        let res = await CREATEDONATION({ ...formData, items: items.length !== 0 ? items : [itemsData],type:"ITEMS" });
-        if (res) {
-            toast.success(res.message);
-            handleReset()
-        }
-    }
-
-    const handleGallary = async (files) => {
-        if (!files || files.length === 0) return;
-        try {
-            const promises = Array.from(files).map(file => {
-                return new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-
-                    reader.onload = () => resolve({ fileName: file.name, url: reader.result });
-                    reader.onerror = error => reject(error);
-
-                    reader.readAsDataURL(file);
-                });
-            });
-            const base64Results = await Promise.all(promises);
-            setItemData((prev) => ({ ...prev, image: base64Results }))
-
-        } catch (error) {
-            console.error('Error converting files to base64:', error);
-        }
-    }
-
-
-    const handleRemoveGallary = async (e, i) => {
-        let list = [...itemsData.image];
-        list.splice(i, 1);
-        setItemData((prev) => ({ ...prev, image: list }))
-        toast.success('Image removed successfully')
-    }
-
-    const handleReset = () => {
-        setItemData((prev) => ({
-            ...prev,
-            name: '',
-            category: "",
-            quantity: '',
-            description: '',
-            image: []
-        }));
-        // setSearchValue({ name: "", value: "" })
-        setItemData((prev) => ({ ...prev, category: '', categoryName: '' }))
-    }
-
-
-    const disable = formData.name === '' || formData.email === '' || formData.countryCode === '' || formData.phone === '' ||
-        formData.pickupAddress === '' || formData.pickupDate === '' || itemsData.category === '' || itemsData.description === ''
-        || itemsData.quantity === '' || itemsData.name === '' || itemsData.image.length === 0;
-
-
+    const handleCopy = () => {
+        navigator.clipboard.writeText(DONATION_ADDRESS);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
 
     return (
-        <form className='flex flex-col justify-between items-start'>
-            <div className='grid grid-cols-1 w-full gap-5  lg:grid-cols-3'>
-                {/* {!user ? <> */}
-                <div className='relative col-span-3 md:col-span-1'>
-                    <input
-                        name='name'
-                        onChange={handleChange}
-                        className='py-4 w-full pl-14 pr-2 text-sm lg:text-base border border-[#D5E3EE] rounded focus:outline-none placeholder:text-[#374b5c]  font-medium'
-                        type="text"
-                        placeholder="Name *"
-                    />
-                    <span className='absolute top-[13px] left-3 w-8 h-8 rounded-md bg-[#d5e3ee] flex justify-center items-center'>
-                        <UserNameIcon color={"#475B6B"} />
-                    </span>
-                </div>
-                <div className='relative col-span-3 md:col-span-1'>
-                    <input
-                        name='email'
-                        onChange={handleChange}
-                        className='py-4 w-full pl-14 pr-2 text-sm lg:text-base border border-[#D5E3EE] rounded focus:outline-none placeholder:text-[#374b5c]  font-medium'
-                        type="email"
-                        placeholder="E-mail *"
-                    />
-                    <span className='absolute top-[13px] left-3 w-8 h-8 rounded-md bg-[#d5e3ee] flex justify-center items-center'>
-                        <EmailIcon color={"#475B6B"} />
-                    </span>
-                </div>
-                <PhoneNumber onchange={(value) => setFormData((prev) => ({ ...prev, phone: value.split("-")[1], countryCode: value.split("-")[0] }))} value={formData.phone} />
-                <div className='relative col-span-3 md:col-span-1'>
-                    <input
-                        name='pickupAddress'
-                        onChange={handleChange}
-                        className='py-4 w-full pl-14 pr-2 text-sm lg:text-base border border-[#D5E3EE] rounded focus:outline-none placeholder:text-[#374b5c] font-medium'
-                        type="text"
-                        placeholder="Pickup Address *"
-                    />
-                    <span className='absolute top-[13px] left-3 w-8 h-8 rounded-md bg-[#d5e3ee] flex justify-center items-center'>
-                        <LocationIcon color={"#475B6B"} />
-                    </span>
-                </div>
-                <div className='relative col-span-3 md:col-span-1'>
-                    <label htmlFor='pickupDate' className={`${formData.pickupDate ? "hidden" : 'absolute mb-2 block ml-2 pb-1 font-medium text-primary bg-white z-20 left-12 top-4 w-1/2'}`}>Pickup Date *</label>
-                    <input value={formData.pickupDate} name='pickupDate' id='pickupDate' onChange={handleChange} className='py-4 w-full pl-14 pr-2 text-sm lg:text-base border border-[#D5E3EE] rounded focus:outline-none placeholder:text-[#374b5c] font-medium' type="date" placeholder="Pickup Date *" />
-                    <span className='absolute top-[13px] left-3 w-8 h-8 rounded-md bg-[#d5e3ee] flex justify-center items-center'>
-                        <CalenderIcon color={"#475B6B"} />
-                    </span>
+        <div className="flex flex-col space-y-8 w-full max-w-3xl mx-auto py-4">
+            {/* Step-by-Step Mailing Guide */}
+            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 space-y-6">
+                <h4 className="text-2xl font-bold text-primary tracking-tight">
+                    How it works
+                </h4>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {/* Step 1 */}
+                    <div className="flex flex-col space-y-2 p-4 rounded-xl bg-slate-50 border border-slate-100 transition-all duration-300 hover:shadow-md">
+                        <span className="text-xs font-semibold uppercase tracking-wider text-secondary">
+                            Step 1
+                        </span>
+                        <h5 className="font-bold text-primary text-base">
+                            Prepare Your Articles
+                        </h5>
+                        <p className="text-[#556E82] text-sm leading-relaxed">
+                            Gather up to 25 gently used items like clothes, shoes, and daily articles.
+                        </p>
+                    </div>
 
-                </div>
-                {/* </> : <></>} */}
-                <div className='relative col-span-3 text-primary mt-2'>
-                    <h3 className='font-semibold ml-5'>Add Items *</h3>
-                </div>
-                <div className='relative text-primary col-span-3 md:col-span-1'>
-                    <div className="w-full">
-                        <label className="mb-2 block ml-2 font-medium text-primary">
-                            Product Name *
-                        </label>
-                        <input
-                            type="text"
-                            placeholder="Product Name"
-                            value={itemsData.name}
-                            onChange={(e) => setItemData((prev) => ({ ...prev, name: e.target.value }))}
-                            className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-primary outline-none transition focus:border-helper active:border-helper disabled:cursor-default disabled:bg-whiter border-form-strokedark bg-form-input"
-                        />
+                    {/* Step 2 */}
+                    <div className="flex flex-col space-y-2 p-4 rounded-xl bg-slate-50 border border-slate-100 transition-all duration-300 hover:shadow-md">
+                        <span className="text-xs font-semibold uppercase tracking-wider text-secondary">
+                            Step 2
+                        </span>
+                        <h5 className="font-bold text-primary text-base">
+                            Package Securely
+                        </h5>
+                        <p className="text-[#556E82] text-sm leading-relaxed">
+                            Box or wrap your articles securely. No registration or online form submission is required.
+                        </p>
+                    </div>
+
+                    {/* Step 3 */}
+                    <div className="flex flex-col space-y-2 p-4 rounded-xl bg-slate-50 border border-slate-100 transition-all duration-300 hover:shadow-md">
+                        <span className="text-xs font-semibold uppercase tracking-wider text-secondary">
+                            Step 3
+                        </span>
+                        <h5 className="font-bold text-primary text-base">
+                            Ship & Mail
+                        </h5>
+                        <p className="text-[#556E82] text-sm leading-relaxed">
+                            Drop off your package at any courier or mail provider of your choice.
+                        </p>
                     </div>
                 </div>
-                <div className='relative col-span-3 md:col-span-1'>
-                    <label className="mb-2 block ml-2 font-medium text-primary">
-                        Product Category *
-                    </label>
-                    <DropdownList label={'Select Product Category'} value={itemsData.category} onClear={handleReset} onChange={(value) => setItemData((prev) => ({ ...prev, category: value.id, categoryName: value.name }))} />
-                </div>
-                <div className='relative text-primary col-span-3 md:col-span-1'>
-                    <div className="w-full">
-                        <label className="mb-2 block ml-2 font-medium text-primary">
-                            Quantity *
-                        </label>
-                        <input
-                            type="number"
-                            placeholder="Quantity"
-                            value={itemsData.quantity}
-                            onChange={(e) => setItemData((prev) => ({ ...prev, quantity: e.target.value }))}
-                            className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-primary outline-none transition focus:border-helper active:border-helper disabled:cursor-default disabled:bg-whiter border-form-strokedark bg-form-input"
-                        />
-                    </div>
-                </div>
-                <div className='relative col-span-3'>
-                    <label className="mb-2 block ml-2 font-medium text-primary">
-                        Product Description *
-                    </label>
-                    <EditorComponent data={itemsData.description} onChange={(value) => setItemData((prev) => ({ ...prev, description: value }))} />
-                </div>
-                <div className='relative col-span-3'>
-                    <label className="mb-2 block ml-2 font-medium text-primary">
-                        Product Image Upload *
-                    </label>
-                    <FileUpload files={itemsData.image} progress={0} onUploadFile={handleGallary} handleRemove={handleRemoveGallary} type={"images"} name={"Gallery"} id={"Gallery"} setFiles={(img) => setItemData((prev) => ({ ...prev, image: [...prev.image, img] }))} />
-                </div>
-
-
-
             </div>
-            <button onClick={handleDonation} disabled={disable} className='mt-10 block w-full rounded-md bg-indigo-600 disabled:bg-opacity-50 disabled:hover:bg-opacity-50 disabled:cursor-not-allowed px-3 py-2 text-center text-xl font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'>Donate Now</button>
-        </form>
-    )
+
+            {/* Donation Shipping Address Box */}
+            <div className="bg-gradient-to-br from-[#E6F0FA] to-[#F8FAFD] rounded-2xl border border-indigo-100/60 p-6 lg:p-8 flex flex-col md:flex-row justify-between items-center gap-6 shadow-sm">
+                <div className="space-y-4 text-center md:text-left w-full md:w-auto">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-semibold uppercase tracking-wide">
+                        <span className="w-1.5 h-1.5 rounded-full bg-indigo-600 animate-ping"></span>
+                        Official Donation Address
+                    </div>
+                    <div className="space-y-2">
+                        <p className="text-xs text-indigo-600 font-semibold tracking-widest uppercase">
+                            Mail / Ship To:
+                        </p>
+                        <div className="bg-white/95 backdrop-blur-sm border border-indigo-200/50 rounded-xl p-5 shadow-inner">
+                            <pre className="font-mono text-sm md:text-base leading-relaxed text-slate-800 font-bold whitespace-pre-wrap select-all">
+                                {DONATION_ADDRESS}
+                            </pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="flex flex-col w-full md:w-auto gap-3 shrink-0">
+                    <button
+                        type="button"
+                        onClick={handleCopy}
+                        style={{ height: '56px' }}
+                        className={`flex items-center justify-center gap-2 w-full md:w-48 px-6 py-4 rounded-xl font-bold text-base transition-all duration-300 shadow-md text-white ${
+                            copied 
+                                ? 'bg-emerald-600 hover:bg-emerald-700 border-none' 
+                                : 'bg-indigo-600 hover:bg-indigo-700 border-none'
+                        }`}
+                    >
+                        {copied ? (
+                            <>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                </svg>
+                                Copied!
+                            </>
+                        ) : (
+                            <>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
+                                </svg>
+                                Copy Address
+                            </>
+                        )}
+                    </button>
+                    
+                    <p className="text-xs text-center text-slate-500 font-medium">
+                        Click to copy the address
+                    </p>
+                </div>
+            </div>
+
+            {/* Note on Authentications & Guidelines */}
+            <div className="bg-amber-50/50 border border-amber-200/60 rounded-2xl p-5 flex items-start gap-4 shadow-sm">
+                <span className="text-2xl mt-0.5">ℹ️</span>
+                <div className="space-y-1">
+                    <h5 className="font-bold text-primary text-sm">
+                        No Account Required
+                    </h5>
+                    <p className="text-[#556E82] text-xs leading-relaxed">
+                        To simplify donations, you do not need to sign up, log in, or register. Anyone can send donation items directly to our processing center. Your kindness is greatly appreciated!
+                    </p>
+                </div>
+            </div>
+        </div>
+    );
 }
 
-export default DonationForm
-
-
-
-
-// < header >
-// <h4 className='text-xl font-medium text-primary'>Gift Frequency</h4>
-//             </header >
-//             <div className='bg-[#F0F4FA] border border-gray-200 px-5 py-3 rounded-[4rem] flex justify-between gap-4 relative'>
-//                 <div className='py-2 px-4 rounded-3xl bg-white flex justify-center items-center'>
-//                     <input className='opacity-0' type="radio" name="frequency" id="Monthly" />
-//                     <label className='mr-3' htmlFor="Monthly">Monthly</label>
-//                 </div>
-//                 <div className='py-2 px-4 rounded-3xl bg-white'>
-//                     <input className='opacity-0' type="radio" name="frequency" id="one-time" />
-//                     <label className='mr-3' htmlFor="one-time">One Time</label>
-//                 </div>
-//             </div>
-//             <header>
-//                 <h4>What want's to donate</h4>
-//             </header>
-//             <div>
-//                 <div>
-//                     <input type="radio" name="donationType" id="items" />
-//                     <label htmlFor="items">Items</label>
-//                 </div>
-//                 <div>
-//                     <input type="radio" name="donationType" id="money" />
-//                     <label htmlFor="money">Money</label>
-//                 </div>
-//             </div>
-//             <header>
-//                 <h4>Selct amount (in US dollar)</h4>
-//             </header>
-//             <div>
-//                 <div>
-//                     <input type="radio" name="amount" id="10" />
-//                     <label htmlFor="10">$ 10</label>
-//                 </div>
-//                 <div>
-//                     <input type="radio" name="amount" id="20" />
-//                     <label htmlFor="20">$ 20</label>
-//                 </div>
-//                 <div>
-//                     <input type="radio" name="amount" id="30" />
-//                     <label htmlFor="30">$ 30</label>
-//                 </div>
-//                 <div>
-//                     <input type="radio" name="amount" id="40" />
-//                     <label htmlFor="40">$ 40</label>
-//                 </div>
-//                 <div>
-//                     <input type="radio" name="amount" id="other" />
-//                     <label htmlFor="other">$ 40</label>
-//                 </div>
-//                 <div>
-//                     <label htmlFor="other">Other Amount</label>
-//                     <input type="text" name="amount" id="other" />
-//                 </div>
-//             </div>
-
-//             <div>
-//                 <div>
-//                     <input type="checkbox" name="amount" id="10" />
-//                     <label htmlFor="10">Yes, I’ll generously add $0.75 each month to cover the transaction fees.</label>
-//                 </div>
-//             </div>
-//             <div>
-//                 <label htmlFor="name">Name</label>
-//                 <input type="text" name="name" />
-//                 <a href="/">Click here to give in honor of other person</a>
-//             </div>
+export default DonationForm;

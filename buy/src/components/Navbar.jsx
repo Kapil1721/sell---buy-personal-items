@@ -328,7 +328,7 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
                                         Log In
                                     </Link>
                                     <hr className="w-8 h-[2px] mx-auto my-auto  border-0 rounded md:my-10 bg-primary rotate-90"></hr>
-                                    <a href={appRedirectEndpoints.SELL_REGISTER_URL} className='py-4 font-medium text-primary'>Register</a>
+                                    <Link to={'/login?tab=register'} className='py-4 font-medium text-primary'>Register</Link>
 
                                 </>
                                 :

@@ -3,7 +3,6 @@ import {
     About,
     Blog,
     ContactUs,
-    Login_Signup,
     AdminPanel,
     Settings,
     Membership,
@@ -16,11 +15,6 @@ import {
     TermsAndConditions,
     RefundPolicy,
     Protected,
-    LoginSignupReview,
-    ForgetPassword,
-    ForgetPasswordLayout,
-    OtpVerification,
-    ChangePassword,
     Layout,
     DonationForm,
     DonateMoney,
@@ -57,28 +51,7 @@ const routes = [
                 path: "qualified-items-list",
                 element: <QualifiedItemsList />,
             },*/
-            {
-                path: "login-signup-review",
-                element: <LoginSignupReview />,
-            },
-            {
-                path: "forget-password",
-                element: <ForgetPasswordLayout />,
-                children: [
-                    {
-                        path: "",
-                        element: <ForgetPassword />
-                    },
-                    {
-                        path: "otp-verification",
-                        element: <OtpVerification />
-                    },
-                    {
-                        path: "change-password",
-                        element: <ChangePassword />
-                    }
-                ]
-            },
+
             /*{
                 path: "products",
                 element: <Products />,
@@ -115,10 +88,7 @@ const routes = [
                 path: "cbbl-invest",
                 element: <CbblInvest />,
             },
-            {
-                path: "login-register",
-                element: <Login_Signup />,
-            },
+
             {
                 path: "memberships",
                 element: <Membership />,

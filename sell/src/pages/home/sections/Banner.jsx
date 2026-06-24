@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { getBuyRoute } from '../../../config/appConfig'
+import { ArchiveIcon, LockClosedIcon, FileTextIcon, PersonIcon, IdCardIcon } from '@radix-ui/react-icons'
 
 
 
@@ -151,43 +152,35 @@ function Banner() {
                             <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4'>
                                 {/* Donation Button */}
                                 <Link to="/donate" className="flex flex-col items-center justify-center p-6 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl hover:bg-secondary transition-all group">
-                                    <span className="text-3xl mb-2 group-hover:scale-110 transition-transform">🎁</span>
+                                    <ArchiveIcon className="w-8 h-8 mb-2 text-white group-hover:scale-110 transition-transform" />
                                     <span className="text-white font-bold text-lg">Donation</span>
                                     <span className="text-white/60 text-xs text-center mt-1 group-hover:text-white/90">Donate Items</span>
                                 </Link>
 
-                                {/* Member/Login Button */}
-                                <div className="flex flex-col items-center justify-center p-6 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl hover:bg-helper transition-all group relative">
-                                    <Link to="/login-register?tab=login" className="flex flex-col items-center justify-center w-full mb-1">
-                                        <span className="text-3xl mb-2 group-hover:scale-110 transition-transform">🔐</span>
-                                        <span className="text-white font-bold text-lg">Member Login</span>
-                                    </Link>
-                                    <Link to="/cbbl-apply" className="text-secondary font-bold text-xs hover:underline z-20 relative">
-                                        (CBBL apply!)
-                                    </Link>
-                                </div>
+                                {/* CBBL Apply Button */}
+                                <Link to="/cbbl-apply" className="flex flex-col items-center justify-center p-6 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl hover:bg-helper transition-all group">
+                                    <LockClosedIcon className="w-8 h-8 mb-2 text-white group-hover:scale-110 transition-transform" />
+                                    <span className="text-white font-bold text-lg">CBBL Apply</span>
+                                    <span className="text-white/60 text-xs text-center mt-1 group-hover:text-white/90">Apply for bridge loan</span>
+                                </Link>
 
-                                {/* Buyer/Register Button */}
-                                <div className="flex flex-col items-center justify-center p-6 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl hover:bg-green-600 transition-all group relative">
-                                    <Link to="/login-register?tab=register" className="flex flex-col items-center justify-center w-full text-center mb-1">
-                                        <span className="text-3xl mb-2 group-hover:scale-110 transition-transform">📝</span>
-                                        <span className="text-white font-bold text-lg">Buyer Register</span>
-                                    </Link>
-                                    <Link to="/cbbl-invest" className="text-white font-bold text-[10px] group-hover:text-white/90 hover:underline z-20 relative">
-                                        FREE (CBBL invest!)
-                                    </Link>
-                                </div>
+                                {/* CBBL Invest Button */}
+                                <Link to="/cbbl-invest" className="flex flex-col items-center justify-center p-6 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl hover:bg-green-600 transition-all group">
+                                    <FileTextIcon className="w-8 h-8 mb-2 text-white group-hover:scale-110 transition-transform" />
+                                    <span className="text-white font-bold text-lg">CBBL Invest</span>
+                                    <span className="text-white/60 text-xs text-center mt-1 group-hover:text-white/90">Invest in bridge loans</span>
+                                </Link>
 
                                 {/* Buyer/Login Button */}
-                                <a href={getBuyRoute('/login-register?tab=login')} className="flex flex-col items-center justify-center p-6 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl hover:bg-primary transition-all group">
-                                    <span className="text-3xl mb-2 group-hover:scale-110 transition-transform">🛒</span>
+                                <a href={getBuyRoute('/login?tab=login')} className="flex flex-col items-center justify-center p-6 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl hover:bg-primary transition-all group">
+                                    <PersonIcon className="w-8 h-8 mb-2 text-white group-hover:scale-110 transition-transform" />
                                     <span className="text-white font-bold text-lg">Buyer Login</span>
                                     <span className="text-white/60 text-xs text-center mt-1 group-hover:text-white/90">High-End Items</span>
                                 </a>
 
                                 {/* Membership Button */}
                                 <Link to="/memberships" className="flex flex-col items-center justify-center p-6 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl hover:bg-amber-500 transition-all group">
-                                    <span className="text-3xl mb-2 group-hover:scale-110 transition-transform">💎</span>
+                                    <IdCardIcon className="w-8 h-8 mb-2 text-white group-hover:scale-110 transition-transform" />
                                     <span className="text-white font-bold text-lg">Membership</span>
                                     <span className="text-white font-bold text-xs mt-1 group-hover:text-white/90">(Join!)</span>
                                 </Link>

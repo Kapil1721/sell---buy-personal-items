@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { getSellRoute } from '../../config/appConfig';
 
 function CbblApply() {
     return (
@@ -49,33 +49,33 @@ function CbblApply() {
                         <h2 className="text-2xl font-bold text-secondary mb-6">How to Apply</h2>
                         <p className="mb-8 text-gray-300">Now that you are a registered member, follow these steps if you are interested in this membership loan offer:</p>
                         
-                        <ul className="space-y-6">
+                        <ul className="space-y-6 text-left">
                             <li className="flex gap-4">
                                 <div className="flex-shrink-0 w-10 h-10 rounded-full bg-secondary text-primary font-bold flex items-center justify-center">1</div>
                                 <div>
-                                    <h4 className="font-bold text-lg">Gather Your Collateral</h4>
+                                    <h4 className="font-bold text-lg text-white">Gather Your Collateral</h4>
                                     <p className="text-gray-300">{`Identify one item or a group of items you'd like to use. Total value must be high enough to qualify.`}</p>
                                 </div>
                             </li>
                             <li className="flex gap-4">
                                 <div className="flex-shrink-0 w-10 h-10 rounded-full bg-secondary text-primary font-bold flex items-center justify-center">2</div>
                                 <div>
-                                    <h4 className="font-bold text-lg">Submit Documentation</h4>
+                                    <h4 className="font-bold text-lg text-white">Submit Documentation</h4>
                                     <p className="text-gray-300">Send us a copy of your estimate along with clear photos of the items.</p>
                                 </div>
                             </li>
                             <li className="flex gap-4">
                                 <div className="flex-shrink-0 w-10 h-10 rounded-full bg-secondary text-primary font-bold flex items-center justify-center">3</div>
                                 <div>
-                                    <h4 className="font-bold text-lg">Receive Your Offer</h4>
+                                    <h4 className="font-bold text-lg text-white">Receive Your Offer</h4>
                                     <p className="text-gray-300">We will review your info to determine a CBBL Offer along with rates and the loan term.</p>
                                 </div>
                             </li>
                         </ul>
 
                         <div className="mt-12 p-6 bg-white/10 rounded-2xl border border-white/20">
-                            <p className="text-center italic font-medium">
-                                "Meanwhile you should post all your items on our <span className="text-secondary">Buypersonalitems.com</span> platform as well as any other items you would like to sell."
+                            <p className="text-center italic font-medium text-white">
+                                "Meanwhile you should post all your items on our <span className="text-secondary font-bold">Buypersonalitems.com</span> platform as well as any other items you would like to sell."
                             </p>
                         </div>
 
@@ -89,9 +89,9 @@ function CbblApply() {
                 </div>
 
                 <div className="mt-16 text-center">
-                    <Link to="/login-register?tab=login" className="inline-block bg-secondary text-white font-bold py-4 px-10 rounded-full shadow-lg hover:bg-secondary/90 transition-all transform hover:scale-105">
-                        Log In to Your Member Portal
-                    </Link>
+                    <a href={getSellRoute('/cbbl-apply#become-a-member')} className="inline-block bg-secondary text-white font-bold py-4 px-10 rounded-full shadow-lg hover:bg-secondary/90 transition-all transform hover:scale-105">
+                        Become a Member to Apply for CBBL
+                    </a>
                 </div>
             </div>
         </div>

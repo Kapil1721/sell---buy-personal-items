@@ -9,7 +9,6 @@ import { useGlobalState } from '../../store/AuthStore';
 import { AuthContext } from '../../auth/AuthContext';
 import { createValidator } from '../../hooks/Hooks';
 import PhoneNumber from '../../components/PhoneNumber';
-import { appRedirectEndpoints } from '../../services/api';
 
 
 
@@ -60,8 +59,11 @@ function Login_Signup() {
 
     const navigate = useNavigate();
     const location = useLocation();
+    const [searchParams, setSearchParams] = useSearchParams();
     const { login } = useContext(AuthContext);
+    const checkLoginActive = () => searchParams.get("tab") !== 'register' // default to login
 
+    const [loginActive, setLoginActive] = useState(checkLoginActive());
     const dropdownRef = useRef(null)
     const inputrefs = useRef([]);
     const signupinputrefs = useRef([]);
@@ -88,6 +90,7 @@ function Login_Signup() {
 
     // remember me feature
     useEffect(() => {
+        if (loginActive) {
             const savedEmail = localStorage.getItem('usernameoremail');
             const savedPassword = localStorage.getItem('password');
             if (savedEmail && savedPassword) {
@@ -95,25 +98,7 @@ function Login_Signup() {
                 inputrefs.current[1].value = savedPassword
                 setRememberMe(true)
             }
-        // if (location.state?.for === 'sell') {
-        //     setAccountType('SELLER')
-        //     setDisableOptions({
-        //         ...disableOptions, donor: true, buyer: true
-        //     })
-        // }
-        // if (location.state?.for === 'donor') {
-        //     setAccountType('DONOR')
-        //     setDisableOptions({
-        //         ...disableOptions, seller: true, buyer: true
-        //     })
-        // }
-        // if (location.state?.for === 'buyer') {
-        //     setDisableOptions({
-        //         ...disableOptions, seller: true, donor: true
-        //     })
-        //     setAccountType('BUYER')
-        // }
-        // console.log(location.state.for);
+        }
     }, []);
 
 
@@ -143,6 +128,35 @@ function Login_Signup() {
         }
         return () => removeEventListener('click', handleCloseSortSelect)
     }, []);
+    useEffect(() => {
+        const _loginCheck = checkLoginActive();
+        if (_loginCheck) {
+            setLoginActive(true)
+        } else {
+            setLoginActive(false)
+        }
+        
+        if (searchParams.get('verified') === 'true') {
+            toast.success("Email verified successfully! You can now login.");
+            // Remove the query param so toast doesn't reappear on reload
+            setSearchParams({ tab: 'login' }, { replace: true });
+        }
+    }, [searchParams]);
+
+    const toggleForm = (id) => {
+        if (id === 'login') {
+            setLoginActive(true)
+            setSearchParams({ tab: 'login' }, { replace: true });
+        } else {
+            setLoginActive(false)
+            setSearchParams({ tab: 'register' }, { replace: true });
+            // If redirected with a message (e.g. from Buy platform), show it
+            if (location.state?.message) {
+                toast.info(location.state.message);
+            }
+        }
+    };
+
 
 
     const handleLogin = async (e) => {
@@ -198,7 +212,17 @@ function Login_Signup() {
             // console.log(res);
             if (res?.status === 'success') {
                 localStorage.setItem("_sell_Token", res.token)
-                toast.success("Signup successful.");
+                setLoginActive(true)
+                setSearchParams({ tab: 'login' })
+                toast.success("Signup successful. Please check your email for verification.");
+                // Clear form data
+                setRoleData({});
+                setContactNumber({ countryCode: '', contactNumber: '' });
+                if (signupinputrefs.current) {
+                    signupinputrefs.current.forEach(ref => {
+                        if (ref) ref.value = '';
+                    });
+                }
             }
         }
 
@@ -218,8 +242,13 @@ function Login_Signup() {
         <div className='w-full relative bg-[#697885]'>
             <div className='flex justify-center items-center relative'>
                 <div className='max-w-[500px] w-full flex flex-col    my-14'>
+                    <div className='flex justify-between items-end overflow-hidden gap-2'>
+                        <button type="button" onClick={() => toggleForm('login')} className={` text-base text-[#374B66] font-medium w-full py-3 relative rounded-t rounded-b-none transition ease-in-out transform ${loginActive ? 'translate-y-0 bg-white' : 'translate-y-2  bg-[#F9FAFB]'}`}>Login</button>
+                        <button type="button" onClick={() => toggleForm('signup')} className={` text-base text-[#374B66] font-medium w-full py-3 relative rounded-t rounded-b-none transition ease-in-out transform ${!loginActive ? 'translate-y-0 bg-white' : 'translate-y-2  bg-[#F9FAFB]'}`}>Sign Up</button>
+                    </div>
+                    {loginActive ?
                         <form autoComplete="off" className='w-full relative bg-white flex justify-center items-start rounded-b p-4 lg:p-12'>
-                            <div className='flex justify-center items-center relative overflow-hidden'>
+                            <div className='flex justify-center items-center relative overflow-hidden w-full'>
                                 <div className={`${sendNext ? "hidden" : "absolute bg-white z-20 h-full w-full flex flex-col justify-between"}`}>
                                     <div className='w-full'>
                                         <h1 className='text-primary text-xl md:text-3xl lg:text-4xl font-bold text-center '>Login With</h1>
@@ -317,18 +346,82 @@ function Login_Signup() {
                                         <div><Link className='text-[#ffb300] font-semibold' to={'/forget-password'}>Forget Password?</Link></div>
                                     </div>
                                     <button onClick={handleLogin} className='rounded w-full px-8 py-4 bg-[#537CD9] text-white font-bold'>{loading ? "Loading..." : "Login"}</button>
-                                    <p className='text-center text-sm text-[#374b5c]'>
-                                        Do not have an account? <a href={appRedirectEndpoints.SELL_REGISTER_URL} className='font-semibold text-[#ffb300]'>Sign Up</a>
+                                    <p className='text-center text-sm text-[#374b5c] mt-4'>
+                                        Do not have an account? <button type="button" onClick={() => toggleForm('signup')} className='font-semibold text-[#ffb300] hover:underline bg-transparent border-none cursor-pointer'>Sign Up</button>
                                     </p>
-                                    {/* <button
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            setSendNext(false)
-                                        }}
-                                        className='rounded w-full text-red-500 underline font-bold'>Go Back</button> */}
                                 </div>
                             </div>
-                        </form>
+                        </form> :
+                        <form className='w-full relative bg-white flex justify-center items-start rounded-b p-4 lg:p-12' >
+                            <div className='flex w-full flex-col gap-6'>
+                                <div className='relative'>
+                                    <input ref={ref => signupinputrefs.current[0] = ref} name='username' className='py-4 w-full px-16 border border-[#D5E3EE] rounded focus:outline-none placeholder:text-[#374b5c] text-base font-medium' type="text" placeholder="Username *" />
+                                    <span className='absolute top-[13px] left-3 w-8 h-8 rounded-md bg-[#d5e3ee] flex justify-center items-center'>
+                                        <UserNameIcon color={"#475B6B"} />
+                                    </span>
+                                </div>
+                                <div className='relative'>
+                                    <input ref={ref => signupinputrefs.current[1] = ref} name='name' className='py-4 w-full px-16 border border-[#D5E3EE] rounded focus:outline-none placeholder:text-[#374b5c] text-base font-medium' type="text" placeholder="Name *" />
+                                    <span className='absolute top-[13px] left-3 w-8 h-8 rounded-md bg-[#d5e3ee] flex justify-center items-center'>
+                                        <AdminIcon color={"#475B6B"} />
+                                    </span>
+                                </div>
+                                <div className='relative'>
+                                    <input ref={ref => signupinputrefs.current[2] = ref} name='email' className='py-4 w-full px-16 border border-[#D5E3EE] rounded focus:outline-none placeholder:text-[#374b5c] text-base font-medium' type="email" placeholder="E-mail *" />
+                                    <span className='absolute top-[13px] left-3 w-8 h-8 rounded-md bg-[#d5e3ee] flex justify-center items-center'>
+                                        <EmailIcon color={"#475B6B"} />
+                                    </span>
+                                </div>
+                                <div className='relative flex'>
+                                    <PhoneNumber value={contactNumber.contactNumber} onchange={(value) => setContactNumber((pre) => ({ ...pre, countryCode: value.split('-')[0], contactNumber: value.split('-')[1] }))} />
+                                </div>
+                                <div className='relative'>
+                                    <input ref={ref => signupinputrefs.current[4] = ref} name='password' className='py-4 w-full px-16 border border-[#D5E3EE] rounded focus:outline-none placeholder:text-[#374b5c] text-base font-medium' type="password" placeholder="Password" />
+                                    <span className='absolute top-[13px] left-3 w-8 h-8 rounded-md bg-[#d5e3ee] flex justify-center items-center'>
+                                        <LockIcon color={"#475B6B"} />
+                                    </span>
+                                </div>
+
+                                <div className='relative'>
+                                    <p htmlFor="" className='text-primary font-medium'>Choose Your Role *</p>
+                                    <div className='grid grid-cols-1 md:grid-cols-3 mt-2'>
+                                        <div className="flex items-center">
+                                            <input id="Buyer" type="checkbox" value={'BUYER'} name='buyer' onChange={handleRoleChange} className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 ring-offset-gray-800 focus:ring-offset-gray-800 focus:ring-2 " />
+                                            <label htmlFor="Buyer" className="text-primary font-medium ml-3 select-none" >Buyer</label>
+                                        </div>
+                                        <div className='flex justify-start items-center'>
+                                            <input type='checkbox' name='seller' onChange={handleRoleChange} id='Seller' value={'SELLER'} className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 ring-offset-gray-800 focus:ring-offset-gray-800 focus:ring-2 " />
+                                            <label htmlFor="Seller" className='text-primary font-medium ml-3 select-none'>Seller</label>
+                                        </div>
+                                        <div className='flex justify-start items-center'>
+                                            <input type='checkbox' name='donor' onChange={handleRoleChange} id='Donor' value={'DONOR'} className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 ring-offset-gray-800 focus:ring-offset-gray-800 focus:ring-2 " />
+                                            <label htmlFor="Donor" className='text-primary font-medium ml-3 select-none'>Donor</label>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div className='relative flex justify-between w-full items-center'>
+                                    <div className='flex justify-between items-center font-medium'>
+                                        <input name='' className='border transition ease-in-out size-4 border-[#D5E3EE] outline-[#D5E3EE] rounded hover:outline-none focus:outline-none placeholder:text-[#374b5c] text-base font-medium' type="checkbox" placeholder="Email or Username" />
+                                        <span className='ml-2 text-[#374b5c]'>I accept the{" "}
+                                            <Link className='text-[#ffb300] font-medium' to={'/privacy-policy'}>Privacy Policy</Link>
+                                        </span>
+                                    </div>
+
+                                </div>
+                                <div className='text-center text-sm text-[#374b5c] mb-2'>
+                                    {roleData.buyer && !roleData.seller ? (
+                                        <p className="text-green-600 font-medium">Buyer registration is 100% free!</p>
+                                    ) : roleData.seller ? (
+                                        <p className="text-helper font-medium">Seller membership requires a one-time $59 fee.</p>
+                                    ) : null}
+                                </div>
+                                <button onClick={handleSignup} className={`w-full rounded px-8 py-4 bg-[#537CD9] text-white font-bold`}>{loading ? "Loading" : "Register Now"}</button>
+                                <p className='text-center text-sm text-[#374b5c] mt-4'>
+                                    Already have an account? <button type="button" onClick={() => toggleForm('login')} className='font-semibold text-[#ffb300] hover:underline bg-transparent border-none cursor-pointer'>Login</button>
+                                </p>
+                            </div>
+                        </form>}
                 </div>
             </div>
 
