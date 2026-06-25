@@ -65,7 +65,7 @@ const DesktopSearchBar = ({ user }) => {
     }, [isSearchActive, debouncedSearchQuery, searchCategory])
 
     return (
-        <div className="relative hidden xl:block flex-1 max-w-4xl mr-3">
+        <div className="relative hidden xl:block flex-1 max-w-3xl mr-3">
             <div className="overflow-hidden rounded-2xl border border-[#a8c8e7] transition focus-within:border-[#1e62a4]">
                 <div className="flex items-stretch">
                     <div className="flex min-w-0 grow items-center bg-white pl-4">
@@ -282,7 +282,7 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
                                     <ul className='flex flex-col items-start '>
                                         {/* <li className='font-[lexend deca] text-primary font-medium text-base py-2 '><Link to={''}>Home</Link></li> */}
                                         <li className='font-[lexend deca] text-primary font-medium text-base py-2  '><a href={appRedirectEndpoints.SELL_MEMBERSHIPS_URL}>Memberships</a></li>
-                                        <li className='font-[lexend deca] text-primary font-medium text-base py-2  '><a href={appRedirectEndpoints.SELL_DONATION_URL}>Donation</a></li>
+                                        <li className='font-[lexend deca] text-primary font-medium text-base py-2  '><a href={appRedirectEndpoints.SELL_DONATION_URL}>Donation Items</a></li>
                                         <li className='font-[lexend deca] text-primary font-medium text-base py-2'><Link to={'/cbbl-apply'}>CBBL Apply</Link></li>
                                         <li className='font-[lexend deca] text-primary font-medium text-base py-2'><Link to={'/cbbl-invest'}>CBBL Invest</Link></li>
                                         {/* <li className='font-[lexend deca] text-primary font-medium text-base py-2  '><Link to={'/qualified-items-list'}>Qualified Items</Link></li> */}
@@ -301,7 +301,7 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
                         <ul className='flex items-center '>
                             {/* <li className='font-[lexend deca] text-primary font-medium text-base py-2 '><Link to={''}>Home</Link></li> */}
                             <li className='font-[lexend deca] text-primary font-medium text-base py-2 ml-[45px] '><a href={appRedirectEndpoints.SELL_MEMBERSHIPS_URL}>Memberships</a></li>
-                            <li className='font-[lexend deca] text-primary font-medium text-base py-2 ml-[45px] '><a href={appRedirectEndpoints.SELL_DONATION_URL}>Donation</a></li>
+                            <li className='font-[lexend deca] text-primary font-medium text-base py-2 ml-[45px] '><a href={appRedirectEndpoints.SELL_DONATION_URL}>Donation Items</a></li>
                             <li className='font-[lexend deca] text-primary font-medium text-base py-2 ml-[45px] '><Link to={'/cbbl-apply'}>CBBL Apply</Link></li>
                             <li className='font-[lexend deca] text-primary font-medium text-base py-2 ml-[45px] '><Link to={'/cbbl-invest'}>CBBL Invest</Link></li>
                             {/* <li className='font-[lexend deca] text-primary font-medium text-base py-2 ml-[45px] '><Link to={'/qualified-items-list'}>Qualified Items</Link></li> */}
@@ -325,10 +325,10 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
                             {!loggedIn ?
                                 <>
                                     <Link to={'/login'} className='text-nowrap font-medium py-4 text-primary'>
-                                        Log In
+                                        Buyer Login
                                     </Link>
                                     <hr className="w-8 h-[2px] mx-auto my-auto  border-0 rounded md:my-10 bg-primary rotate-90"></hr>
-                                    <Link to={'/login?tab=register'} className='py-4 font-medium text-primary'>Register</Link>
+                                    <Link to={'/login?tab=register'} className='py-4 font-medium text-primary text-nowrap'>Buyer Registeration</Link>
 
                                 </>
                                 :

@@ -11,6 +11,7 @@ import MostViewedItems from './sections/MostViewedItems'
 import Categories from './sections/Categories'
 import { GET_PRODUCT_CATEGORY } from '../../services/operations/productsApi'
 import { LockClosedIcon, ChatBubbleIcon, StarIcon, CheckCircledIcon } from '@radix-ui/react-icons';
+import { appRedirectEndpoints } from '../../services/api'
 
 const trustItems = [
   { icon: LockClosedIcon, title: 'Verified Sellers', desc: "Every seller goes through phone & ID verification so you know exactly who you're dealing with." },
@@ -95,11 +96,11 @@ function Home() {
               Shop Now
             </Link>
             <Link
-              to={user ? '/panel/create' : '/login'}
-              state={user ? undefined : { to: '/panel/create', for: 'sell' }}
+              to={appRedirectEndpoints.MEMBERSHIP_URL}
+              // state={user ? undefined : { to: '/panel/create', for: 'sell' }}
               className="border border-primary text-primary text-center rounded px-7 py-4 text-xs uppercase tracking-[0.06em] transition hover:bg-primary hover:text-[#eef5fb] hover:-translate-y-0.5 sm:px-9"
             >
-              Sell an Item
+              Buy a membership
             </Link>
           </div>
 
