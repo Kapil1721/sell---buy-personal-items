@@ -96,7 +96,7 @@ function Home() {
               Shop Now
             </Link>
             <Link
-              to={appRedirectEndpoints.MEMBERSHIP_URL}
+              to={appRedirectEndpoints.SELL_MEMBERSHIPS_URL}
               // state={user ? undefined : { to: '/panel/create', for: 'sell' }}
               className="border border-primary text-primary text-center rounded px-7 py-4 text-xs uppercase tracking-[0.06em] transition hover:bg-primary hover:text-[#eef5fb] hover:-translate-y-0.5 sm:px-9"
             >

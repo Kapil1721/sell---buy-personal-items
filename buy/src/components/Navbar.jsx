@@ -329,7 +329,6 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
                                     </Link>
                                     <hr className="w-8 h-[2px] mx-auto my-auto  border-0 rounded md:my-10 bg-primary rotate-90"></hr>
                                     <Link to={'/login?tab=register'} className='py-4 font-medium text-primary text-nowrap'>Buyer Registeration</Link>
-
                                 </>
                                 :
                                 <>
