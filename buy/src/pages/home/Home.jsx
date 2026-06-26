@@ -90,10 +90,10 @@ function Home() {
 
           <div className="grid gap-3 sm:flex sm:flex-wrap sm:gap-4">
             <Link
-              to="/qualified-items-list"
+              to="/login"
               className="bg-primary text-center text-[#eef5fb] rounded px-7 py-4 text-xs uppercase tracking-[0.06em] transition hover:-translate-y-0.5 sm:px-9"
             >
-              Shop Now
+            Member login
             </Link>
             <Link
               to={appRedirectEndpoints.SELL_MEMBERSHIPS_URL}
