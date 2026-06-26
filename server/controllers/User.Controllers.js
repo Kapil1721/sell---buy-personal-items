@@ -1162,7 +1162,6 @@ export const deleteUser = CatchAsync(async (req, res, next) => {
   const user = await prisma.users.delete({
     where: {
       id: parseInt(id),
-      role: "USER",
     },
     include: {
       donations: true,
