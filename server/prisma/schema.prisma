@@ -55,7 +55,7 @@ model RefreshToken {
   id        Int      @id @default(autoincrement())
   token     String   @unique
   userId    Int
-  user      Users    @relation(fields: [userId], references: [id])
+  user      Users    @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -84,7 +84,7 @@ model Sellers {
   buyer              Boolean?      @default(false)
   seller             Boolean?      @default(true)
   donor              Boolean?      @default(false)
-  membership         Memberships?  @relation(fields: [membershipsId], references: [id])
+  membership         Memberships?  @relation(fields: [membershipsId], references: [id], onDelete: SetNull)
   listedItem         ListedItem[]
   donations          Donations[]
   socailLinks        SocialLinks[]
@@ -118,7 +118,7 @@ model Donors {
   buyer              Boolean?      @default(false)
   seller             Boolean?      @default(true)
   donor              Boolean?      @default(false)
-  membership         Memberships?  @relation(fields: [membershipsId], references: [id])
+  membership         Memberships?  @relation(fields: [membershipsId], references: [id], onDelete: SetNull)
   listedItem         ListedItem[]
   donations          Donations[]
   socailLinks        SocialLinks[]
@@ -132,7 +132,7 @@ model Donors {
 model favoriteProductList {
   id       Int        @id @default(autoincrement())
   userId   Int
-  user     Users      @relation(fields: [userId], references: [id])
+  user     Users      @relation(fields: [userId], references: [id], onDelete: Cascade)
   products ListedItem @relation(fields: [postId], references: [post_id], onDelete: Cascade)
   postId   Int
 }
@@ -143,7 +143,7 @@ model Memberships {
   endDate            DateTime?
   status             SubscriptionStatus
   userId             Int                @unique
-  user               Users              @relation(fields: [userId], references: [id])
+  user               Users              @relation(fields: [userId], references: [id], onDelete: Cascade)
   subscriptionPlanId Int
   subscriptionPlan   SubscriptionPlan   @relation(fields: [subscriptionPlanId], references: [id])
   payments           Payment[]
@@ -194,7 +194,7 @@ model Payment {
   currency        String
   paymentDate     DateTime
   subscriptionId  Int
-  subscription    Memberships @relation(fields: [subscriptionId], references: [id])
+  subscription    Memberships @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
   stripePaymentId String
 }
 
@@ -204,7 +204,7 @@ model Refund {
   currency       String
   refundDate     DateTime
   subscriptionId Int
-  subscription   Memberships @relation(fields: [subscriptionId], references: [id])
+  subscription   Memberships @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
   stripeRefundId String
 }
 
@@ -230,7 +230,7 @@ enum OfferType {
 
 model SocialLinks {
   id         Int       @id @default(autoincrement())
-  Users      Users?    @relation(fields: [usersId], references: [id])
+  Users      Users?    @relation(fields: [usersId], references: [id], onDelete: Cascade)
   usersId    Int?
   linkName   String    @unique @default("") @db.VarChar(50)
   socialLink String?   @unique @default("") @db.VarChar(500)
@@ -253,7 +253,7 @@ model Donations {
   amount      Decimal?     @db.Decimal(10, 2)
   createdAt   DateTime?    @default(now())
   updatedAt   DateTime?    @updatedAt
-  Users       Users?       @relation(fields: [usersId], references: [id])
+  Users       Users?       @relation(fields: [usersId], references: [id], onDelete: Cascade)
   Sellers     Sellers?     @relation(fields: [sellersId], references: [id])
   sellersId   Int?
   Donors      Donors?      @relation(fields: [donorsId], references: [id])
@@ -366,7 +366,7 @@ model ListedItem {
   images              Images[]
   likes               Likes[]
   reviews             Reviews[]
-  user                Users?                @relation(fields: [userId], references: [id])
+  user                Users?                @relation(fields: [userId], references: [id], onDelete: Cascade)
   views               Views[]
   itemsType           ItemTypes?            @default(SALE)
   Donations           Donations?            @relation(fields: [donationsId], references: [id], onDelete: Cascade)
@@ -488,8 +488,8 @@ model PurchaseRequest {
   createdAt       DateTime              @default(now())
   updatedAt       DateTime              @updatedAt
   statusUpdatedBy StatusUpdatedBy?
-  buyer           Users                 @relation("BuyerPurchaseRequests", fields: [buyerId], references: [id])
-  seller          Users                 @relation("SellerPurchaseRequests", fields: [sellerId], references: [id])
+  buyer           Users                 @relation("BuyerPurchaseRequests", fields: [buyerId], references: [id], onDelete: Cascade)
+  seller          Users                 @relation("SellerPurchaseRequests", fields: [sellerId], references: [id], onDelete: Cascade)
   product         ListedItem            @relation(fields: [productId], references: [post_id], onDelete: Cascade)
 }
 
@@ -508,7 +508,7 @@ enum PurchaseRequestStatus {
 model PromotedProduct {
   id     Int              @id @default(autoincrement())
   userId Int
-  user   Users            @relation(fields: [userId], references: [id])
+  user   Users            @relation(fields: [userId], references: [id], onDelete: Cascade)
   postId Int
   posts  ListedItem       @relation(fields: [postId], references: [post_id], onDelete: Cascade)
   planId Int
