@@ -18,7 +18,7 @@ function Home() {
     <>
       <Banner />
       <WhyNow />
-      <Services />
+      {/* <Services /> */}
       <MembershipOpportunity />
       <ExclusiveMemberBenefit />
       <Newsletter />

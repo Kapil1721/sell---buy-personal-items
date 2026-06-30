@@ -150,7 +150,7 @@ function Home() {
       <Categories isPending={isPending} data={data?.productCategories} />
       <MostViewedItems />
 
-      <section className="mx-8 md:mx-16 my-16 relative overflow-hidden grid lg:grid-cols-2 gap-12 items-center p-12 md:p-16 bg-[#283948]">
+      {/* <section className="mx-8 md:mx-16 my-16 relative overflow-hidden grid lg:grid-cols-2 gap-12 items-center p-12 md:p-16 bg-[#283948]">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(62,189,141,0.2),_transparent_40%)]" />
         <div className="absolute right-0 bottom-0 w-64 h-64 rounded-full bg-[#1e62a4]/10 blur-3xl" />
 
@@ -183,7 +183,7 @@ function Home() {
             </div>
           ))}
         </div>
-      </section>
+      </section> */}
 
       <section className="px-8 md:px-16 py-16 bg-[#f8fafd] grid sm:grid-cols-2 xl:grid-cols-4 gap-5">
         {trustItems.map(item => {

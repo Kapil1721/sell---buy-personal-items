@@ -113,7 +113,7 @@ function Footer() {
                                             </svg>
                                         </span>
                                     </address>
-                                    <div className='text-[#DFE1E3] font-medium'>3210 N. Pleasantburg #1006, Greenville, SC 296097</div>
+                                    <div className='text-[#DFE1E3] font-medium'>Sell Personal Items LLC, 3210 N. Pleasantburg #1006, Greenville, SC 29609</div>
                                 </li>
                                 <li className='py-3 flex gap-3 group' >
                                     <div className='flex justify-center items-center'>
