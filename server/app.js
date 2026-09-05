@@ -45,6 +45,7 @@ const allowedOrigins = [
   "https://sellpersonalitem.vercel.app",
   "http://localhost:5173",
   "http://localhost:5174",
+  "http://localhost:5175",
   "https://sell.sellpersonalitems.com",
   "https://buy.sellpersonalitems.com",
   "https://sellpersonalitems.com",

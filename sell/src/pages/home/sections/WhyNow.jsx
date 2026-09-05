@@ -1,7 +1,6 @@
 function WhyNow() {
   const stats = [
     { num: '$59', label: 'One-time membership fee' },
-    { num: '∞', label: 'Items you can sell' },
   ]
 
   return (
@@ -50,7 +49,7 @@ function WhyNow() {
         </div>
 
         {/* Stats row */}
-        <div className="mt-14 pt-10 border-t border-white/10 grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="mt-14 pt-10 border-t border-white/10 grid grid-cols-1 gap-8">
           {stats.map((s) => (
             <div key={s.label} className="text-center">
               <div className="text-secondary font-bold text-4xl lg:text-5xl" style={{ fontFamily: 'Lexend Deca, sans-serif' }}>

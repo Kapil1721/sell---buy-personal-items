@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
 import logo from '../assets/Logo-6.png'
-import { AddIcon, AdminIcon, LikeIcon, LoginIcon, MessageIcon, ModerateIcon, OrdersIcon, SettingIcon } from './Icons'
+import { AddIcon, AdminIcon, PersonIcon, LikeIcon, LoginIcon, MessageIcon, ModerateIcon, OrdersIcon, SettingIcon } from './Icons'
 import { LOGOUTUSER } from '../services/operations/authApi';
 import { toast } from 'sonner';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
@@ -205,6 +205,7 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
     const AdminNavLinkList = [
         { icons: <AddIcon />, name: 'Add New', link: '/panel/create' },
         { icons: <ModerateIcon />, name: 'Moderation', link: '/panel/moderation' },
+        { icons: <AdminIcon />, name: 'Users', link: '/panel/users' },
         { icons: <OrdersIcon />, name: 'Orders', link: '/panel/orders' },
         { icons: <OrdersIcon />, name: 'My Products', link: '/panel/my-products' },
         { icons: <LikeIcon />, name: 'Favorites', link: '/panel/favorites' },
