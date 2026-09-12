@@ -1,16 +1,13 @@
 import React, { useEffect } from 'react';
 import HeroSplit from '../components/home/HeroSplit';
 import ValueStrip from '../components/home/ValueStrip';
-import WhyMarketplace from '../components/home/WhyMarketplace';
-import InteractiveMarketplace from '../components/home/InteractiveMarketplace';
-import EditorialProductWall from '../components/home/EditorialProductWall';
+import EconomicOpportunity from '../components/home/EconomicOpportunity';
+import CollateralBridgeLoans from '../components/home/CollateralBridgeLoans';
 import MembershipPricing from '../components/home/MembershipPricing';
 import MembershipBenefits from '../components/home/MembershipBenefits';
 import AccountExperience from '../components/home/AccountExperience';
-import CategoryDiscovery from '../components/home/CategoryDiscovery';
 import BuyerJourney from '../components/home/BuyerJourney';
 import TrustGrid from '../components/home/TrustGrid';
-import FAQSection from '../components/home/FAQSection';
 import ConversionCTA from '../components/home/ConversionCTA';
 import MobileStickyCTA from '../components/home/MobileStickyCTA';
 
@@ -48,16 +45,13 @@ export default function Home({ onOpenAuth }) {
     <main className="relative">
       <HeroSplit onOpenAuth={onOpenAuth} />
       <ValueStrip />
-      <WhyMarketplace />
-      <InteractiveMarketplace onOpenAuth={onOpenAuth} />
-      <EditorialProductWall />
+      <EconomicOpportunity onOpenAuth={onOpenAuth} />
+      <CollateralBridgeLoans onOpenAuth={onOpenAuth} />
       <MembershipPricing onOpenAuth={onOpenAuth} />
       <MembershipBenefits />
       <AccountExperience onOpenAuth={onOpenAuth} />
-      <CategoryDiscovery />
       <BuyerJourney />
       <TrustGrid />
-      <FAQSection />
       <ConversionCTA onOpenAuth={onOpenAuth} />
       <MobileStickyCTA onOpenAuth={onOpenAuth} />
     </main>

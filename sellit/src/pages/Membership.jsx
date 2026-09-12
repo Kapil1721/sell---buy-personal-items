@@ -41,12 +41,17 @@ export default function Membership() {
       if (user) {
         try {
           const res = await getUserMembership();
-          if (res && res.isSubscribed && res.membership) {
+          if (res && res.isSubscribed && res.membership && res.membership.status === 'ACTIVE') {
             setActiveMembership(res.membership);
+          } else {
+            setActiveMembership(null);
           }
         } catch (err) {
           console.error("Error checking existing membership:", err);
+          setActiveMembership(null);
         }
+      } else {
+        setActiveMembership(null);
       }
     };
     checkActiveMembership();
@@ -67,14 +72,15 @@ export default function Membership() {
           // Fallback plan if backend returns empty list
           const defaultPlan = {
             id: 1,
-            name: 'Seller Pro Membership',
+            name: 'Seller Pro Lifetime Membership',
             price: 59,
-            offerValue: 39,
+            offerValue: 59,
             duration: 1,
-            durationType: 'MONTH',
-            description: 'Full seller access, unlimited item posts, and verified buyer matching.',
+            durationType: 'LIFETIME',
+            description: 'Full seller access, unlimited item posts, CBBL bridge loans qualification, and verified buyer matching.',
             features: [
               { feature: { name: 'Unlimited Qualified Item Listings' } },
+              { feature: { name: 'Collateral Back Bridge Loans (CBBL) Qualification' } },
               { feature: { name: 'Verified Seller Badge' } },
               { feature: { name: 'Direct Buyer Inquiries & Messaging' } },
               { feature: { name: 'Priority Search Placement' } },
@@ -234,7 +240,7 @@ export default function Membership() {
       navigate('/login');
       return;
     }
-    if (user.isSubscribed || activeMembership) {
+    if (activeMembership && activeMembership.status === 'ACTIVE') {
       navigate('/success');
       return;
     }
@@ -242,7 +248,7 @@ export default function Membership() {
     setIsModalOpen(true);
   };
 
-  const isAlreadyPurchased = Boolean(user?.isSubscribed || activeMembership);
+  const isAlreadyPurchased = Boolean(activeMembership && activeMembership.status === 'ACTIVE');
   const payableAmount = selectedPlan?.offerValue ?? selectedPlan?.price ?? 39;
 
   return (
@@ -250,13 +256,13 @@ export default function Membership() {
       <div className="max-w-6xl mx-auto text-center mb-12">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-100 text-blue-800 text-xs font-bold mb-4">
           <Sparkles className="w-4 h-4 text-blue-600" />
-          <span>Membership & Subscription Gateway</span>
+          <span>Lifetime Membership Access</span>
         </div>
         <h1 className="text-4xl sm:text-5xl font-black text-slate-900 tracking-tight font-heading">
-          Unlock Full Selling & Buying Access
+          Unlock Full Selling, Buying &amp; CBBL Access
         </h1>
         <p className="mt-4 text-base sm:text-lg text-slate-600 max-w-2xl mx-auto">
-          Choose a plan to activate your membership. Once activated, log in on the <strong className="text-slate-900">Buy App</strong> to manage your listings and purchases!
+          Activate your membership with a simple one-time payment. Once activated, log in on the <strong className="text-slate-900">Buy App</strong> to manage your listings, pass on items, and qualify for bridge loans!
         </p>
       </div>
 
@@ -334,7 +340,9 @@ export default function Membership() {
                   <div className="flex items-baseline gap-2 mb-6">
                     <span className="text-4xl font-black text-slate-900">${plan.offerValue || plan.price}</span>
                     <span className="text-sm font-semibold text-slate-500">
-                      / {plan.duration} {plan.durationType?.toLowerCase() || 'month'}
+                      {plan.durationType?.toUpperCase() === 'LIFETIME'
+                        ? 'one-time fee'
+                        : `/ ${plan.duration} ${plan.durationType?.toLowerCase() || 'month'}`}
                     </span>
                     {plan.offerValue && plan.price > plan.offerValue && (
                       <span className="text-sm text-slate-400 line-through ml-2">${plan.price}</span>
@@ -367,7 +375,7 @@ export default function Membership() {
                   <Zap className="w-5 h-5" />
                   <span>
                     {!user
-                      ? 'Log In to Subscribe'
+                      ? 'Log In to Join'
                       : isAlreadyPurchased
                       ? 'Membership Already Active'
                       : 'Proceed to Checkout'}

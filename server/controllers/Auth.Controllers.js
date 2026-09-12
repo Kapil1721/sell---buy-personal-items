@@ -31,6 +31,16 @@ const getCookieOptions = () => {
   };
 };
 
+const getClearCookieOptions = () => {
+  const isProduction = process.env.NODE_ENV === "production";
+
+  return {
+    httpOnly: true,
+    sameSite: isProduction ? "none" : "lax",
+    secure: isProduction,
+  };
+};
+
 const getOtpCookieOptions = () => {
   const isProduction = process.env.NODE_ENV === "production";
 
@@ -38,6 +48,16 @@ const getOtpCookieOptions = () => {
     httpOnly: true,
     sameSite: isProduction ? "none" : "lax",
     maxAge: 300000,
+    secure: isProduction,
+  };
+};
+
+const getClearOtpCookieOptions = () => {
+  const isProduction = process.env.NODE_ENV === "production";
+
+  return {
+    httpOnly: true,
+    sameSite: isProduction ? "none" : "lax",
     secure: isProduction,
   };
 };
@@ -108,19 +128,23 @@ export const userSignUp = CatchAsync(async (req, res, next) => {
       return res.status(403).json({ message: "user already exists!" });
     }
 
+    const isDonor = donor === true || userType === "DONOR" || userType === "Donor";
+    const isSeller = seller === true || userType === "SELLER" || userType === "Seller";
+    const resolvedUserType = isDonor ? "Donor" : "Recipient";
+
     const hashedPassword = await bcrypt.hash(password, 12);
     const newUser = {
       username: username.toLowerCase(),
       name,
       email: email.toLowerCase(),
       password: hashedPassword,
-      countryCode,
-      contactNumber,
-      userType,
+      countryCode: countryCode || "+1",
+      contactNumber: contactNumber || "",
+      userType: resolvedUserType,
       verification: verificationToken,
-      seller,
-      buyer,
-      donor,
+      seller: isSeller,
+      buyer: buyer ?? true,
+      donor: isDonor,
     };
 
     const user = await prisma.users.create({ data: newUser });
@@ -150,7 +174,7 @@ export const userSignUp = CatchAsync(async (req, res, next) => {
       message,
       html: y,
     });
-    createSendToken({ userId: user.id, email: user.email }, 201, res);
+    createSendToken({ id: user.id, userId: user.id, username: user.username, email: user.email, isSubscribed: false, role: user.role }, 201, res);
   } catch (error) {
     console.log(error);
     return next(new AppError("Something went wrong. Try again later!"), 500);
@@ -205,12 +229,12 @@ export const userLogin = CatchAsync(async (req, res, next) => {
   console.log(user, checkAccountPermission);
   // If user not found, return error
   if (!user) {
-    res.clearCookie("token", getCookieOptions());
+    res.clearCookie("token", getClearCookieOptions());
     console.log("User not found");
     return res.status(403).json({ message: "Invalid credentials" });
   }
   if (user.role === "ADMIN") {
-    res.clearCookie("token", getCookieOptions());
+    res.clearCookie("token", getClearCookieOptions());
     console.log("User not found 2");
     return res.status(403).json({ message: "Invalid credentials" });
   }
@@ -218,7 +242,7 @@ export const userLogin = CatchAsync(async (req, res, next) => {
   // Check if password is correct
   const passwordMatch = await bcrypt.compare(password, user.password);
   if (!passwordMatch) {
-    res.clearCookie("token", getCookieOptions());
+    res.clearCookie("token", getClearCookieOptions());
     console.log("Password does not match");
     return res.status(403).json({ message: "Invalid credentials" });
   }
@@ -258,8 +282,10 @@ export const authMiddleware = async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // console.log(decoded, req.user);
-    req.user = decoded; // Attach decoded user data to request object
+    req.user = {
+      ...decoded,
+      id: decoded.id || decoded.userId,
+    };
     next();
   } catch (error) {
     if (error.name === "TokenExpiredError") {
@@ -349,7 +375,7 @@ export const getValidUser = async (req, res, next) => {
 };
 
 export const userLogout = CatchAsync(async (req, res, next) => {
-  res.clearCookie("token", getCookieOptions());
+  res.clearCookie("token", getClearCookieOptions());
   res.status(200).json({
     status: 200,
     message: "Logged out successfully",
@@ -388,14 +414,14 @@ export const AdminLogin = CatchAsync(async (req, res, next) => {
   console.log(user, role);
   // If user not found, return error
   if (!user) {
-    res.clearCookie("token", getCookieOptions());
+    res.clearCookie("token", getClearCookieOptions());
     return res.status(403).json({ message: "Invalid credentials" });
   }
 
   // Check if password is correct
   const passwordMatch = await bcrypt.compare(password, user.password);
   if (!passwordMatch) {
-    res.clearCookie("token", getCookieOptions());
+    res.clearCookie("token", getClearCookieOptions());
     return res.status(403).json({ message: "Invalid credentials" });
   }
 
@@ -423,7 +449,7 @@ export const sendOtp = CatchAsync(async (req, res, next) => {
   console.log(user);
   // If user not found, return error
   if (!user) {
-    res.clearCookie("token", getCookieOptions());
+    res.clearCookie("token", getClearCookieOptions());
     return res.status(403).json({ message: "Invalid email address" });
   }
 
@@ -511,7 +537,7 @@ export const changePassword = CatchAsync(async (req, res, next) => {
     });
   }
 
-  res.clearCookie("ot_expiry", getOtpCookieOptions());
+  res.clearCookie("ot_expiry", getClearOtpCookieOptions());
   return res
     .status(200)
     .json({ status: true, message: "Password changed successfully" });

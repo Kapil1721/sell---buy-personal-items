@@ -48,6 +48,8 @@ const formatDisplayDate = (date) =>
 
 const buildMembershipActivatedEmail = ({
   customerName,
+  userName,
+  username,
   planName,
   amount,
   currency = "USD",
@@ -63,9 +65,13 @@ const buildMembershipActivatedEmail = ({
     currency,
   }).format(Number(amount || 0));
 
+  const resolvedUserName = userName || username || customerName || "Member";
+
   return renderHtmlTemplate(membershipActivatedTemplatePath, {
-    customerName: customerName || "there",
-    planName: planName || "Membership plan",
+    customerName: customerName || resolvedUserName,
+    userName: resolvedUserName,
+    username: resolvedUserName,
+    planName: planName || "Seller Pro Lifetime Membership",
     displayAmount,
     paymentMethod: paymentMethod || "Membership Payment",
     transactionId: transactionId || "Processed successfully",
@@ -218,6 +224,7 @@ export const addMembership = CatchAsync(async (req, res, next) => {
     subject: "Subscription Activated",
     html: buildMembershipActivatedEmail({
       customerName: req.user.name,
+      userName: req.user.username || req.user.name,
       planName: plan.name,
       amount,
       currency: paymentResult.currency === "$" ? "USD" : paymentResult.currency,
@@ -558,6 +565,7 @@ export const captureMembershipPayPalOrder = CatchAsync(
       subject: "Subscription Activated",
       html: buildMembershipActivatedEmail({
         customerName: targetName,
+        userName: userToSubscribe.username || targetName,
         planName: plan.name,
         amount: paidAmount,
         currency: capture.amount?.currency_code ?? "USD",
@@ -612,22 +620,47 @@ export const captureMembershipPayPalOrder = CatchAsync(
 );
 
 export const getMembership = CatchAsync(async (req, res, next) => {
-  const { id } = req.user;
+  const userId = req.user?.id || req.user?.userId;
+  if (!userId) {
+    return res.status(200).json({
+      status: false,
+      message: "No user found in session",
+      isSubscribed: false,
+      membership: null,
+    });
+  }
+
   const existingMembership = await prisma.memberships.findFirst({
-    where: { userId: id },
+    where: { 
+      userId: Number(userId),
+      status: "ACTIVE"
+    },
     include: {
       subscriptionPlan: true
     }
   });
 
   if (!existingMembership) {
-    return res.status(404).json({
+    return res.status(200).json({
       status: true,
       message: "User does not have an active membership",
+      isSubscribed: false,
+      membership: null,
     });
   }
+
+  // Check if membership has expired
+  if (existingMembership.endDate && new Date(existingMembership.endDate) < new Date()) {
+    return res.status(200).json({
+      status: true,
+      message: "User membership has expired",
+      isSubscribed: false,
+      membership: null,
+    });
+  }
+
   // Return a success response to the client
-  return res.status(201).json({
+  return res.status(200).json({
     status: true,
     message: "User has an active membership.",
     isSubscribed: true,

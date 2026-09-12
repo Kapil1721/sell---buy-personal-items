@@ -13,6 +13,7 @@ export default function Register() {
     email: '',
     password: '',
     contactNumber: '',
+    countryCode: '+1',
     accountType: 'SELLER',
   });
 
@@ -39,8 +40,9 @@ export default function Register() {
         username: formData.username || formData.email.split('@')[0],
         email: formData.email,
         password: formData.password,
+        countryCode: formData.countryCode || '+1',
         contactNumber: formData.contactNumber,
-        userType: formData.accountType,
+        userType: formData.accountType === 'DONOR' ? 'Donor' : 'Recipient',
         seller: formData.accountType === 'SELLER' || formData.accountType === 'DONOR',
         buyer: true,
         donor: formData.accountType === 'DONOR',

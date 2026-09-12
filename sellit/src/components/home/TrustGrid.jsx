@@ -11,7 +11,7 @@ const trustPoints = [
   {
     icon: ShieldCheck,
     title: 'Transparent Membership',
-    desc: 'No hidden fees or surprise charges. Just a simple monthly subscription.',
+    desc: 'No hidden fees or surprise charges. Just a simple one-time $59 fee for lifetime access.',
     delay: '100ms',
   },
   {

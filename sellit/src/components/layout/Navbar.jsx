@@ -54,12 +54,6 @@ export default function Navbar() {
                 Plans
               </span>
             </Link>
-            <Link to="/register" className="hover:text-blue-600 transition-colors">
-              Register
-            </Link>
-            <Link to="/login" className="hover:text-blue-600 transition-colors">
-              Log In
-            </Link>
           </div>
 
           {/* Desktop Actions / User Controls */}
