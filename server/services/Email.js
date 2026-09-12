@@ -1,44 +1,53 @@
 import nodemailer from "nodemailer";
 
 const sendEmail = async (options) => {
-  // console.log(options);
+  const host = process.env.EMAIL_HOST || "smtp.gmail.com";
+  const port = Number(process.env.EMAIL_PORT) || 587;
+  const user = process.env.EMAIL_USERNAME;
+  const pass = process.env.EMAIL_PASSWORD;
+
   const transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    port: process.env.EMAIL_PORT,
+    host,
+    port,
+    secure: port === 465,
     auth: {
-      user: process.env.EMAIL_USERNAME,
-      pass: process.env.EMAIL_PASSWORD,
+      user,
+      pass,
     },
     tls: {
       rejectUnauthorized: false,
     },
   });
 
+  const defaultFrom = user ? `SellIt <${user}>` : "noreply@sellpersonalitems.com";
+
   const mailOptions = {
-    from: "noreply@thetestingserver.com",
+    from: options.from || process.env.EMAIL_FROM || defaultFrom,
     to: options.email,
     subject: options.subject,
     text: options.message || null,
     html: options?.html || null,
   };
-  // console.log(mailOptions);
 
-  await transporter.sendMail(mailOptions);
+  const info = await transporter.sendMail(mailOptions);
+  console.log(`Email sent successfully to ${options.email} (Message ID: ${info?.messageId})`);
+  return info;
 };
 
 export default sendEmail;
 
 export const sendMultipleEmails = async (...args) => {
   try {
-    const promises = [
-      args.forEach((arg, index) => {
-        return sendEmail({ ...arg });
-      }),
-    ];
-    console.log(promises, "promises");
+    const emailList = args.flat(Infinity).filter(Boolean);
+    console.log(`Processing sendMultipleEmails for ${emailList.length} recipient(s)...`);
 
-    await Promise.all(promises);
+    const promises = emailList.map((arg) => sendEmail({ ...arg }));
+    const results = await Promise.all(promises);
+
+    console.log(`All ${results.length} email(s) sent successfully.`);
+    return results;
   } catch (error) {
-    return error;
+    console.error("Error in sendMultipleEmails:", error);
+    throw error;
   }
 };

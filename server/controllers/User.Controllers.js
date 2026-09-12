@@ -13,6 +13,7 @@ import {
   getPayPalClientId,
 } from "../utils/paypal.js";
 import { renderHtmlTemplate } from "../utils/renderTemplate.js";
+import { membershipActivatedHtmlFallback } from "../templates/membershipActivatedFallback.js";
 import jwt from "jsonwebtoken";
 import { signToken } from "./Auth.Controllers.js";
 // import { renderHtmlTemplate } from "../utils/renderTemplate.js";
@@ -67,20 +68,24 @@ const buildMembershipActivatedEmail = ({
 
   const resolvedUserName = userName || username || customerName || "Member";
 
-  return renderHtmlTemplate(membershipActivatedTemplatePath, {
-    customerName: customerName || resolvedUserName,
-    userName: resolvedUserName,
-    username: resolvedUserName,
-    planName: planName || "Seller Pro Lifetime Membership",
-    displayAmount,
-    paymentMethod: paymentMethod || "Membership Payment",
-    transactionId: transactionId || "Processed successfully",
-    paymentDate: formatDisplayDate(paymentDate),
-    membershipPeriod: `${formatDisplayDate(
-      membershipStartDate
-    )} - ${formatDisplayDate(membershipEndDate)}`,
-    membershipId,
-  });
+  return renderHtmlTemplate(
+    membershipActivatedTemplatePath,
+    {
+      customerName: customerName || resolvedUserName,
+      userName: resolvedUserName,
+      username: resolvedUserName,
+      planName: planName || "Seller Pro Lifetime Membership",
+      displayAmount,
+      paymentMethod: paymentMethod || "Membership Payment",
+      transactionId: transactionId || "Processed successfully",
+      paymentDate: formatDisplayDate(paymentDate),
+      membershipPeriod: `${formatDisplayDate(
+        membershipStartDate
+      )} - ${formatDisplayDate(membershipEndDate)}`,
+      membershipId,
+    },
+    membershipActivatedHtmlFallback
+  );
 };
 
 const processPayment = async (amount) => {
@@ -458,6 +463,11 @@ export const captureMembershipPayPalOrder = CatchAsync(
 
     userId = userToSubscribe.id;
 
+    if (userToSubscribe) {
+      targetEmail = userToSubscribe.email || targetEmail || captureResult.payer?.email_address;
+      targetName = userToSubscribe.name || targetName || (captureResult.payer?.name ? `${captureResult.payer.name.given_name || ""} ${captureResult.payer.name.surname || ""}`.trim() : userToSubscribe.username);
+    }
+
     // Check if user already has this payment captured
     const existingPayment = await prisma.payment.findFirst({
       where: { stripePaymentId: capture.id },
@@ -480,6 +490,30 @@ export const captureMembershipPayPalOrder = CatchAsync(
         donor: userToSubscribe.donor,
       });
       res.cookie("token", token, getCookieOptions());
+
+      if (targetEmail) {
+        try {
+          await sendMultipleEmails({
+            email: targetEmail.toLowerCase(),
+            subject: "Subscription Activated",
+            html: buildMembershipActivatedEmail({
+              customerName: targetName,
+              userName: userToSubscribe.username || targetName,
+              planName: plan.name,
+              amount: paidAmount,
+              currency: capture.amount?.currency_code ?? "USD",
+              paymentMethod: "PayPal",
+              transactionId: capture.id,
+              paymentDate: capture.create_time ?? new Date(),
+              membershipStartDate: existingPayment.subscription?.startDate || new Date(),
+              membershipEndDate: existingPayment.subscription?.endDate || new Date(),
+              membershipId: existingPayment.subscriptionId,
+            }),
+          });
+        } catch (emailErr) {
+          console.error("Existing payment email delivery failed:", emailErr?.message);
+        }
+      }
 
       return res.status(200).json({
         status: true,
@@ -560,26 +594,30 @@ export const captureMembershipPayPalOrder = CatchAsync(
       Please log in to the <a href="https://buy.sellpersonalitems.com/login">Buy App</a> to access your profile and listings.`;
     }
 
-    await sendMultipleEmails({
-      email: targetEmail.toLowerCase(),
-      subject: "Subscription Activated",
-      html: buildMembershipActivatedEmail({
-        customerName: targetName,
-        userName: userToSubscribe.username || targetName,
-        planName: plan.name,
-        amount: paidAmount,
-        currency: capture.amount?.currency_code ?? "USD",
-        paymentMethod: "PayPal",
-        transactionId: capture.id,
-        paymentDate: capture.create_time ?? new Date(),
-        membershipStartDate: startDate,
-        membershipEndDate: endDate,
-        membershipId: newMembership.id,
-      }) + `<div style="margin-top: 20px; padding: 15px; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
-        <h4 style="margin: 0 0 10px 0; color: #1e293b;">Account Access Information</h4>
-        <p style="margin: 0; font-size: 14px; color: #475569; line-height: 1.6;">${welcomeMessage}</p>
-      </div>`,
-    });
+    try {
+      await sendMultipleEmails({
+        email: targetEmail.toLowerCase(),
+        subject: "Subscription Activated",
+        html: buildMembershipActivatedEmail({
+          customerName: targetName,
+          userName: userToSubscribe.username || targetName,
+          planName: plan.name,
+          amount: paidAmount,
+          currency: capture.amount?.currency_code ?? "USD",
+          paymentMethod: "PayPal",
+          transactionId: capture.id,
+          paymentDate: capture.create_time ?? new Date(),
+          membershipStartDate: startDate,
+          membershipEndDate: endDate,
+          membershipId: newMembership.id,
+        }) + `<div style="margin-top: 20px; padding: 15px; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
+          <h4 style="margin: 0 0 10px 0; color: #1e293b;">Account Access Information</h4>
+          <p style="margin: 0; font-size: 14px; color: #475569; line-height: 1.6;">${welcomeMessage}</p>
+        </div>`,
+      });
+    } catch (emailErr) {
+      console.error("Failed to send PayPal subscription activation email:", emailErr);
+    }
 
     // Set auth cookie for auto-login
     const token = signToken({
