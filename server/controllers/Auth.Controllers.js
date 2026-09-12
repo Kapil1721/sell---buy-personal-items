@@ -109,71 +109,134 @@ export const userSignUp = CatchAsync(async (req, res, next) => {
       donor,
     } = req.body;
 
+    if (!email) {
+      return next(new AppError("Please enter an email address", 400));
+    }
+
     if (!password) {
       return next(new AppError("Please enter a password", 400));
     }
 
-    const findUser = await prisma.users.findFirst({
+    const normalizedEmail = email.trim().toLowerCase();
+    const normalizedUsername = (username || email.split("@")[0] || "").trim().toLowerCase();
+
+    // Check if another user already has this username
+    if (normalizedUsername) {
+      const existingUserByUsername = await prisma.users.findFirst({
+        where: {
+          username: normalizedUsername,
+        },
+      });
+
+      if (
+        existingUserByUsername &&
+        existingUserByUsername.email.toLowerCase() !== normalizedEmail
+      ) {
+        return res.status(409).json({
+          message: "Username is already taken. Please choose a different username.",
+        });
+      }
+    }
+
+    // Check if an existing account with this email exists
+    const existingUserByEmail = await prisma.users.findFirst({
       where: {
-        OR: [
-          { email: email.toLowerCase() },
-          { username: username.toLowerCase() },
-        ],
+        email: normalizedEmail,
       },
     });
-
-    console.log(findUser, "hfggfg");
-
-    if (findUser) {
-      return res.status(403).json({ message: "user already exists!" });
-    }
 
     const isDonor = donor === true || userType === "DONOR" || userType === "Donor";
     const isSeller = seller === true || userType === "SELLER" || userType === "Seller";
     const resolvedUserType = isDonor ? "Donor" : "Recipient";
-
     const hashedPassword = await bcrypt.hash(password, 12);
-    const newUser = {
-      username: username.toLowerCase(),
-      name,
-      email: email.toLowerCase(),
-      password: hashedPassword,
-      countryCode: countryCode || "+1",
-      contactNumber: contactNumber || "",
-      userType: resolvedUserType,
-      verification: verificationToken,
-      seller: isSeller,
-      buyer: buyer ?? true,
-      donor: isDonor,
-    };
 
-    const user = await prisma.users.create({ data: newUser });
+    let user;
 
-    const message = ``;
+    if (existingUserByEmail) {
+      // If the existing account is already verified or subscribed, prompt login
+      if (existingUserByEmail.verified) {
+        return res.status(409).json({
+          message: "An account with this email already exists. Please log in.",
+        });
+      }
 
-    const emailTemplatePath = getTemplatePath("emailTemp.html", import.meta.url);
-    let x = fs.readFileSync(emailTemplatePath, "utf8");
+      // If the account was unverified (e.g. earlier registration attempt failed or was interrupted),
+      // update the unverified record with fresh details and verification token
+      user = await prisma.users.update({
+        where: { id: existingUserByEmail.id },
+        data: {
+          username: normalizedUsername,
+          name: name || existingUserByEmail.name,
+          password: hashedPassword,
+          countryCode: countryCode || existingUserByEmail.countryCode || "+1",
+          contactNumber: contactNumber || existingUserByEmail.contactNumber || "",
+          userType: resolvedUserType,
+          verification: verificationToken,
+          seller: isSeller,
+          buyer: buyer ?? true,
+          donor: isDonor,
+          updatedAt: new Date(),
+        },
+      });
+    } else {
+      const newUser = {
+        username: normalizedUsername,
+        name: name || normalizedUsername,
+        email: normalizedEmail,
+        password: hashedPassword,
+        countryCode: countryCode || "+1",
+        contactNumber: contactNumber || "",
+        userType: resolvedUserType,
+        verification: verificationToken,
+        seller: isSeller,
+        buyer: buyer ?? true,
+        donor: isDonor,
+      };
 
-    const baseUrl = `${req.protocol}://${req.get("host")}`;
+      user = await prisma.users.create({ data: newUser });
+    }
 
-    let y = x
-      .replace("{{name}}", user.username)
-      .replace(
-        "{{link}}",
-        `${baseUrl}/api/v1/u-verify?token=${verificationToken}&id=${user.id}`
-      )
-      .replace("{{email}}", email)
-      .replace("{{password}}", password);
-    await sendMail({
-      email: req.body.email,
-      subject: "Email Verification: Thank you for registering with us",
-      message,
-      html: y,
-    });
-    createSendToken({ id: user.id, userId: user.id, username: user.username, email: user.email, isSubscribed: false, role: user.role }, 201, res);
+    // Safely attempt to send verification email without blocking account creation
+    try {
+      const emailTemplatePath = getTemplatePath("emailTemp.html", import.meta.url);
+      let x = fs.readFileSync(emailTemplatePath, "utf8");
+
+      const baseUrl = `${req.protocol}://${req.get("host")}`;
+
+      let y = x
+        .replace("{{name}}", user.username)
+        .replace(
+          "{{link}}",
+          `${baseUrl}/api/v1/u-verify?token=${verificationToken}&id=${user.id}`
+        )
+        .replace("{{email}}", normalizedEmail)
+        .replace("{{password}}", password);
+
+      await sendMail({
+        email: normalizedEmail,
+        subject: "Email Verification: Thank you for registering with us",
+        message: "",
+        html: y,
+      });
+    } catch (mailErr) {
+      console.error("Warning: Failed to send registration verification email:", mailErr);
+    }
+
+    createSendToken(
+      {
+        id: user.id,
+        userId: user.id,
+        username: user.username,
+        email: user.email,
+        isSubscribed: user.isSubscribed || false,
+        role: user.role,
+      },
+      201,
+      res
+    );
   } catch (error) {
-    console.log(error);
-    return next(new AppError("Something went wrong. Try again later!"), 500);
+    console.error("Signup error:", error);
+    return next(new AppError("Something went wrong. Try again later!", 500));
   }
 });
 
@@ -192,14 +255,8 @@ export const userLogin = CatchAsync(async (req, res, next) => {
       new AppError("Please provide username/email and password", 400)
     );
   }
-  // const user = await prisma.users.findFirst({
-  //   where: {
-  //     OR: [
-  //       { [email.toLowerCase()]: usernameoremail },
-  //       { [username.toLowerCase()]: usernameoremail },
-  //     ],
-  //   },
-  // });
+
+  const normalizedIdentifier = usernameoremail.trim().toLowerCase();
 
   const user = await prisma.users.findFirst({
     select: {
@@ -217,7 +274,12 @@ export const userLogin = CatchAsync(async (req, res, next) => {
       buyer: true,
     },
     where: {
-      OR: [{ email: usernameoremail }, { username: usernameoremail }],
+      OR: [
+        { email: { equals: normalizedIdentifier, mode: "insensitive" } },
+        { username: { equals: normalizedIdentifier, mode: "insensitive" } },
+        { email: usernameoremail },
+        { username: usernameoremail },
+      ],
       ...checkAccountPermission,
     },
   });

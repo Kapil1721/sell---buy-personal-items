@@ -35,13 +35,16 @@ export default function Register() {
     setLoading(true);
 
     try {
+      const trimmedEmail = formData.email.trim();
+      const trimmedUsername = (formData.username || trimmedEmail.split('@')[0] || '').trim();
+
       const payload = {
-        name: formData.name,
-        username: formData.username || formData.email.split('@')[0],
-        email: formData.email,
+        name: formData.name.trim(),
+        username: trimmedUsername,
+        email: trimmedEmail,
         password: formData.password,
-        countryCode: formData.countryCode || '+1',
-        contactNumber: formData.contactNumber,
+        countryCode: formData.countryCode?.trim() || '+1',
+        contactNumber: formData.contactNumber?.trim() || '',
         userType: formData.accountType === 'DONOR' ? 'Donor' : 'Recipient',
         seller: formData.accountType === 'SELLER' || formData.accountType === 'DONOR',
         buyer: true,
