@@ -1,17 +1,19 @@
-const isDev = import.meta.env.DEV;
-
 export const API_URL =
-  import.meta.env.VITE_API_URL ?? "http://localhost:3000/api/v1";
+  import.meta.env.VITE_API_URL ||
+  "https://sell-buy-personal-items.vercel.app/api/v1";
 
 export const BUY_APP_URL =
-  import.meta.env.VITE_BUY_APP_URL ??
-  import.meta.env.VITE_BUY_URL ??
-  (isDev ? "http://localhost:5174" : "https://www.sellpersonalitems.com");
+  import.meta.env.VITE_BUY_URL ||
+  import.meta.env.VITE_BUY_APP_URL ||
+  "https://buypersonalitems.com";
 
 export const SELL_APP_URL =
-  import.meta.env.VITE_SELL_APP_URL ??
-  import.meta.env.VITE_SELL_URL ??
-  (isDev ? "http://localhost:5173" : window.location.origin);
+  import.meta.env.VITE_SELL_URL ||
+  import.meta.env.VITE_SELL_APP_URL ||
+  "https://sellpersonalitems.com";
+
+export const APP_MODE =
+  import.meta.env.VITE_MODE || (import.meta.env.DEV ? "development" : "production");
 
 const normalizePath = (path = "/") =>
   path.startsWith("/") ? path : `/${path}`;

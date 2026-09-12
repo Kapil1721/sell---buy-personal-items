@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { AuthContext } from '../auth/AuthContext';
-import { getBuyRoute } from '../config/appConfig';
+import { getBuyRoute, BUY_APP_URL } from '../config/appConfig';
 import { CheckCircle2, ArrowRight, ExternalLink, ShieldCheck, Sparkles, ShoppingBag, Store } from 'lucide-react';
 
 export default function Success() {
@@ -80,7 +80,7 @@ export default function Success() {
                 <span className="bg-blue-500/30 text-blue-200 text-[10px] uppercase font-bold px-2 py-0.5 rounded-md border border-blue-400/30">Next Step</span>
               </h3>
               <p className="text-sm text-slate-300 leading-relaxed mb-4">
-                Please log in on the <strong className="text-white font-bold">Buy App</strong> (`http://localhost:5174`) to access your seller profile, manage listed items, and process buyer transactions!
+                Please log in on the <strong className="text-white font-bold">Buy App</strong> ({BUY_APP_URL}) to access your seller profile, manage listed items, and process buyer transactions!
               </p>
 
               <a
