@@ -1,7 +1,15 @@
 {
   "version": 2,
   "name": "backend-server",
-  "builds": [{ "src": "app.js", "use": "@vercel/node" }],
+  "builds": [
+    {
+      "src": "app.js",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["templates/**"]
+      }
+    }
+  ],
   "routes": [{ "src": "/(.*)", "dest": "app.js" }],
   "headers": [
     {
@@ -14,4 +22,4 @@
       ]
     }
   ]
-  }
+}

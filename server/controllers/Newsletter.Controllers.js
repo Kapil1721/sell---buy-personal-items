@@ -3,10 +3,7 @@ import { CatchAsync } from "../utils/CatchAsync.js";
 import prisma from "../utils/prisma.js";
 import path from "path";
 import sendEmail from "../services/Email.js";
-
-
-
-
+import { getTemplatePath } from "../utils/getTemplatePath.js";
 
 export const subscribeNewsLetter = CatchAsync(async (req, res, next) => {
   const { email } = req.body;
@@ -33,12 +30,8 @@ export const subscribeNewsLetter = CatchAsync(async (req, res, next) => {
   }
   const message = ``;
 
-  const __dirname = path.resolve();
-
-  let x = fs.readFileSync(
-    __dirname + "/templates/newsletterconfirmation.html",
-    "utf8"
-  );
+  const templatePath = getTemplatePath("newsletterconfirmation.html", import.meta.url);
+  let x = fs.readFileSync(templatePath, "utf8");
 
   let y = x
     .replace(

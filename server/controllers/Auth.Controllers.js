@@ -6,8 +6,8 @@ import bcrypt from "bcryptjs";
 import { PrismaClient } from "@prisma/client";
 import { CatchAsync } from "../utils/CatchAsync.js";
 import AppError from "../utils/appError.js";
-import sendEmail from "../services/Email.js";
 import path from "path";
+import { getTemplatePath } from "../utils/getTemplatePath.js";
 
 // const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
 // const JWT_SECRET = process.env.JWT_SECRET;
@@ -151,12 +151,8 @@ export const userSignUp = CatchAsync(async (req, res, next) => {
 
     const message = ``;
 
-    const __dirname = path.resolve();
-
-    let x = await fs.readFileSync(
-      __dirname + "/templates/emailTemp.html",
-      "utf8"
-    );
+    const emailTemplatePath = getTemplatePath("emailTemp.html", import.meta.url);
+    let x = fs.readFileSync(emailTemplatePath, "utf8");
 
     const baseUrl = `${req.protocol}://${req.get("host")}`;
 

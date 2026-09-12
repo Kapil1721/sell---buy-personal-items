@@ -15,14 +15,14 @@ import {
 import { renderHtmlTemplate } from "../utils/renderTemplate.js";
 import jwt from "jsonwebtoken";
 import { signToken } from "./Auth.Controllers.js";
-// import { broadcastService } from "../app.js";
+// import { renderHtmlTemplate } from "../utils/renderTemplate.js";
+import { getTemplatePath } from "../utils/getTemplatePath.js";
 
 const prisma = new PrismaClient();
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const membershipActivatedTemplatePath = path.resolve(
-  __dirname,
-  "../templates/membershipActivated.html"
+const membershipActivatedTemplatePath = getTemplatePath(
+  "membershipActivated.html",
+  import.meta.url
 );
 
 function addMonths(date, months) {
