@@ -1,20 +1,14 @@
 {
   "version": 2,
-  "name": "backend-server",
   "builds": [
     {
       "src": "app.js",
       "use": "@vercel/node",
       "config": {
-        "includeFiles": ["templates/**", ".env.development.local"]
+        "includeFiles": ["templates/**"]
       }
     }
   ],
-  "functions": {
-    "app.js": {
-      "includeFiles": "templates/**"
-    }
-  },
   "routes": [{ "src": "/(.*)", "dest": "app.js" }],
   "headers": [
     {
