@@ -1,41 +1,31 @@
-// Email service v2 - fixed sendMultipleEmails (map not forEach)
+// Email service v3 - explicit port 587 STARTTLS (Vercel blocks port 465 used by service:"gmail")
 import nodemailer from "nodemailer";
 
-const sendEmail = async (options) => {
-  const host = process.env.EMAIL_HOST || "smtp.gmail.com";
-  const port = Number(process.env.EMAIL_PORT) || 587;
+const createTransporter = () => {
   const user = process.env.EMAIL_USERNAME || "ryan@zonewebsites.com";
   const pass = process.env.EMAIL_PASSWORD || "eokltjvpmjcvktlj";
+  const host = process.env.EMAIL_HOST || "smtp.gmail.com";
+  const port = Number(process.env.EMAIL_PORT) || 587;
 
-  const isGmail = !process.env.EMAIL_HOST || host.includes("gmail") || host.includes("google");
+  // Always use explicit host/port with STARTTLS (port 587).
+  // Do NOT use service:"gmail" — it defaults to port 465 which is blocked on Vercel.
+  return nodemailer.createTransport({
+    host,
+    port,
+    secure: false, // false = STARTTLS on port 587 (true = SSL on port 465 — blocked by Vercel)
+    auth: { user, pass },
+    tls: { rejectUnauthorized: false },
+    connectionTimeout: 6000,  // 6s connect timeout
+    greetingTimeout: 6000,
+    socketTimeout: 6000,
+  });
+};
 
-  const transportConfig = isGmail
-    ? {
-        service: "gmail",
-        auth: {
-          user,
-          pass,
-        },
-        tls: {
-          rejectUnauthorized: false,
-        },
-      }
-    : {
-        host,
-        port,
-        secure: port === 465,
-        auth: {
-          user,
-          pass,
-        },
-        tls: {
-          rejectUnauthorized: false,
-        },
-      };
+const sendEmail = async (options) => {
+  const user = process.env.EMAIL_USERNAME || "ryan@zonewebsites.com";
+  const transporter = createTransporter();
 
-  const transporter = nodemailer.createTransport(transportConfig);
-
-  const defaultFrom = user ? `SellIt <${user}>` : "noreply@sellpersonalitems.com";
+  const defaultFrom = `SellIt <${user}>`;
 
   const mailOptions = {
     from: options.from || process.env.EMAIL_FROM || defaultFrom,
@@ -63,7 +53,7 @@ export const sendMultipleEmails = async (...args) => {
     console.log(`All ${results.length} email(s) sent successfully.`);
     return results;
   } catch (error) {
-    console.error("Error in sendMultipleEmails:", error);
+    console.error("Error in sendMultipleEmails:", error?.message || error);
     throw error;
   }
 };
