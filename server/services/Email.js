@@ -1,3 +1,4 @@
+// Email service v2 - fixed sendMultipleEmails (map not forEach)
 import nodemailer from "nodemailer";
 
 const sendEmail = async (options) => {

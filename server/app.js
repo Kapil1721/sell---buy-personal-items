@@ -23,6 +23,8 @@ if (!process.env.EMAIL_USERNAME) {
   }
 }
 
+console.log(`[Server v3] EMAIL_USERNAME=${process.env.EMAIL_USERNAME ? "SET" : "NOT SET"}, NODE_ENV=${process.env.NODE_ENV}`);
+
 // Create an Express app
 const app = express();
 
