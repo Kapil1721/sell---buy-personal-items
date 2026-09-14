@@ -97,6 +97,8 @@ export const membershipActivatedHtmlFallback = `<!DOCTYPE html>
                             It this time please email us at: <a href="mailto:info@salepersonalitems.com" style="color:#b45309;font-weight:800;text-decoration:underline;">info@salepersonalitems.com</a> to confirm you have revived these On Boarding instructions.
                           </div>
 
+                          {{accountDetailsSection}}
+
                         </div>
                       </div>
                     </td>

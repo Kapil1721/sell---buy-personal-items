@@ -60,6 +60,7 @@ const buildMembershipActivatedEmail = ({
   membershipStartDate,
   membershipEndDate,
   membershipId,
+  accountDetailsSection = "",
 }) => {
   const displayAmount = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -83,6 +84,7 @@ const buildMembershipActivatedEmail = ({
         membershipStartDate
       )} - ${formatDisplayDate(membershipEndDate)}`,
       membershipId,
+      accountDetailsSection: accountDetailsSection || "",
     },
     membershipActivatedHtmlFallback
   );
@@ -585,13 +587,24 @@ export const captureMembershipPayPalOrder = CatchAsync(
     });
 
     // Build welcome email content
-    let welcomeMessage = `Your seller membership has been activated successfully!`;
+    let accountDetailsSection = "";
     if (isNewUser) {
-      welcomeMessage += `<br/><br/><strong>An account has been automatically created for you:</strong><br/>
-      Email: ${targetEmail}<br/>
-      Username: ${userToSubscribe.username}<br/>
-      Temporary Password: ${generatedPassword}<br/>
-      Please log in to the <a href="https://buy.sellpersonalitems.com/login">Buy App</a> to access your profile and listings.`;
+      accountDetailsSection = `
+        <div style="margin-top: 20px; padding: 16px; background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px;">
+          <h4 style="margin: 0 0 8px 0; color: #166534; font-size: 15px; font-weight: 800;">Your Account Access Details</h4>
+          <p style="margin: 0 0 10px 0; font-size: 13px; color: #15803d; line-height: 1.5;">
+            An account has been automatically created for you. You can log in using these credentials:
+          </p>
+          <div style="background: #ffffff; padding: 12px 14px; border-radius: 8px; border: 1px solid #dcfce7; font-size: 13px; line-height: 1.8; color: #14532d;">
+            <strong>Email:</strong> ${targetEmail}<br/>
+            <strong>Username:</strong> ${userToSubscribe.username}<br/>
+            <strong>Temporary Password:</strong> <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-weight: bold; color: #0f172a;">${generatedPassword}</code>
+          </div>
+          <p style="margin: 12px 0 0 0; font-size: 13px;">
+            <a href="https://buypersonalitems.com" target="_blank" style="color: #15803d; font-weight: 800; text-decoration: underline;">Click here to log in to Buypersonalitems.com &rarr;</a>
+          </p>
+        </div>
+      `;
     }
 
     try {
@@ -610,13 +623,11 @@ export const captureMembershipPayPalOrder = CatchAsync(
           membershipStartDate: startDate,
           membershipEndDate: endDate,
           membershipId: newMembership.id,
-        }) + `<div style="margin-top: 20px; padding: 15px; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
-          <h4 style="margin: 0 0 10px 0; color: #1e293b;">Account Access Information</h4>
-          <p style="margin: 0; font-size: 14px; color: #475569; line-height: 1.6;">${welcomeMessage}</p>
-        </div>`,
+          accountDetailsSection,
+        }),
       });
     } catch (emailErr) {
-      console.error("Failed to send PayPal subscription activation email:", emailErr);
+      console.error("Failed to send PayPal subscription activation email:", emailErr?.message || emailErr);
     }
 
     // Set auth cookie for auto-login

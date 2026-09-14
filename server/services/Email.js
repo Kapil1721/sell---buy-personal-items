@@ -3,21 +3,36 @@ import nodemailer from "nodemailer";
 const sendEmail = async (options) => {
   const host = process.env.EMAIL_HOST || "smtp.gmail.com";
   const port = Number(process.env.EMAIL_PORT) || 587;
-  const user = process.env.EMAIL_USERNAME;
-  const pass = process.env.EMAIL_PASSWORD;
+  const user = process.env.EMAIL_USERNAME || "ryan@zonewebsites.com";
+  const pass = process.env.EMAIL_PASSWORD || "eokltjvpmjcvktlj";
 
-  const transporter = nodemailer.createTransport({
-    host,
-    port,
-    secure: port === 465,
-    auth: {
-      user,
-      pass,
-    },
-    tls: {
-      rejectUnauthorized: false,
-    },
-  });
+  const isGmail = !process.env.EMAIL_HOST || host.includes("gmail") || host.includes("google");
+
+  const transportConfig = isGmail
+    ? {
+        service: "gmail",
+        auth: {
+          user,
+          pass,
+        },
+        tls: {
+          rejectUnauthorized: false,
+        },
+      }
+    : {
+        host,
+        port,
+        secure: port === 465,
+        auth: {
+          user,
+          pass,
+        },
+        tls: {
+          rejectUnauthorized: false,
+        },
+      };
+
+  const transporter = nodemailer.createTransport(transportConfig);
 
   const defaultFrom = user ? `SellIt <${user}>` : "noreply@sellpersonalitems.com";
 

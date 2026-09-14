@@ -15,6 +15,13 @@ import AppError from "./utils/appError.js";
 
 // Load environment variables
 dotenv.config();
+if (!process.env.EMAIL_USERNAME) {
+  try {
+    dotenv.config({ path: ".env.development.local" });
+  } catch (e) {
+    // Ignore if not present
+  }
+}
 
 // Create an Express app
 const app = express();
