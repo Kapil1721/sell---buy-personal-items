@@ -543,7 +543,6 @@ export const captureMembershipPayPalOrder = CatchAsync(
         }
       });
     }
-    }
 
     // Check if user already has an active membership
     let existingMembership = await prisma.memberships.findFirst({
