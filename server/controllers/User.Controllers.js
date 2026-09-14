@@ -225,8 +225,15 @@ export const addMembership = CatchAsync(async (req, res, next) => {
     },
   });
 
-  // Step 8: Send a confirmation email to the user
-  await sendMultipleEmails({
+  // Step 8: Return a success response first (fire-and-forget email to avoid timeout)
+  res.status(201).json({
+    status: true,
+    message: "Congradulations, Your plan has been activated successfully.",
+    isSubscribed: true,
+  });
+
+  // Step 9: Send email AFTER response (non-blocking)
+  sendMultipleEmails({
     email: req.user.email,
     subject: "Subscription Activated",
     html: buildMembershipActivatedEmail({
@@ -242,14 +249,9 @@ export const addMembership = CatchAsync(async (req, res, next) => {
       membershipEndDate: endDate,
       membershipId: newMembership.id,
     }),
-  });
-
-  // Step 9: Return a success response to the client
-  return res.status(201).json({
-    status: true,
-    message: "Congradulations, Your plan has been activated successfully.",
-    isSubscribed: true,
-  });
+  }).catch((emailErr) =>
+    console.error("Failed to send Stripe membership email:", emailErr?.message || emailErr)
+  );
 });
 
 export const getPayPalMembershipConfig = CatchAsync(async (req, res, next) => {
@@ -493,31 +495,8 @@ export const captureMembershipPayPalOrder = CatchAsync(
       });
       res.cookie("token", token, getCookieOptions());
 
-      if (targetEmail) {
-        try {
-          await sendMultipleEmails({
-            email: targetEmail.toLowerCase(),
-            subject: "Subscription Activated",
-            html: buildMembershipActivatedEmail({
-              customerName: targetName,
-              userName: userToSubscribe.username || targetName,
-              planName: plan.name,
-              amount: paidAmount,
-              currency: capture.amount?.currency_code ?? "USD",
-              paymentMethod: "PayPal",
-              transactionId: capture.id,
-              paymentDate: capture.create_time ?? new Date(),
-              membershipStartDate: existingPayment.subscription?.startDate || new Date(),
-              membershipEndDate: existingPayment.subscription?.endDate || new Date(),
-              membershipId: existingPayment.subscriptionId,
-            }),
-          });
-        } catch (emailErr) {
-          console.error("Existing payment email delivery failed:", emailErr?.message);
-        }
-      }
-
-      return res.status(200).json({
+      // Return response immediately - don't block on email (Vercel timeout risk)
+      res.status(200).json({
         status: true,
         message: "Membership payment already captured.",
         isSubscribed: true,
@@ -535,6 +514,31 @@ export const captureMembershipPayPalOrder = CatchAsync(
           donor: userToSubscribe.donor,
         }
       });
+
+      // Fire-and-forget email after response is sent
+      if (targetEmail) {
+        sendMultipleEmails({
+          email: targetEmail.toLowerCase(),
+          subject: "Subscription Activated",
+          html: buildMembershipActivatedEmail({
+            customerName: targetName,
+            userName: userToSubscribe.username || targetName,
+            planName: plan.name,
+            amount: paidAmount,
+            currency: capture.amount?.currency_code ?? "USD",
+            paymentMethod: "PayPal",
+            transactionId: capture.id,
+            paymentDate: capture.create_time ?? new Date(),
+            membershipStartDate: existingPayment.subscription?.startDate || new Date(),
+            membershipEndDate: existingPayment.subscription?.endDate || new Date(),
+            membershipId: existingPayment.subscriptionId,
+          }),
+        }).catch((emailErr) =>
+          console.error("Existing payment email delivery failed:", emailErr?.message || emailErr)
+        );
+      }
+
+      return;
     }
 
     // Check if user already has an active membership
@@ -607,28 +611,27 @@ export const captureMembershipPayPalOrder = CatchAsync(
       `;
     }
 
-    try {
-      await sendMultipleEmails({
-        email: targetEmail.toLowerCase(),
-        subject: "Subscription Activated",
-        html: buildMembershipActivatedEmail({
-          customerName: targetName,
-          userName: userToSubscribe.username || targetName,
-          planName: plan.name,
-          amount: paidAmount,
-          currency: capture.amount?.currency_code ?? "USD",
-          paymentMethod: "PayPal",
-          transactionId: capture.id,
-          paymentDate: capture.create_time ?? new Date(),
-          membershipStartDate: startDate,
-          membershipEndDate: endDate,
-          membershipId: newMembership.id,
-          accountDetailsSection,
-        }),
-      });
-    } catch (emailErr) {
-      console.error("Failed to send PayPal subscription activation email:", emailErr?.message || emailErr);
-    }
+    // Fire-and-forget: don't await email (prevents Vercel serverless timeout)
+    sendMultipleEmails({
+      email: targetEmail.toLowerCase(),
+      subject: "Subscription Activated",
+      html: buildMembershipActivatedEmail({
+        customerName: targetName,
+        userName: userToSubscribe.username || targetName,
+        planName: plan.name,
+        amount: paidAmount,
+        currency: capture.amount?.currency_code ?? "USD",
+        paymentMethod: "PayPal",
+        transactionId: capture.id,
+        paymentDate: capture.create_time ?? new Date(),
+        membershipStartDate: startDate,
+        membershipEndDate: endDate,
+        membershipId: newMembership.id,
+        accountDetailsSection,
+      }),
+    }).catch((emailErr) =>
+      console.error("Failed to send PayPal subscription activation email:", emailErr?.message || emailErr)
+    );
 
     // Set auth cookie for auto-login
     const token = signToken({
