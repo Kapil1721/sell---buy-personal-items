@@ -17,7 +17,6 @@ export default function App() {
   const handleOpenAuth = (mode = 'join') => {
     setAuthModal({ isOpen: true, mode });
   };
-
   const handleCloseAuth = () => {
     setAuthModal((prev) => ({ ...prev, isOpen: false }));
   };
@@ -39,9 +38,7 @@ export default function App() {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
-
         <Footer onOpenAuth={handleOpenAuth} />
-
         <AuthModal
           isOpen={authModal.isOpen}
           defaultMode={authModal.mode}
