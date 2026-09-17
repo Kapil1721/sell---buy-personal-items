@@ -11,6 +11,8 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
         <div className="md:col-span-2">
           <Link to="/" className="text-3xl font-black tracking-tight text-white mb-4 block font-heading">
+            Sell<span className="text-blue-500">It</span>&nbsp;
+            Sell<span className="text-blue-500">It</span>&nbsp;
             Sell<span className="text-blue-500">It</span>
           </Link>
           <p className="max-w-sm text-slate-400 leading-relaxed mb-6 text-sm">

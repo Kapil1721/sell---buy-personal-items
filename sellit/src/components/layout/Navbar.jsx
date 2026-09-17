@@ -37,10 +37,11 @@ export default function Navbar() {
           {/* Logo */}
           <Link
             to="/"
-            className="text-2xl font-black tracking-tight text-slate-900 font-heading flex items-center gap-1 group"
+            className="text-2xl font-black tracking-tight text-slate-900 font-heading flex items-center group"
           >
-            <span>Sell</span>
-            <span className="text-blue-600 group-hover:scale-110 transition-transform">It</span>
+            Sell<span className="text-blue-600 group-hover:scale-110 transition-transform">It</span>&nbsp;
+            Sell<span className="text-blue-600 group-hover:scale-110 transition-transform">It</span>&nbsp;
+            Sell<span className="text-blue-600 group-hover:scale-110 transition-transform">It</span>
           </Link>
 
           {/* Desktop Nav Links */}
