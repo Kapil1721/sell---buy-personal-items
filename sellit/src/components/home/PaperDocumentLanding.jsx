@@ -72,7 +72,7 @@ export default function PaperDocumentLanding({ onOpenAuth }) {
   };
 
   return (
-    <div className="relative min-h-[calc(100vh-5rem)] w-full overflow-hidden bg-slate-950 flex items-center justify-center py-8 px-4">
+    <section className="relative min-h-[calc(100vh-5rem)] w-full overflow-hidden bg-slate-950 flex items-center justify-center py-8 px-4">
       {/* 
         ========================================================================
         BACKGROUND: Cash symbols like $$$$ along with item names
@@ -125,7 +125,7 @@ export default function PaperDocumentLanding({ onOpenAuth }) {
         CENTER PAGE: Simple Standard Sheet of Paper (Not doubled, clean block)
         ========================================================================
       */}
-      <main className="relative z-10 w-full max-w-7xl my-auto">
+      <div className="relative z-10 w-full max-w-7xl my-auto">
         <div
           className="relative w-full bg-[#fdfdfb] text-slate-900 rounded shadow-[0_20px_50px_-10px_rgba(0,0,0,0.7),0_0_0_1px_rgba(255,255,255,0.1)] border border-slate-200"
           onMouseEnter={() => setIsHovered(true)}
@@ -156,36 +156,22 @@ export default function PaperDocumentLanding({ onOpenAuth }) {
               </h1>
             </header>
 
-            {/* Saying */}
-            <div className="mb-8 text-center">
-              <p className="text-base italic text-slate-600 mb-2">
-                We have an old saying here at Sellitsellitsellit.com. It goes.
-              </p>
-              <p className="text-lg sm:text-xl font-bold text-slate-900">
-                “Sell what you want today! Sell what you can tomorrow!”
-              </p>
-            </div>
-
             {/* Body text */}
             <div className="space-y-5 text-base sm:text-lg leading-relaxed text-slate-800">
               <p className="font-semibold text-slate-900">
-                Times are hard. The Economy is not going well for many Americans.
+                Put Your Unused Items to Work
               </p>
 
               <p>
-                Many are taking inventory of personal items they no longer need or want and are selling them for quick cash. This could be the best time for you to sell some unwanted personal items for Cold Hard Cash!
+                Every household has items that may no longer be needed but still have value. Instead of letting those possessions sit unused in a garage, closet, storage room, or spare room, they can become an opportunity to connect with buyers who are looking for useful products.
               </p>
 
               <p>
-                Looking at the current state of our economy — things are not looking well. All the layoffs and announcements of more future layoffs. Add to that the rise of inflation, causing prices for necessities like food, housing and utilities to go up. Not to mention car payments and insurance. Things are bad for individuals and for families alike.
+                Sellitsellitsellit.com gives members a place to bring those items into the marketplace and potentially turn unused possessions into additional financial flexibility. At the same time, buyers get the opportunity to discover products that may fit their needs without purchasing everything new.
               </p>
 
               <p>
-                Americans are waking up and starting to realize what's more important in their life — it's not more stuff bought on credit while drowning in debt. They are now "liquidating" personal properties Big Time. Including furniture, clothing, appliances, electronics, sport equipment and bikes of all types.
-              </p>
-
-              <p>
-                Sellitsellitsellit.com is where you can come to convert your no longer wanted personal items into much-needed cash. We are looking for more members to help with the increase in the sale of personal items. This down economy does not have to be down for you. There is a one-time membership fee of just $59 That’s It!
+                Our marketplace is built around a simple idea: <strong className='font-semibold'>what you no longer need could be valuable to someone else</strong>.
               </p>
 
               {/* CBBL section */}
@@ -197,10 +183,16 @@ export default function PaperDocumentLanding({ onOpenAuth }) {
                   Members’ Collateral Back Bridge Loans Offer (CBBL)
                 </h2>
                 <p>
-                  Become a member today and qualify or a short-term Bridge loan. These CBBLs are made for our member sellers with personal item(s) whose values are high enough to justify for our short-term loans. These Loans are for between 30, 60 or 90 days. Easy to qualify.
+                  Become a member today and qualify or a short-term Bridge loan. These CBBLs are made for our member sellers with personal item(s) whose values are high enough to justify for our short-term loans.
                 </p>
                 <p>
-                  Join us now at our one time low fee and put yourself in position to take advantage of CBBL’s as well as other membership opportunities. To start your lifetime membership join now and lock in this low cost. $59.
+                  These loans are for <strong className='font-semibold'>30, 60, or 90 days</strong>. Eligibility and other applicable requirements may apply.
+                </p>
+                <p>
+                  Join us now for our one-time membership fee and put yourself in a position to take advantage of CBBLs as well as other membership opportunities.
+                </p>
+                <p>
+                  To start your lifetime membership, join now for just <strong className='font-semibold'>$59</strong>.
                 </p>
               </div>
 
@@ -218,7 +210,7 @@ export default function PaperDocumentLanding({ onOpenAuth }) {
             </div>
           </div>
         </div>
-      </main>
+      </div>
 
       {/* Background keyframe animations */}
       <style>{`
@@ -231,6 +223,6 @@ export default function PaperDocumentLanding({ onOpenAuth }) {
           100% { transform: translateX(0); }
         }
       `}</style>
-    </div>
+    </section>
   );
 }

@@ -11,7 +11,6 @@ import {
   Trophy,
   Bike,
   TrendingDown,
-  ShoppingBag,
   DollarSign
 } from 'lucide-react';
 
@@ -31,12 +30,13 @@ export default function EconomicOpportunity({ onOpenAuth }) {
         
         {/* Top Header & Human Editorial Quote */}
         <div className="max-w-3xl mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-blue-100 text-blue-800 text-xs font-bold uppercase tracking-wider mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-blue-100 text-blue-800 text-base font-bold uppercase tracking-wider mb-4">
             Marketplace Perspective • Sellitsellitsellit.com
           </div>
 
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-black font-heading text-slate-900 tracking-tight leading-tight">
-            Times Are Hard. Turn Unwanted Items Into Cold Hard Cash!
+            Times Are Hard. Turn Unwanted Items Into Cold Hard Cash!{' '}
+            <span className="text-emerald-600 font-black">($$$$)</span>
           </h2>
 
           {/* Authentic Editorial Quote Box */}
@@ -72,11 +72,11 @@ export default function EconomicOpportunity({ onOpenAuth }) {
               </div>
 
               <p className="text-slate-600 text-sm sm:text-base leading-relaxed mb-5">
-                The economy is not going well for many Americans. Looking at the current state of our economy — things are not looking well. All the layoffs and announcements of more future layoffs.
+                The economy is not going well for many Americans. Looking at the current state of our economy, uncertainty continues to grow. All the layoffs and announcements of further layoffs add to that uncertainty.
               </p>
 
               <p className="text-slate-600 text-sm sm:text-base leading-relaxed mb-5">
-                Add to that the rise of inflation, causing prices for necessities like food, housing, and utilities to go up. Not to mention car payments and insurance. Things are bad for individuals and for families alike.
+                Add to that rising inflation, which is causing prices for necessities like food, housing, and utilities to go up. Not to mention car payments and insurance. Things are difficult for individuals and families alike.
               </p>
 
               <div className="bg-rose-50/70 border border-rose-100 rounded-xl p-4 text-xs sm:text-sm text-rose-900">
@@ -103,11 +103,11 @@ export default function EconomicOpportunity({ onOpenAuth }) {
               </div>
 
               <p className="text-slate-600 text-sm sm:text-base leading-relaxed mb-5">
-                Americans are waking up and starting to realize what's more important in their life — it's not more stuff bought on credit while drowning in debt.
+                Americans are waking up and starting to realize what's more important in their lives — it's not about accumulating more stuff bought on credit while drowning in debt.
               </p>
 
               <p className="text-slate-600 text-sm sm:text-base leading-relaxed mb-5">
-                Many are taking inventory of personal items they no longer need or want and are selling them for quick cash. They are now <strong>"liquidating" personal properties Big Time.</strong> This could be the best time for you to sell unwanted personal items for Cold Hard Cash!
+                Many are taking inventory of personal items they no longer need or want and are selling them for quick cash. They are now <strong>"liquidating" personal properties Big Time.</strong> This could be the best time for you to sell unwanted personal items for <strong>Cold Hard Cash! ($$$$)</strong>
               </p>
 
               <div className="bg-emerald-50/70 border border-emerald-100 rounded-xl p-4 text-xs sm:text-sm text-emerald-900 flex items-start gap-2.5">
@@ -125,7 +125,7 @@ export default function EconomicOpportunity({ onOpenAuth }) {
               </div>
               <Link
                 to="/membership"
-                className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-xl transition"
+                className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-xl transition shadow-sm"
               >
                 <span>Join for $59</span>
                 <ArrowRight className="w-4 h-4" />
@@ -172,7 +172,7 @@ export default function EconomicOpportunity({ onOpenAuth }) {
           {/* Invitation callout */}
           <div className="mt-8 pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-sm text-slate-600 font-medium text-center sm:text-left">
-              We are looking for more members to help with the increase in the sale of personal items.
+              We are looking for more members to participate as the number of personal items being sold continues to increase.
             </p>
             <Link
               to="/membership"
