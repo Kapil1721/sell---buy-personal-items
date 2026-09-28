@@ -63,14 +63,16 @@ const getClearOtpCookieOptions = () => {
 };
 
 const getTokenFromRequest = (req) => {
-  const cookieToken = req.cookies?.token;
-  if (cookieToken) {
-    return cookieToken;
-  }
-
+  // Check Authorization header first (used by sellit SPA via localStorage)
   const authHeader = req.headers.authorization;
   if (authHeader?.startsWith("Bearer ")) {
     return authHeader.split(" ")[1];
+  }
+
+  // Fallback to cookie (used by sell/buy apps)
+  const cookieToken = req.cookies?.token;
+  if (cookieToken) {
+    return cookieToken;
   }
 
   return null;

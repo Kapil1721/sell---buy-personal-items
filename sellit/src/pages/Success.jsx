@@ -1,16 +1,32 @@
-import React, { useContext } from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import React, { useContext, useEffect } from 'react';
+import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../auth/AuthContext';
 import { getBuyRoute, BUY_APP_URL } from '../config/appConfig';
 import { CheckCircle2, ArrowRight, ExternalLink, ShieldCheck, Sparkles, ShoppingBag, Store } from 'lucide-react';
 
 export default function Success() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { user } = useContext(AuthContext);
 
   const stateData = location.state || {};
   const planInfo = stateData.plan || {};
   const membershipInfo = stateData.membership || {};
+
+  // Guard: only users who came from a completed payment or have an active membership can see this page.
+  const hasValidPayment = Boolean(stateData.membership);
+  const hasActiveMembership = Boolean(user?.isSubscribed);
+
+  useEffect(() => {
+    if (!hasValidPayment && !hasActiveMembership) {
+      navigate('/membership', { replace: true });
+    }
+  }, [hasValidPayment, hasActiveMembership, navigate]);
+
+  // Don't render until we know the user is authorized to see this page
+  if (!hasValidPayment && !hasActiveMembership) {
+    return null;
+  }
 
   const buyAppLoginUrl = getBuyRoute('/login?tab=login');
 

@@ -158,7 +158,14 @@ export const addMembership = CatchAsync(async (req, res, next) => {
   const { planId, amount } = req.body;
   const { id } = req.user;
   const existingMembership = await prisma.memberships.findFirst({
-    where: { userId: id },
+    where: {
+      userId: id,
+      status: "ACTIVE",
+      OR: [
+        { endDate: null },
+        { endDate: { gt: new Date() } },
+      ],
+    },
   });
 
   if (existingMembership) {
@@ -295,7 +302,14 @@ export const createMembershipPayPalOrder = CatchAsync(
 
     if (userId) {
       const existingMembership = await prisma.memberships.findFirst({
-        where: { userId },
+        where: {
+          userId,
+          status: "ACTIVE",
+          OR: [
+            { endDate: null },
+            { endDate: { gt: new Date() } },
+          ],
+        },
       });
 
       if (existingMembership) {
@@ -546,7 +560,14 @@ export const captureMembershipPayPalOrder = CatchAsync(
 
     // Check if user already has an active membership
     let existingMembership = await prisma.memberships.findFirst({
-      where: { userId },
+      where: {
+        userId,
+        status: "ACTIVE",
+        OR: [
+          { endDate: null },
+          { endDate: { gt: new Date() } },
+        ],
+      },
     });
 
     let newMembership;

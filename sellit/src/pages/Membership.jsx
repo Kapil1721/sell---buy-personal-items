@@ -179,12 +179,13 @@ export default function Membership() {
           } catch (err) {
             setProcessingPayment(false);
             const msg = err.message || 'Order creation failed.';
-            setPaypalError(msg);
             if (msg.toLowerCase().includes('already exists') || msg.toLowerCase().includes('active membership')) {
+              setPaypalError('Your account already has an active membership. Closing...');
               setTimeout(() => {
                 setIsModalOpen(false);
-                navigate('/success');
-              }, 2000);
+              }, 2500);
+            } else {
+              setPaypalError(msg);
             }
             throw err;
           }

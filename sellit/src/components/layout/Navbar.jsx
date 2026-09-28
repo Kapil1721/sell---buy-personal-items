@@ -65,10 +65,16 @@ export default function Navbar() {
                   <span className="text-xs font-bold text-slate-900 truncate max-w-[120px]">
                     {user.name || user.username || user.email}
                   </span>
-                  <span className="text-[10px] text-emerald-600 font-bold flex items-center gap-1 justify-end">
-                    <ShieldCheck className="w-3 h-3" />
-                    <span>Member</span>
-                  </span>
+                  {user?.isSubscribed ? (
+                    <span className="text-[10px] text-emerald-600 font-bold flex items-center gap-1 justify-end">
+                      <ShieldCheck className="w-3 h-3" />
+                      <span>Member</span>
+                    </span>
+                  ) : (
+                    <span className="text-[10px] text-slate-500 font-semibold flex items-center gap-1 justify-end">
+                      <span>Registered</span>
+                    </span>
+                  )}
                 </div>
                 <button
                   onClick={handleLogout}
