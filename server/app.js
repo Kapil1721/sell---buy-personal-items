@@ -65,6 +65,7 @@ const allowedOrigins = [
   "https://www.buypersonalitems.com",
   "https://sellitsellitsellit.sellpersonalitems.com",
   "https://www.sellitsellitsellit.sellpersonalitems.com",
+  "https://sellitsellitsellit.com",
 ];
 
 // Middleware for serving static files
