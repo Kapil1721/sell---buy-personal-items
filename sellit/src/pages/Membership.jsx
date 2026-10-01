@@ -250,7 +250,7 @@ export default function Membership() {
   };
 
   const isAlreadyPurchased = Boolean(activeMembership && activeMembership.status === 'ACTIVE');
-  const payableAmount = selectedPlan?.offerValue ?? selectedPlan?.price ?? 39;
+  const payableAmount = selectedPlan?.offerValue ?? selectedPlan?.price ?? 59;
 
   return (
     <div className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -339,9 +339,9 @@ export default function Membership() {
                   <p className="text-xs text-slate-500 mb-6">{plan.description || 'Full membership benefits across all personal item services.'}</p>
 
                   <div className="flex items-baseline gap-2 mb-6">
-                    <span className="text-4xl font-black text-slate-900">${plan.offerValue || plan.price}</span>
+                    <span className="text-4xl font-black text-slate-900">${plan.offerValue || plan.price || 59}</span>
                     <span className="text-sm font-semibold text-slate-500">
-                      {plan.durationType?.toUpperCase() === 'LIFETIME'
+                      {plan.durationType?.toUpperCase() === 'LIFETIME' || plan.oneTimePayment || plan.offerType === 'ONETIME'
                         ? 'one-time fee'
                         : `/ ${plan.duration} ${plan.durationType?.toLowerCase() || 'month'}`}
                     </span>

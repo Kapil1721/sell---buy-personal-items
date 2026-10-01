@@ -15,12 +15,12 @@ const faqs = [
   {
     question: 'How much does it cost?',
     answer:
-      'Membership is a flat monthly fee of $19. There are no commission fees or surprise percentage cuts on top of your purchases for verified members.',
+      'Membership is a one-time fee of $59 for permanent lifetime access. There are no commission fees, monthly charges, or surprise percentage cuts on top of your purchases for verified members.',
   },
   {
-    question: 'Can I cancel anytime?',
+    question: 'Are there any recurring monthly fees or payment plans?',
     answer:
-      'Yes, you can cancel your membership anytime directly from your dashboard settings. There are no lock-in contracts, cancellation fees, or penalties.',
+      'No. There is no payment plan and there are no recurring monthly dues. You pay a single one-time fee of $59 and receive permanent lifetime marketplace and seller access.',
   },
   {
     question: 'How does shipping and local pickup work?',

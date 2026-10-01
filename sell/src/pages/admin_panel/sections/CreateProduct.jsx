@@ -221,7 +221,7 @@ export const SubscriptionModal = ({ isOpen, onClose, children }) => {
   const [plans, setPlans] = useState([]);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [activeTab, setActiveTab] = useState("Plans");
-  const [PaymentType, setPaymentType] = useState('monthly');
+  const [PaymentType, setPaymentType] = useState('onetime');
   const handleToggle = (e) => {
     e.preventDefault();
     console.log(e.target.value);
@@ -261,7 +261,7 @@ export const SubscriptionModal = ({ isOpen, onClose, children }) => {
               <Radio className="" value={plan.id} id={plan.id} />
               <div className='flex justify-between w-full'>
                 <h2 className="text-lg text-primary font-bold">{plan.name}</h2>
-                <h2 className="text-lg text-primary font-bold ml-20">Price: ${plan.price}/Month</h2>
+                <h2 className="text-lg text-primary font-bold ml-20">Price: ${plan.offerValue || plan.price || 59} (One-Time)</h2>
               </div>
             </label>
           ))}
@@ -389,14 +389,8 @@ export const CheckoutPage = ({ plans, PaymentType, handleToggle, setPaymentType 
         <form className="form">
           <div className="banner-membership" />
           <label className="title">Offers</label>
-          <p className="description m-auto">
-            Auto Withdrawal are available for monthly fee payments.
-          </p>
           <div className='w-full flex justify-center items-center mt-5'>
             <div className="flex w-fit py-2 gap-2 px-2  bg-light bg-opacity-60 rounded-[30px] shadow-2xl">
-              <label className={`bg-white px-6 py-2 rounded-[30px] text-primary font-medium text-center cursor-pointer hover:ring-2 hover:ring-helper ${PaymentType === 'monthly' && 'shadow-md ring-2 ring-blue-600'}`} htmlFor="monthly">Monthly
-                <input type="radio" name="membership" id="monthly" className="hidden" value={'monthly'} checked={PaymentType === 'monthly'} onChange={handleToggle} />
-              </label>
               <label className={`bg-white px-6 py-2 rounded-[30px] text-primary font-medium text-center cursor-pointer hover:ring-2 hover:ring-helper ${PaymentType === 'onetime' && 'shadow-md ring-2 ring-blue-600'}`} htmlFor="onetime">One Time
                 <input type="radio" name="membership" id="onetime" className="hidden" value={'onetime'} checked={PaymentType === 'onetime'} onChange={handleToggle} />
               </label>

@@ -80,9 +80,9 @@ const buildMembershipActivatedEmail = ({
       paymentMethod: paymentMethod || "Membership Payment",
       transactionId: transactionId || "Processed successfully",
       paymentDate: formatDisplayDate(paymentDate),
-      membershipPeriod: `${formatDisplayDate(
-        membershipStartDate
-      )} - ${formatDisplayDate(membershipEndDate)}`,
+      membershipPeriod: membershipEndDate
+        ? `${formatDisplayDate(membershipStartDate)} - ${formatDisplayDate(membershipEndDate)}`
+        : `Lifetime Access (Started ${formatDisplayDate(membershipStartDate)})`,
       membershipId,
       accountDetailsSection: accountDetailsSection || "",
     },
@@ -123,6 +123,9 @@ const getMembershipAmount = (plan) => {
 };
 
 const getMembershipEndDate = (startDate, plan) => {
+  if (plan?.oneTimePayment || plan?.offerType === "ONETIME" || plan?.durationType === "LIFETIME") {
+    return null;
+  }
   switch (plan?.durationType) {
     case "DAY": {
       const endDate = new Date(startDate);
@@ -199,7 +202,7 @@ export const addMembership = CatchAsync(async (req, res, next) => {
 
   // Step 4: Calculate start and end dates for the membership
   const startDate = new Date();
-  const endDate = addMonths(startDate, plan.duration);
+  const endDate = getMembershipEndDate(startDate, plan);
 
   // Step 5: Create the membership record after successful payment
   const newMembership = await prisma.memberships.create({

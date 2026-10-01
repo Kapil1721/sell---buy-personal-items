@@ -36,7 +36,7 @@ npm run preview
 - `src/components/home/WhyMarketplace.jsx`: 3 pillar cards (Save, Discover, Recirculate)
 - `src/components/home/InteractiveMarketplace.jsx`: Live product catalog with category filter tabs and heart wishlist toggles
 - `src/components/home/EditorialProductWall.jsx`: Dark editorial collage with staggered gallery cards
-- `src/components/home/MembershipPricing.jsx`: $19/month membership conversion section
+- `src/components/home/MembershipPricing.jsx`: $59 one-time lifetime membership conversion section
 - `src/components/home/MembershipBenefits.jsx`: Expandable member privilege rows
 - `src/components/home/AccountExperience.jsx`: Interactive dashboard mockup with live activity cards
 - `src/components/home/CategoryDiscovery.jsx`: Horizontal snap carousel with left/right scroll controls

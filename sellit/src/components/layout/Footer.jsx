@@ -39,16 +39,6 @@ export default function Footer() {
           <p className="text-xs text-slate-400 mb-4 leading-relaxed">
             Already registered? Log in on the Buy App to access listings and manage buyer negotiations.
           </p>
-          <a
-            href={buyAppUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition shadow-md shadow-blue-500/20"
-          >
-            <ShoppingBag className="w-3.5 h-3.5" />
-            <span>Go to Buy App</span>
-            <ArrowUpRight className="w-3.5 h-3.5" />
-          </a>
         </div>
       </div>
 

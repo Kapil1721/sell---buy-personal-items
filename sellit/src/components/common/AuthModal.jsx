@@ -80,7 +80,7 @@ export default function AuthModal({ isOpen, onClose, defaultMode = 'join' }) {
                 mode === 'join' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-400 hover:text-white'
               }`}
             >
-              Start Membership ($19/mo)
+              Start Membership ($59)
             </button>
             <button
               type="button"
@@ -162,7 +162,7 @@ export default function AuthModal({ isOpen, onClose, defaultMode = 'join' }) {
                 <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 flex items-start gap-2.5 text-xs text-blue-900">
                   <ShieldCheck className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
                   <p>
-                    Includes 30-day risk-free access, unlimited watchlist saves, and direct verified seller messaging.
+                    Includes lifetime access, unlimited item listings, and direct verified seller messaging.
                   </p>
                 </div>
               )}
@@ -171,7 +171,7 @@ export default function AuthModal({ isOpen, onClose, defaultMode = 'join' }) {
                 type="submit"
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl transition shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 cursor-pointer mt-2"
               >
-                <span>{mode === 'login' ? 'Log In to Account' : 'Activate Membership ($19/mo)'}</span>
+                <span>{mode === 'login' ? 'Log In to Account' : 'Activate Membership ($59)'}</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
 
